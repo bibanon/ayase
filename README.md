@@ -20,3 +20,39 @@ The following command will run a server at <http://localhost:8000> . Check the a
 cd ayase
 hug -f fourchan.py
 ```
+
+## HTML Templates
+
+Ayase provides only a few HTML Templates as default, and they are not part of the standard: admins may feel free to use whichever HTML template suits their needs.
+
+Our criteria for default HTML Templates is historical significance that match archived data with the period appropriate theming for the original boards they came from, and most of all an avoidance of anything but HTML5, basic CSS, and ECMAScript unless absolutely necessary.
+
+Only the progrider template is currently built.
+
+### Progrider Template
+
+Based on https://github.com/bibanon/world4ch , this jinja2 template is based on clean source code from the progrider textboard when it was still around, which ultimately has its origins in 2ch-style textboard engines.
+
+![Board Catalog](ayase-world4ch-catalog.png)
+
+![Single Thread](ayase-world4ch-thread.png)
+
+### Futaba & Burichan Template
+
+A template recalling the colors of the Futaba/2chan imageboard, which 4chan was based on. 
+
+We would probably use the [4archive](https://github.com/4archive/4archive) templates for this, a stunning laravel imageboard archive engine that was ultimately never put into use.
+
+### Fuuka4plebs Template 
+
+A template based on an previous attempted replacement of FoolFuuka by 4plebs.
+
+### Infinity Template
+
+A template based on 8chan OpenIB/infinity/vichan source code.
+
+### Monaba Template
+
+A template based on Monaba.
+
+https://github.com/ahushh/Monaba
