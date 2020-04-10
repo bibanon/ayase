@@ -1,0 +1,200 @@
+@font-face {
+  font-family: 'submona';
+  src: url('submona.woff') format('woff');
+}
+
+body {
+    font-size: 13px;
+    /* Japanese variable width fonts needed for viewing SJIS Art. Mona Font is included if you don't have any of these. */
+    font-family: IPAMonaPGothic, 'IPA モナー Pゴシック', Monapo, Mona, 'MS Pgothic', 'MS Pゴシック', submona;
+/*  font-family: "DejaVu Sans", "Liberation Sans", Arial; */
+}
+.comment { display:none }
+body#index {
+    background: #C5AD99;
+/* alternate background image with Mona and Giko Neko  
+    background-image: url('http://qb7.2ch.net/logos/morningcoffee_b.gif') */
+    background-image: url(data:image/gif;base64,R0lGODdhPAA8AJkAANCznMWtmbOektzApiwAAAAAPAA8AAAC/5SPqcvtCJ6c1IUAsgZ48wuG4qV1njYMZxmkbjYGQpipJeDmuo7zdYoTRSwiRGuFg3lio4HpswF9SJzhobpMSXsZAVQoS6KcpoH3MsPIZsAtVWAbDoVYziuZ3nhhnavWVASVFkYVNdbixKbH0mXQQ8I0FdERVnOi4tXWcqFVZXKAqAbJNEoTdUT28vSlZvUoFRmpxIdh87LXw1Z4cAc5wzFIulIbt+FS6MELVBJsMPK7utqTAmfrbAPoqAlCVknaOkWsclej7VzlRyYJAhc+slTllDNFbZBIq+10I3WGJks77cc4bCSgAcsUp1SESd9+hRv4Q9wiT/aWwWIHMEQaXP/GyNn52EEfjIrYoGGkpVHaGEuF2kTZiFASvm8qp+2YR4xlophqHEKpcwlFOWjO0IB6cGRQMBlMm86oAFXBnzVRHcwbs2xFDkQ8lt28aSzMPHWFCHHNKkaDo44etk5LM7DerFJ/6hSTM6xSWrUkgGDieOIIl46IgNJxl7JwrnY34tzViuQiw2c1+k662wmoVhqC3yD29YOPLnhIbqBE9hOl0tBmLht6VDqy5NPPOKmQYabFRko+I7OAtEQYoTZeTAaLPQslI3d8RHPWzXiQpc3DlnsD468Wy+g1p58S9WTL7yItG5E5DgPtxOa/v7u5sgSOP62ARWr+GFimUcEsurX/wraQcslVFxgVIdhSgg243GZfW7EBAo+BCwqFW3L+hSYGf0pYhAsT9ghESFo7CHRXNIq5ch86cCxw0FI0ZXdOEQlQtQCNMjqjwIvi6YgaSV/9qENIQA75VXCzxdBIgJ005NBF2rBz23MxKKVMN/14otYezXyYR4bAuccOfFFK80lZfWDAESAGAhQOAlvpFU1yKUmnJikuUjXNc5J0GSZT0iUE3gf9+IejRwO+duYay+3DzkWBIPSYkZHYc1h7NLGB0IEjPahHP0Zl9A4TrW2TJVmBYNTneJfSkGmKoi1ayjmqIjlZcaGwFxxtbjB1ymd2ihVprgaWEqqHUzZajSYFKYq3J7FgZneqn1zAgtxIomQEqilTFjcYcibimlodUjrKrXqyOWqZFAUAADs=);
+}
+body#threadpage {
+    background: #EFEFEF;
+}
+a {
+    color: #00C;
+}
+a:hover {
+    color: #F00;
+}
+/*Front page*/
+div.shell {
+    border: 1px outset #000;
+    padding: 0 7px 7px 7px;
+    margin: 0 2.5% 1em 2.5%;
+    background: #CCFFCC;
+}
+div.shell-thread {
+    border: 1px outset #000;
+    padding: 0 7px 7px 7px;
+    margin: 0 2.5% 1em 2.5%;
+    background: #EFEFEF;
+}
+div.shell > div,
+div.shell-thread > div {
+    border: 1px inset #000;
+    padding: 5px;
+    margin-top: 7px;
+    display: block;
+}
+#threadlist .links,
+#subback .links {
+    text-align: right;
+    font-weight: bold;
+}
+#threadlist .thread,
+#subback .thread {
+    margin-right: 0.3em;
+}
+.subject h2 {
+    display: inline-block;
+    margin: 0;
+    color: #F00;
+	  line-height: 120%;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+.subject a {
+    text-decoration: none;
+}
+.subject a h2:hover {
+    text-decoration: underline;
+}
+.subject .replies {
+    font-weight: bold;
+}
+#threadform h2,
+#threadpage h1 {
+    margin: 0;
+}
+/*Threadpage*/
+#threadpage h2 {
+    margin: 0.4em 0;
+    color: #F00;
+	  line-height: 120%;
+    font-size: 1.2em;
+    font-weight: normal;
+    font-weight: bold;
+}
+.post .num {
+    font-weight: bold;
+    cursor: pointer;
+}
+.post .name {
+    font-weight: bold;
+    color: green;
+}
+.post .trip {
+    color: green;
+}
+.postbody {
+    margin: 0.5em 0em 0.5em 2em;
+    overflow: hidden;
+    font-family: IPAMonaPGothic, 'IPA モナー Pゴシック', Monapo, Mona, 'MS Pgothic', 'MS Pゴシック', submona;
+    font-size: 1.1em
+}
+/* Subback */
+#subback div.float {
+    border: 1px outset honeydew;
+    float: left;
+    height: 20em;
+    line-height: 1em;
+    margin: 0;
+    padding: 0;
+    font-size: large;
+    background: honeydew;
+}
+#subback div.float a {
+    display: block;
+    padding: 0 0.5em;
+    margin: 0;
+    text-decoration: none;
+    white-space: nowrap;
+}
+#subback div.float a:visited {
+    background: #E0EEE0;
+}
+#subback div.float a:hover {
+    color: #0000CC;
+    background: cyan;
+}
+/* Markup printing styles. */
+:lang(ja) {
+	  font-family: Mona, 'MS PGothic';
+	  white-space: pre;
+	  font-size: 12pt;
+}
+code, samp {
+    display: inline-block;
+	  line-height: 120%;
+}
+code {
+white-space: pre;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+.spoiler {
+	  display: inline;
+	  background: #000;
+	  color: #000;
+	  padding: 0;
+}
+.spoiler:hover {
+	  color: #FFF;
+}
+blockquote {
+    border-left: solid 2px #666;
+    padding: 0px 0px 0px 10px;
+    margin: 3px 0px;
+    display: block;
+}
+blockquote blockquote {
+    border-left: solid 2px #888;
+}
+blockquote blockquote blockquote {
+    border-left: solid 2px #aaa;
+}
+blockquote:hover {
+    background: #f0f0e0;
+}
+
+table.threads a {
+	color: black;
+}
+
+.recent {
+	margin: 0.5em 0px;
+}
+
+.links a {
+	margin-right: 6px;
+}
+
+span.sage + span 
+{ color: blue !important; text-decoration: underline; }
+span.sage + span:hover { color: red !important; cursor: pointer; }
+
+/* Pretty printing styles. Used with prettify.js from progrider, but ultimately unused
+.pln { color: #000 }
+.str { color: #080 }
+.kwd { color: #008 }
+.com { color: #800 }
+.typ { color: #606 }
+.lit { color: #066 }
+.pun, .opn, .clo { color: #660 }
+.tag { color: #008 }
+.atn { color: #606 }
+.atv { color: #080 }
+.dec, .var { color: #606 }
+.fun { color: red }
+.sage { color: blue !important; text-decoration: underline; }
+.sage:hover { color: red !important; cursor: pointer; }
+*/
