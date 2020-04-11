@@ -37,22 +37,65 @@ Based on https://github.com/bibanon/world4ch , this jinja2 template is based on 
 
 ![Single Thread](ayase-world4ch-thread.png)
 
-### Futaba & Burichan Template
+### Monaba Template
 
-A template recalling the colors of the Futaba/2chan imageboard, which 4chan was based on. 
+A template based on Monaba's UI, which is mobile responsive and has good (but also optional) javascript features. Has the benefit of a wealth of stylesheets for users to choose from, including a Futaba and Yotsuba impersonator.
 
-We would probably use the [4archive](https://github.com/4archive/4archive) templates for this, a stunning laravel imageboard archive engine that was ultimately never put into use.
+https://github.com/ahushh/Monaba
+
+https://github.com/ahushh/monaba/tree/docker/monaba/static/stylesheets
+
+### Wakaba Template
+
+This wakaba compatible python jinja2 template engine is the best fit for our needs, as it can be directly utilized. But on the other hand it seems pretty wordy as it doubles as a full imageboard engine as used on desuchan... desuchan.net
+
+* Q. What does "wakarimasen" mean?
+* A. I don't know
+
+https://github.com/weedy/wakarimasen
+
+https://github.com/dequis/wakarimasen
+
+It looks like the templates were converted to jinja2 with this crazy python script, which is kind of off putting though... get ready for horrid html code cruft.
+
+https://github.com/dequis/wakarimasen/blob/master/contrib/futaba_to_jinja.py
 
 ### Fuuka4plebs Template 
 
 A template based on an previous attempted replacement of FoolFuuka by 4plebs.
 
+### Futaba & Burichan Template
+
+A template recalling the colors of the Futaba/2chan imageboard, which 4chan was based on. 
+
+The [4archive](https://github.com/4archive/4archive) templates could be used for this, a stunning laravel imageboard archive engine that was ultimately never put into use. It looks almost exactly like 4chan, even uses its css (though i'd rather not lol). Maybe even yuki.la is based on this code.
+
+https://github.com/4archive/4archive/blob/master/resources/views/thread/view.blade.php
+
+https://web.archive.org/web/20151014014208/http://4zip.org/qa/thread/290948
+
+https://web.archive.org/web/20151024031527/http://4zip.org/pol/thread/54150010
+
+However that code uses some stolen css from 4chan, I'd rather not bother with that legal and crufty mess at all. So alternatively the Gochan templates can be used as it uses sass, is more up to date, and the template language seems a lot more easily converted to Jinja2.
+
+https://github.com/gochan-org/gochan
+
 ### Infinity Template
 
-A template based on 8chan OpenIB/infinity/vichan source code.
+A template based on 8chan OpenIB/infinity/vichan source code. Since honestly the templates don't look too bad.
 
-### Monaba Template
+https://github.com/OpenIB/OpenIB/blob/master/templates/thread.html
 
-A template based on Monaba.
+## Client Support
 
-https://github.com/ahushh/Monaba
+Any 4chan API client can be modified to work with Ayase's API. There might be some future improved API that some more advanced clients can use, but Ayase will always emit the basic 4chan API for compatibility.
+
+### Clover (Android)
+
+Just modify this to change all the 4chan.org domains to the target archiver domain.
+
+https://chandevel.github.io/Clover/
+
+### 4chan-X (WebApp)
+
+Theoretically 4chan-X can be modified to work as a WebUI itself! As was done with the 4plebs-X mockup.
