@@ -37,6 +37,24 @@ Based on https://github.com/bibanon/world4ch , this jinja2 template is based on 
 
 ![Single Thread](ayase-world4ch-thread.png)
 
+### Indiachan Template
+
+Out of all these, indiachan (which made a lynxchan template) looks the most modern, and is very nicely optimized for mobile (as mobile devices are the most commonly used computing devices). It even has a pleasing green theme which fits the FoolFuuka theming tradition. I would make this the default theme.
+
+https://gitlab.com/rusty02/indiachan
+
+### LynxChan Templates
+
+Alternatively, the templates on LynxChan actually seem pretty sane, as an 8chan lookalike. These can be used to provide the familiar Yotsuba/Futaba and Burichan themes.
+
+https://gitgud.io/LynxChan/LynxChanFront-Placeholder/-/tree/master/templates/pages
+
+https://gitgud.io/LynxChan/PenumbraLynx/-/tree/master/templates%2Fpages
+
+There are others too we can draw from:
+
+https://gitgud.io/LynxChan/LynxChan-ThirdPartyFrontEnds
+
 ### Monaba Template
 
 A template based on Monaba's UI, which is mobile responsive and has good (but also optional) javascript features. Has the benefit of a wealth of stylesheets for users to choose from, including a Futaba and Yotsuba impersonator.
@@ -45,24 +63,15 @@ https://github.com/ahushh/Monaba
 
 https://github.com/ahushh/monaba/tree/docker/monaba/static/stylesheets
 
-### Wakaba Template
-
-This wakaba compatible python jinja2 template engine is the best fit for our needs, as it can be directly utilized. But on the other hand it seems pretty wordy as it doubles as a full imageboard engine as used on desuchan... desuchan.net
-
-* Q. What does "wakarimasen" mean?
-* A. I don't know
-
-https://github.com/weedy/wakarimasen
-
-https://github.com/dequis/wakarimasen
-
-It looks like the templates were converted to jinja2 with this crazy python script, which is kind of off putting though... get ready for horrid html code cruft.
-
-https://github.com/dequis/wakarimasen/blob/master/contrib/futaba_to_jinja.py
-
 ### Fuuka4plebs Template 
 
 A template based on an previous attempted replacement of FoolFuuka by 4plebs.
+
+### Infinity Template
+
+A template based on 8chan OpenIB/infinity/vichan source code. Since honestly the templates don't look too bad. But maybe it's a bit heavy for our needs.
+
+https://github.com/OpenIB/OpenIB/blob/master/templates/thread.html
 
 ### Futaba & Burichan Template
 
@@ -80,11 +89,24 @@ However that code uses some stolen css from 4chan, I'd rather not bother with th
 
 https://github.com/gochan-org/gochan
 
-### Infinity Template
+Although it lacks the Yotsuba/Futaba CSS, that can be hacked into the burichan one.
 
-A template based on 8chan OpenIB/infinity/vichan source code. Since honestly the templates don't look too bad.
+https://github.com/gochan-org/gochan/tree/master/sass
 
-https://github.com/OpenIB/OpenIB/blob/master/templates/thread.html
+### Wakaba Template
+
+This wakaba compatible python jinja2 template engine is the best fit for our needs, as it can be directly utilized. But on the other hand it seems pretty wordy as it doubles as a full imageboard engine as used on desuchan... desuchan.net
+
+* Q. What does "wakarimasen" mean?
+* A. I don't know
+
+https://github.com/weedy/wakarimasen
+
+https://github.com/dequis/wakarimasen
+
+It looks like the templates were converted to jinja2 with this crazy python script, which is kind of off putting though... get ready for horrid html code cruft.
+
+https://github.com/dequis/wakarimasen/blob/master/contrib/futaba_to_jinja.py
 
 ## Client Support
 
@@ -95,6 +117,12 @@ Any 4chan API client can be modified to work with Ayase's API. There might be so
 Just modify this to change all the 4chan.org domains to the target archiver domain.
 
 https://chandevel.github.io/Clover/
+
+### Kuroba (Android)
+
+same for this app, and it seems to support loads of other imageboards too.
+
+https://github.com/Adamantcheese/Kuroba
 
 ### 4chan-X (WebApp)
 
