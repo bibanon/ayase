@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="generator" content="FoolFuuka 2.2.0">
+    <title>{{ title }}</title>
+    <link href="/" rel="index" title="FoolFuuka">
+
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap.legacy.css">
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome-ie7.css">
+    <![endif]-->
+
+    <link href="/static/style.css" rel="stylesheet" type="text/css">
+    <link href="/static/flags.css" rel="stylesheet" type="text/css">
+    <link href="/static/polflags.css" rel="stylesheet" type="text/css">
+    <link href="/static/polflags2.css" rel="stylesheet" type="text/css">
+    <link href="/static/mobile.css" rel="stylesheet" type="text/css">
+    {% if skin != 'default' and skin != 'midnight' %}
+    <link href="/static/{{ skin }}.css" rel="stylesheet" type="text/css">
+    {% endif %}
+    <link rel="search" type="application/opensearchdescription+xml" title="FoolFuuka" href="/_/opensearch/">
+</head>
+<body class="theme_default {{ skin }}">
+<div class="container-fluid">
+    <div class="navbar navbar-fixed-top navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container">
+                <ul class="nav">
+                    <li class="dropdown">
+                        <a href="/" id="brand" class="brand dropdown-toggle"
+                           data-toggle="dropdown">{{ title }} <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/">Index</a></li><li class="divider"></li>
+                            <li class="nav-header">Archives</li>
+                            {% for archive in archives %}
+                            <li><a href="/{{ archive.shortname }}/">/{{ archive.shortname }}/ - {{ archive.name }}</a></li>
+                            {% endfor %}
+                            <li class="divider"></li>
+                            <li class="nav-header">Boards</li>
+                            {% for board in boards %}
+                            <li><a href="/{{ board.shortname }}/">/{{ board.shortname }}/ - {{ board.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="nav">
+                    <li>
+                        <a href="https://boards.4chan.org/{{ board }}/" style="padding-right:4px;">4chan <i class="icon-share icon-white text-small"></i></a>
+                    </li>
+                    <li style="padding-right:0px;">
+                        <a href="/{{ board }}/" style="padding-right:4px;">Index</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-left:2px; padding-right:4px;">
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu" style="margin-left:-9px">
+                            <li>
+                                <a href="#">By Post <i class="icon-ok"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">By Thread </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="/{{ board }}/ghost/">Ghost</a></li>
+                    <li><a href="/{{ board }}/gallery/">Gallery</a></li>
+                    <li><a href="/{{ board }}/statistics/">Stats</a></li>
+                </ul>
+                <ul class="nav pull-right">
+                    <!--<form class="navbar-search" method="GET" action="/{{ board }}/search/">
+                        <li><input name="text" value="" class="search-query" placeholder="Search through all the boards" type="text"></li>
+                    </form>-->
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div role="main" id="main">
+        <!--<div class="search_box">
+            <div class="advanced_search clearfix">
+                <form method="GET" action="/{{ board }}/search/">
+                    <div class="comment_wrap">
+                        <input name="text" id="search_form_comment" value="" placeholder="Search through all the boards" type="text">
+                    </div>
+
+                    <div class="buttons clearfix">
+                        <input class="btn btn-inverse" value="Search" name="submit_search" type="submit">
+                        <input class="btn btn-inverse" value="Search on all boards" name="submit_search_global" type="submit">
+
+                        <input class="btn btn-inverse pull-right" value="Clear" name="reset" data-function="clearSearch" type="reset">
+                    </div>
+
+                    <div class="column">
+                        <div class="input-prepend">
+                            <label class="add-on" for="search_form_tnum">Thread No.</label>
+                            <input name="tnum" id="search_form_tnum" value="" placeholder="" type="text">
+                        </div>
+                        <div class="input-prepend">
+                            <label class="add-on" for="search_form_subject">Subject</label>
+                            <input name="subject" id="search_form_subject" value="" placeholder="" type="text">
+                        </div>
+                        <div class="input-prepend">
+                            <label class="add-on" for="search_form_username">Username</label>
+                            <input name="username" id="search_form_username" value="" placeholder="" type="text">
+                        </div>
+                        <div class="input-prepend">
+                            <label class="add-on" for="search_form_tripcode">Tripcode</label>
+                            <input name="tripcode" id="search_form_tripcode" value="" placeholder="" type="text">
+                        </div>
+                        <div class="input-prepend">
+                            <label class="add-on" for="search_form_email">Email</label>
+                            <input name="email" id="search_form_email" value="" placeholder="" type="text">
+                        </div>
+                        <div class="input-prepend">
+                            <label class="add-on" for="search_form_uid">Unique ID</label>
+                            <input name="uid" id="search_form_uid" value="" placeholder="" type="text">
+                        </div>
+                        <div class="input-prepend">
+                            <label class="add-on" for="search_form_filename">Filename</label>
+                            <input name="filename" id="search_form_filename" value="" placeholder="" type="text">
+                        </div>
+                        <div class="input-prepend">
+                            <label class="add-on" for="search_form_image">Image Hash</label>
+                            <input name="image" id="search_form_image" value="" placeholder="Drop your image here" type="text">
+                        </div>
+                        <div class="input-prepend">
+                            <label class="add-on" for="search_form_width">Image Width</label>
+                            <input name="width" id="search_form_width" value="" placeholder="" type="text">
+                        </div>
+                        <div class="input-prepend">
+                            <label class="add-on" for="search_form_height">Image Height</label>
+                            <input name="height" id="search_form_height" value="" placeholder="" type="text">
+                        </div>
+                        <div class="input-prepend">
+                            <label class="add-on" for="search_form_tag">File Tag</label>
+                            <input name="tag" id="search_form_tag" value="" placeholder="" type="text">
+                        </div>
+                        <div class="input-prepend">
+                            <label class="add-on" for="search_form_since4pass">Since4pass</label>
+                            <input name="since4pass" id="search_form_since4pass" value="" placeholder="" type="text">
+                        </div>
+                        <div class="input-prepend">
+                            <label class="add-on" for="search_form_country">Country</label>
+                            <input name="country" id="search_form_country" value="" placeholder="" type="text">
+                        </div>
+                        <div class="input-prepend">
+                        <label class="add-on" for="search_form_troll_country">Troll Country</label>
+                            <input name="troll_country" id="search_form_troll_country" value="" placeholder="" type="text">
+                        </div>
+                        <div class="input-prepend">
+                        <label class="add-on" for="search_form_start">Date Start</label>
+                            <input type="text" name="start" placeholder="YYYY-MM-DD" autocomplete="off" value="">
+                        </div>
+                        <div class="input-prepend">
+                            <label class="add-on" for="search_form_end">Date End</label>
+                            <input type="text" name="end" placeholder="YYYY-MM-DD" autocomplete="off" value="">
+                        </div>
+                        <label>
+                            <input data-function="searchhilight" class="searchhilight" type="checkbox"> Highlight Results</label>
+
+                        <div class="radixes">
+                            <div>
+                                <div><h5>On these archives</h5>
+                                    <button type="button" data-function="checkAll" class="btn btn-mini pull-right check" style="display:none">Check all</button>
+                                    <button type="button" data-function="uncheckAll" class="btn btn-mini pull-right uncheck" style="display:block">Uncheck all</button>
+                                </div>
+                                {% for archive in archives %}
+                                <label><input type="checkbox" name="boards[]" value="{{ archive.shortname }}" checked="checked"> /{{ archive.shortname }}/</label>
+                                {% endfor %}
+                            </div>
+                            <div style="clear:left; padding-top: 10px">
+                                <div>
+                                    <h5>On these boards</h5>
+                                    <button type="button" data-function="checkAll" class="btn btn-mini pull-right check" style="display:none">Check all</button>
+                                    <button type="button" data-function="uncheckAll" class="btn btn-mini pull-right uncheck" style="display:block">Uncheck all</button>
+                                </div>
+                                {% for board in boards %}
+                                <label><input type="checkbox" name="boards[]" value="{{ board.shortname }}" checked="checked"> /{{ board.shortname }}/</label>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="latest_searches">
+                            <div>
+                                <h5>Your latest searches</h5>
+                                <button type="button" data-function="clearLatestSearches" class="btn btn-mini pull-right">Clear</button>
+                            </div>
+                            <ul>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="column checkboxes"><table class="table"><tbody>
+                    <tr><td>Capcode</td><td>
+                        <label><input type="radio" name="capcode" value="" checked="checked">All</label>
+                        <label><input type="radio" name="capcode" value="user">Only User Posts</label>
+                        <label><input type="radio" name="capcode" value="ver">Only Verified Posts</label>
+                        <label><input type="radio" name="capcode" value="mod">Only Moderator Posts</label>
+                        <label><input type="radio" name="capcode" value="manager">Only Manager Posts</label>
+                        <label><input type="radio" name="capcode" value="admin">Only Admin Posts</label>
+                        <label><input type="radio" name="capcode" value="dev">Only Developer Posts</label>
+                        <label><input type="radio" name="capcode" value="founder">Only Founder Posts</label>
+                    </td></tr>
+                    <tr><td>Show Posts</td><td>
+                        <label><input type="radio" name="filter" value="" checked="checked">All</label>
+                        <label><input type="radio" name="filter" value="text">Only With Images</label>
+                        <label><input type="radio" name="filter" value="image">Only Without Images</label>
+                        <label><input type="radio" name="filter" value="spoiler">Only Spoiler Images</label>
+                        <label><input type="radio" name="filter" value="not-spoiler">Only Non-Spoiler Images</label>
+                    </td></tr>
+                    <tr><td>Deleted Posts</td><td>
+                        <label><input type="radio" name="deleted" value="" checked="checked">All</label>
+                        <label><input type="radio" name="deleted" value="deleted">Only Deleted Posts</label>
+                        <label><input type="radio" name="deleted" value="not-deleted">Only Non-Deleted Posts</label>
+                    </td></tr>
+                    <tr><td>Ghost Posts</td><td>
+                        <label><input type="radio" name="ghost" value="" checked="checked">All</label>
+                        <label><input type="radio" name="ghost" value="only">Only Ghost Posts</label>
+                        <label><input type="radio" name="ghost" value="none">Only Non-Ghost Posts</label>
+                    </td></tr>
+                    <tr><td>Post Type</td><td>
+                        <label><input type="radio" name="type" value="" checked="checked">All</label>
+                        <label><input type="radio" name="type" value="sticky">Only Sticky Threads</label>
+                        <label><input type="radio" name="type" value="op">Only Opening Posts</label>
+                        <label><input type="radio" name="type" value="posts">Only Reply Posts</label>
+                    </td></tr>
+                    <tr><td>Results</td><td>
+                        <label><input type="radio" name="results" value="" checked="checked">All</label>
+                        <label><input type="radio" name="results" value="thread">Grouped By Threads</label>
+                    </td></tr>
+                    <tr><td>Order</td><td>
+                        <label><input type="radio" name="order" value="" checked="checked">Latest Posts First</label>
+                        <label><input type="radio" name="order" value="asc">Oldest Posts First</label>
+                    </td></tr></tbody></table></div>
+                </form>
+            </div>
+        </div>-->
+
+        <div class="board">
+            {% for page in pages %}
+            {% for thread in page.threads %}
+            <article class="clearfix thread post_is_op {% if thread.md5 %}has_image{% endif %}" id="{{ thread.no }}" data-board="{{ board }}" data-thread-num="{{ thread.no }}">
+                {% if thread.md5 %}
+            <div class="thread_image_box">
+                <a href="/img/{{ board }}/{{ thread.tim }}{{ thread.ext }}" target="_blank" rel="noreferrer" class="thread_image_link">
+                    <img src="/img/{{ board }}/{{ thread.tim }}s.jpg" width="{{ thread.tn_w }}" height="{{ thread.tn_h }}" class="post_image{% if thread.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ thread.md5 }}" />
+                </a>
+
+                <div class="post_file" style="padding-left: 2px;{% if thread.tn_w > 149 %} max-width: {{ thread.tn_w }}px;{% endif %}">
+                    {{ thread.fsize }}, {{ thread.w }}x{{ thread.h }}, <a class="post_file_filename" href="/img/{{ board }}/{{ thread.tim }}{{ thread.ext }}" target="_blank">{{ thread.filename }}{{ thread.ext }}</a>
+                </div>
+
+                <div class="post_file_controls">
+                    <!--<a href="/{{ board }}/search/image/{{ thread.md5 }}"
+                       class="btnr parent">View Same</a>-->
+                    <a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" target="_blank"
+                        class="btnr parent">Google</a>
+                    <a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" target="_blank"
+                        class="btnr parent">ImgOps</a>
+                    <a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" target="_blank"
+                        class="btnr parent">iqdb</a>
+                    <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" target="_blank"
+                        class="btnr parent">SauceNAO</a>
+                    <a href="/img/{{ board }}/{{ thread.tim }}{{ thread.ext }}" download="{{ thread.filename }}"
+                        class="btnr parent"><i class="icon-download-alt"></i></a>
+                </div>
+            </div>
+            {% endif %}
+            <header>
+                <div class="post_data">
+                    <div class="post_mobile_controls_collapse dropdown">
+                        <button data-toggle="dropdown" class="btnr parent"><i class="icon-th-list"></i></button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li class="nav-header">Thread</li>
+                            <li><a href="./thread/{{ thread.no }}">Reply</a></li>
+                            <li><a href="//boards.4chan.org/{{ board }}/thread/{{ thread.no }}">Original</a></li>
+                            <!--<li><a href="#" data-post-id="{{ thread.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a></li>
+                            <li><a href="#" data-post-id="{{ thread.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a></li>-->
+                            {% if thread.md5 %}
+                            <li class="divider"></li>
+                            <li class="nav-header">Media</li>
+                            <!--<li><a href="/{{ board }}/search/image/{{ thread.md5 }}">View Same</a></li>-->
+                            <li><a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" target="_blank">Google</a></li>
+                            <li><a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" target="_blank">ImgOps</a></li>
+                            <li><a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" target="_blank">iqdb</a></li>
+                            <li><a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" target="_blank">SauceNAO</a></li>
+                            <li><a href="/img/{{ board }}/{{ thread.tim }}{{ thread.ext }}" download="{{ thread.filename }}">
+                                <i class="icon-download-alt"></i> Download</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <!--<span class="post_show_board">/{{ board }}/</span>-->
+
+                    <h2 class="post_title">{{ thread.sub|safe }}</h2>
+                    <span class="post_poster_data">
+                        {% if thread.email and thread.email != 'noko' %}<a href="mailto:{{ thread.email }}">{% endif %}<span class="post_author">{{ thread.name }}</span><span class="post_tripcode">{{ thread.tripcode }}</span>{% if thread.email and thread.email != 'noko' %}</a>{% endif %}
+
+                        {% if thread.id %}<span class="poster_hash">ID:{{ thread.id }}</span>{% endif %}
+                        {% if thread.capcode == 'mod' %}<span class="post_level post_level_moderator">## Mod</span>{% endif %}
+                        {% if thread.capcode == 'admin' %}<span class="post_level post_level_administrator">## Admin</span>{% endif %}
+                        {% if thread.capcode == 'developer' %}<span class="post_level post_level_developer">## Developer</span>{% endif %}
+                        {% if thread.capcode == 'verified' %}<span class="post_level post_level_verified">## Verified</span>{% endif %}
+                        {% if thread.capcode == 'founder' %}<span class="post_level post_level_founder">## Founder</span>{% endif %}
+                        {% if thread.capcode == 'manager' %}<span class="post_level post_level_manager">## Manager</span>{% endif %}
+                        </span>
+                    <span class="time_wrap">
+                        <time datetime="{{ thread.time }}" title="4chan Time: {{ thread.now }}">{{ thread.time }}</time>
+                    </span>
+                    <a href="./thread/{{ thread.no }}" data-post="{{ thread.no }}" data-function="highlight" title="Link to this post">No.</a><a href="./thread/{{ thread.no }}" data-post="{{ thread.no }}" data-function="quote" title="Reply to this post">{{ thread.no }}</a>
+
+                    <span class="post_type">
+                        {% if thread.since4pass %}<i class="icon-tag" title="Pass user since {{ thread.since4pass }}."></i>{% endif %}
+                        {% if thread.country %}<span title="{{ thread.country_name }}" class="flag flag-{{ thread.country|lower }}"></span>{% endif %}
+                        {% if thread.troll_country %}<span title="{{ thread.country_name }}" class="flag-pol2 flag-{{ thread.troll_country|lower }}"></span>{% endif %}
+                        {% if thread.spoiler %}<i class="icon-eye-close" title="The image in this post has been marked spoiler."></i>{% endif %}
+                        {% if thread.deleted and not thread.timestamp_expired %}<i class="icon-trash" title="This post was prematurely deleted."></i>{% endif %}
+                        {% if thread.deleted and thread.timestamp_expired %}<i class="icon-trash" title="This post was deleted on {{ thread.timestamp_expired }}."></i>{% endif %}
+                        {% if thread.sticky %}<i class="icon-pushpin" title="This thread has been stickied."></i>{% endif %}
+                        {% if thread.locked %}<i class="icon-lock" title="This thread has been locked."></i>{% endif %}
+                        </span>
+                    <span class="mobile_view"><a href="./thread/{{ thread.no }}" class="btnr parent">View</a></span>
+                    <span class="mobile_bulk"></span>
+                    <span class="post_controls">
+                        <a href="./thread/{{ thread.no }}" class="btnr parent">View</a>
+                        <a href="./thread/{{ thread.no }}" class="btnr parent">Reply</a>
+                        <a href="//boards.4chan.org/{{ board }}/thread/{{ thread.no }}" class="btnr parent">Original</a>
+                        <!--<a href="#" class="btnr parent" data-post-id="{{ thread.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a>
+                        <a href="#" class="btnr parent" data-post-id="{{ thread.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a>-->
+                    </span>
+                </div>
+            </header>
+            <div class="backlink_list">
+            </div>
+            <div class="text">
+                {{ thread.com|safe }}
+            </div>
+            <div class="thread_tools_bottom">
+            {% if thread.omitted_posts %}
+            <span class="omitted">
+            <a style="display:inline-block" href="./thread/{{ thread.no }}" data-function="expandThread" data-thread-num="{{ thread.no }}">
+                <i class="icon icon-resize-full"></i></a>
+            <span class="omitted_text">
+                <span class="omitted_posts">{{ thread.omitted_posts }}</span> posts omitted
+                {% if thread.omitted_images %}and <span class="omitted_images">{{ thread.omitted_images }}</span> images omitted{% endif %}
+            </span>
+            </span>
+            {% endif %}
+            </div>
+            <aside class="posts">
+            {% for reply in thread.last_replies %}
+            <article class="post {% if reply.md5 %}has_image{% endif %}" id="{{ reply.no }}" data-board="{{ board }}" data-thread-num="{{ reply.resto }}">
+                <div class="post_wrapper">
+                {% if reply.md5 %}
+                    <div class="post_file">
+                    <span class="post_file_controls">
+                        <!--<a href="/{{ board }}/search/image/{{ reply.md5 }}"
+                       class="btnr parent">View Same</a>-->
+                        <a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank"
+                           class="btnr parent">Google</a>
+                        <a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank"
+                           class="btnr parent">ImgOps</a>
+                        <a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank"
+                           class="btnr parent">iqdb</a>
+                        <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank"
+                           class="btnr parent">SauceNAO</a>
+                        <a href="/img/{{ board }}/{{ reply.tim }}{{ reply.ext }}" download="{{ reply.filename }}"
+                           class="btnr parent"><i class="icon-download-alt"></i></a>
+                    </span>
+                        <a href="/img/{{ board }}/{{ reply.tim }}{{ reply.ext }}" target="_blank" class="post_file_filename" rel="noreferrer">{{ reply.filename }}{{ reply.ext }}</a>,
+                        <span class="post_file_metadata">{{ reply.fsize }}, {{ reply.w }}x{{ reply.h }}</span>
+                    </div>
+                <div class="thread_image_box">
+                    <a href="/img/{{ board }}/{{ reply.tim }}{{ reply.ext }}" target="_blank" rel="noreferrer" class="thread_image_link">
+                        <img src="/img/{{ board }}/{{ reply.tim }}s.jpg" width="{{ reply.tn_w }}" height="{{ reply.tn_h }}" class="post_image{% if reply.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ reply.md5 }}" />
+                    </a>
+                </div>
+                {% endif %}
+                <header>
+                    <div class="post_data">
+                        <div class="post_mobile_controls_collapse dropdown">
+                            <button data-toggle="dropdown" class="btnr parent"><i class="icon-th-list"></i></button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li class="nav-header">Post</li>
+                                <!--<li><a href="#" data-post-id="{{ reply.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a></li>
+                                <li><a href="#" data-post-id="{{ reply.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a></li>-->
+                                {% if reply.md5 %}
+                                <li class="divider"></li>
+                                <li class="nav-header">Media</li>
+                                <!--<li><a href="/{{ board }}/search/image/{{ reply.md5 }}">View Same</a></li>-->
+                                <li><a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank">Google</a></li>
+                                <li><a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank">ImgOps</a></li>
+                                <li><a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank">iqdb</a></li>
+                                <li><a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank">SauceNAO</a></li>
+                                <li><a href="/img/{{ board }}/{{ reply.tim }}{{ reply.ext }}" download="{{ reply.filename }}">
+                                    <i class="icon-download-alt"></i> Download</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <!--<span class="post_show_board">/{{ board }}/</span>-->
+
+                        <h2 class="post_title">{{ reply.sub|safe }}</h2>
+                        <span class="post_poster_data">
+                        {% if reply.email and reply.email != 'noko' %}<a href="mailto:{{ reply.email }}">{% endif %}<span class="post_author">{{ reply.name }}</span><span class="post_tripcode">{{ reply.tripcode }}</span>{% if reply.email and reply.email != 'noko' %}</a>{% endif %}
+
+                        {% if reply.id %}<span class="poster_hash">ID:{{ reply.id }}</span>{% endif %}
+                        {% if reply.capcode == 'mod' %}<span class="post_level post_level_moderator">## Mod</span>{% endif %}
+                        {% if reply.capcode == 'admin' %}<span class="post_level post_level_administrator">## Admin</span>{% endif %}
+                        {% if reply.capcode == 'developer' %}<span class="post_level post_level_developer">## Developer</span>{% endif %}
+                        {% if reply.capcode == 'verified' %}<span class="post_level post_level_verified">## Verified</span>{% endif %}
+                        {% if reply.capcode == 'founder' %}<span class="post_level post_level_founder">## Founder</span>{% endif %}
+                        {% if reply.capcode == 'manager' %}<span class="post_level post_level_manager">## Manager</span>{% endif %}
+                        </span>
+                        <span class="time_wrap">
+                            <time datetime="{{ reply.time }}" title="4chan Time: {{ reply.now }}">{{ reply.time }}</time>
+                        </span>
+                        <a href="./thread/{{ reply.resto }}" data-post="{{ reply.no }}" data-function="highlight" title="Link to this post">No.</a><a href="./thread/{{ reply.resto }}" data-post="{{ reply.no }}" data-function="quote" title="Reply to this post">{{ reply.no }}</a>
+
+                        <span class="post_type">
+                        {% if reply.since4pass %}<i class="icon-tag" title="Pass user since {{ reply.since4pass }}."></i>{% endif %}
+                        {% if reply.country %}<span title="{{ reply.country_name }}" class="flag flag-{{ reply.country|lower }}"></span>{% endif %}
+                        {% if reply.troll_country %}<span title="{{ reply.country_name }}" class="flag-pol2 flag-{{ reply.troll_country|lower }}"></span>{% endif %}
+                        {% if reply.spoiler %}<i class="icon-eye-close" title="The image in this post has been marked spoiler."></i>{% endif %}
+                        {% if reply.deleted and not reply.timestamp_expired %}<i class="icon-trash" title="This post was prematurely deleted."></i>{% endif %}
+                        {% if reply.deleted and reply.timestamp_expired %}<i class="icon-trash" title="This post was deleted on {{ reply.timestamp_expired }}."></i>{% endif %}
+                        </span>
+                        <span class="mobile_view"><a href="./thread/{{ reply.resto }}" class="btnr parent">View</a></span>
+                        <span class="mobile_bulk"></span>
+                        <!--<span class="post_controls">
+                            <a href="#" class="btnr parent" data-post-id="{{ reply.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a>
+                            <a href="#" class="btnr parent" data-post-id="{{ reply.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a>
+                        </span>-->
+                    </div>
+                </header>
+                <div class="text">
+                    {{ reply.com|safe }}
+                </div>
+                </div>
+            </article>
+                {% endfor %}
+            </aside>
+            </article>
+            {% endfor %}
+            {% endfor %}
+        </div>
+
+    </div> <!-- end of #main -->
+    <div id="push"></div>
+</div>
+<footer id="footer">
+    <a href="https://github.com/bibanon/ayase" target="_blank">FoolFuuka template for Ayase</a> - <a href="http://github.com/eksopl/asagi" target="_blank">Asagi Fetcher</a>
+    <div class="pull-right">
+        <div class="btn-group dropup pull-right">
+            <a href="#" class="btn btn-inverse btn-mini dropup-toggle" data-toggle="dropdown">
+                Change Theme <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                {% for skin in skins %}
+                <li>
+                    <a href="/_/change_skin/{{ skin.slug }}/">{{ skin.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</footer>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="/static/jquery.js"><\/script>');
+
+    var backend_vars = {"user_name":false,"user_email":false,"user_pass":"","site_url":"\/","default_url":"\/","archive_url":"\/","system_url":"\/","api_url":"\/","cookie_domain":null,"cookie_prefix":"ayase_","selected_theme":"foolz\/foolfuuka-theme-{{ skin }}","csrf_token_key":"csrf_token","images":{"banned_image":"\/static\/images\/banned-image.png","banned_image_width":150,"banned_image_height":150,"missing_image":"\/static\/images\/missing-image.jpg","missing_image_width":150,"missing_image_height":150},"gettext":{"submit_state":"Submitting","thread_is_real_time":"This thread is being displayed in real time.","update_now":"Update now","ghost_mode":"This thread has entered ghost mode. Your reply will be marked as a ghost post and will only affect the ghost index."},"recaptcha2_pubkey":"{{ recaptcha2_pubkey }}"};
+    var assets_directory = '/static';
+
+</script>
+<script src="/static/bootstrap.min.js"></script>
+<script src="/static/board.js"></script>
+<script src="/static/plugins.js"></script>
+
+<!--[if lt IE 7 ]>
+<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+<script>window.attachEvent('onload', function () { CFInstall.check({mode:'overlay'}) })</script>
+<![endif]-->
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+.flag-pol2 {
+  display: inline-block;
+  width: 16px;
+  height: 12px;
+  background: url(images/polflags2.png) no-repeat;
+}
+.flag-pol2.flag-ac {
+  background-position: -16px 0;
+}
+.flag-pol2.flag-an {
+  background-position: -32px 0;
+}
+.flag-pol2.flag-bl {
+  background-position: -48px 0;
+}
+.flag-pol2.flag-cf {
+  background-position: -64px 0;
+}
+.flag-pol2.flag-cm {
+  background-position: -80px 0;
+}
+.flag-pol2.flag-dm {
+  background-position: -96px 0;
+}
+.flag-pol2.flag-eu {
+  background-position: -112px 0;
+}
+.flag-pol2.flag-fc {
+  background-position: -128px 0;
+}
+.flag-pol2.flag-gn {
+  background-position: -144px 0;
+}
+.flag-pol2.flag-gy {
+  background-position: -160px 0;
+}
+.flag-pol2.flag-jh {
+  background-position: -176px 0;
+}
+.flag-pol2.flag-kn {
+  background-position: -192px 0;
+}
+.flag-pol2.flag-mf {
+  background-position: -208px 0;
+}
+.flag-pol2.flag-nb {
+  background-position: -224px 0;
+}
+.flag-pol2.flag-nz {
+  background-position: -240px 0;
+}
+.flag-pol2.flag-pc {
+  background-position: 0 -12px;
+}
+.flag-pol2.flag-pr {
+  background-position: -16px -12px;
+}
+.flag-pol2.flag-re {
+  background-position: -32px -12px;
+}
+.flag-pol2.flag-tm {
+  background-position: -48px -12px;
+}
+.flag-pol2.flag-tr {
+  background-position: -64px -12px;
+}
+.flag-pol2.flag-un {
+  background-position: -80px -12px;
+}
+.flag-pol2.flag-wp {
+  background-position: -96px -12px;
+}
+.flag-pol2.flag-ct {
+  background-position: -112px -12px;
+}

@@ -1,0 +1,49 @@
+
+body.theme_default,
+.theme_default .navbar .navbar-inner,
+.theme_default .letters,
+.theme_default #footer {
+    background: #B3000C;
+}
+.theme_default .letters a,
+.theme_default .letters a:visited {
+    color: #DDDDDD;
+}
+.theme_default .dropdown-menu li > a:hover,
+.theme_default .dropdown-menu .active > a,
+.theme_default .dropdown-menu .active > a:hover,
+.theme_default .btn-inverse:hover {
+    background: #B3000C;
+    color: #DDDDDD;
+}
+.theme_default .btn-inverse {
+    background: #dc1f0b;
+}
+.theme_default .container-fluid {
+    background: #EFEFEF;
+}
+.theme_default .post_wrapper {
+    background: #E6E1E1;
+}
+.theme_default .paginate {
+    background: #BDA9A9;
+}
+.theme_default a,
+.theme_default a:visited {
+    color: #7D0008;
+}
+.theme_default article.thread .post_author {
+    color: #111d77;
+}
+.theme_default article.thread .post_tripcode {
+    color: #111677;
+}
+.theme_default article.thread h2.post_title {
+    color: #cb1468;
+}
+.theme_default .thread_form_wrap {
+    background: #E6E1E1;
+}
+.theme_default article.thread .greentext {
+    color: #587a02;
+}
