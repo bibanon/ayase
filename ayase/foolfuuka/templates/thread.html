@@ -244,9 +244,9 @@
 
         <div class="board">
             {% for post in posts %}
-                    <article class="{% if post.resto == 0 %}clearfix thread post_is_op{% else %}post{% endif %} {% if post.md5 %}has_image{% endif %}" id="{{ post.no }}" data-board="{{ board }}" data-thread-num="{{ post.resto }}">
+                    <article class="{% if post.resto == 0 %}clearfix thread post_is_op{% else %}post{% endif %} {% if post.md5 %}has_image{% endif %}" id="p{{ post.no }}" data-board="{{ board }}" data-thread-num="{{ post.resto }}">
                         {% if post.resto != 0 %}
-                        <div class="post_wrapper">
+                        <div id="{{ post.no }}" class="post_wrapper">
                         {% endif %}
                             {% if post.md5 %}
                             {% if post.resto != 0 %}
@@ -319,7 +319,7 @@
                                     </div>
                                     <!--<span class="post_show_board">/{{ board }}/</span>-->
 
-                                    <h2 class="post_title">{{ post.sub|safe }}</h2>
+                                    <h2 class="post_title">{{ post.sub|safe if post.resto == 0}}</h2>
                                     <span class="post_poster_data">
                         {% if post.email and post.email != 'noko' %}<a href="mailto:{{ post.email }}">{% endif %}<span class="post_author">{{ post.name }}</span><span class="post_tripcode">{{ post.tripcode }}</span>{% if post.email and post.email != 'noko' %}</a>{% endif %}
 

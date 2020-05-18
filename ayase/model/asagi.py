@@ -1,0 +1,104 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+import html
+import time
+import pymysql.cursors
+
+SELECT_THREAD = "SELECT * FROM `{}` WHERE `thread_num`={}"
+SELECT_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{}_threads` WHERE `thread_num`={}"
+
+connection = pymysql.connect(host='192.168.2.52',
+                             user='root',
+                             password='jetfuelcantmeltsteelbeams',
+                             db='4ch',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+
+def get_thread(board:str, thread_num:int):
+    try:
+        with connection.cursor() as cursor:
+            sql = SELECT_THREAD.format(board, thread_num)
+            cursor.execute(sql)
+            return cursor.fetchall()
+    except:
+        print("Failed to get thread!")
+        return ''
+
+def get_thread_details(board:str, thread_num:int):
+    try:
+        with connection.cursor() as cursor:
+            sql = SELECT_THREAD_DETAILS.format(board, thread_num)
+            cursor.execute(sql)
+            return cursor.fetchone()
+    except:
+        print("Failed to get thread details!")
+        return ''
+# Re-convert asagi stripped comment into clean html
+def restore_comment(com:str):
+    split_by_line = html.escape(com).split("\n")
+    #greentext definition: a line that begins with a single ">" and ends with a '\n'
+    #redirect definition: a line that begins with a single ">>", has a thread number afterward that exists in the current thread or another thread (may be inline)
+    # >> (show OP)
+    # >>>/g/ (board redirect)
+    # >>>/g/ptg (general)
+    for i in range(len(split_by_line)):
+        if "&gt;" == split_by_line[i][:4] and "&gt;" != split_by_line[i][4:8]:
+            split_by_line[i] = """<span class="greentext">%s</span>"""  % split_by_line[i]
+        elif "&gt;&gt;" in split_by_line: #TODO: handle situations where text is in front or after the redirect 
+            subsplit_by_space = split_by_line[i].split(" ")
+            for j in range(len(subsplit_by_space)):
+                if(subsplit_by_space[j][:8] == "&gt;&gt;" and subsplit_by_space[j][8:].isdigit()):
+                    subsplit_by_space[j] = """<a class="quotelink" href="#p%s">%s</a>""" % subsplit_by_space[j][8:], subsplit_by_space[j]
+            split_by_line[i] = ' '.join(subsplit_by_space)
+            
+    return "</br>".join(
+        split_by_line
+    )
+
+# Convert to 4chan api
+def convert(board_name:str, thread_id:int):
+    thread = get_thread(board_name, thread_id)
+    result = {}
+    posts = []
+    
+    details = get_thread_details(board_name, thread_id)
+    
+    for i in range(len(thread)):
+        posts.append({})
+        posts[i]['no'] = thread[i]['num']
+        posts[i]['sticky'] = thread[i]['sticky']
+        posts[i]['closed'] = 1
+        #TODO: asagi records time using an incorrect timezone configuration which will need to be corrected 
+        posts[i]['now'] = time.strftime('%m/%d/%y(%a)%H:%M:%S', time.localtime(thread[i]['timestamp'])) #convert timestamp to properly formatted time
+        posts[i]['name'] = thread[i]['name']
+        posts[i]['sub'] = thread[i]['title']  
+        posts[i]['com'] = restore_comment(thread[i]['comment'])
+        if(thread[i]['media_filename'] is not None and thread[i]['media_filename'] is not False):
+            posts[i]['filename'] = thread[i]['media_filename'][:-4]
+            posts[i]['ext'] = thread[i]['media_filename'][-4:] #grab the last four characters from the media filename
+        posts[i]['w'] = thread[i]['media_w']
+        posts[i]['h'] = thread[i]['media_h']
+        posts[i]['tn_w'] = thread[i]['preview_w']
+        posts[i]['tn_h'] = thread[i]['preview_h']
+        posts[i]['tim'] = thread[i]['timestamp'] * 1000 #temporarily add 3 digits to fit microtime
+        posts[i]['time'] = thread[i]['timestamp']
+        posts[i]['md5'] = thread[i]['media_hash']
+        posts[i]['fsize'] = thread[i]['media_size']
+        posts[i]['op'] = thread[i]['op'] # adds op even though not specified in 4chan api
+        if(thread[i]['op'] == 1):
+            posts[i]['resto'] = 0
+        else:
+            posts[i]['resto'] = thread[i]['thread_num']
+        
+        if(thread[i]['capcode'] == "N"):
+            posts[i]['capcode'] = None
+        else:
+            posts[i]['capcode'] = thread[i]['capcode']
+        # leaving semantic_url empty for now
+        posts[i]['replies'] = details['nreplies']
+        posts[i]['images'] = details['nimages']
+    
+    connection.close()
+    result['posts'] = posts
+    return result
