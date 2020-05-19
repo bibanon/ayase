@@ -650,7 +650,8 @@
 .theme_default .post.highlight .post_wrapper {
   background: #eedbea;
 }
-.theme_default .backlink {
+.theme_default .quotelink {
+  text-decoration: underline;
   display: inline-block;
 }
 .theme_default #backlink {

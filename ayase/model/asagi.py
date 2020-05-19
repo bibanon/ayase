@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import sys
 import html
 import time
 import pymysql.cursors
@@ -36,7 +37,12 @@ def get_thread_details(board:str, thread_num:int):
         return ''
 # Re-convert asagi stripped comment into clean html
 def restore_comment(com:str):
-    split_by_line = html.escape(com).split("\n")
+    try:
+        split_by_line = html.escape(com).split("\n")
+    except AttributeError:
+        if com != None:
+            raise()
+        return ''
     #greentext definition: a line that begins with a single ">" and ends with a '\n'
     #redirect definition: a line that begins with a single ">>", has a thread number afterward that exists in the current thread or another thread (may be inline)
     # >> (show OP)
@@ -45,11 +51,16 @@ def restore_comment(com:str):
     for i in range(len(split_by_line)):
         if "&gt;" == split_by_line[i][:4] and "&gt;" != split_by_line[i][4:8]:
             split_by_line[i] = """<span class="greentext">%s</span>"""  % split_by_line[i]
-        elif "&gt;&gt;" in split_by_line: #TODO: handle situations where text is in front or after the redirect 
+        elif "&gt;&gt;" in split_by_line[i]: #TODO: handle situations where text is in front or after the redirect 
             subsplit_by_space = split_by_line[i].split(" ")
             for j in range(len(subsplit_by_space)):
+                # handle >>(post-num)
                 if(subsplit_by_space[j][:8] == "&gt;&gt;" and subsplit_by_space[j][8:].isdigit()):
-                    subsplit_by_space[j] = """<a class="quotelink" href="#p%s">%s</a>""" % subsplit_by_space[j][8:], subsplit_by_space[j]
+                    subsplit_by_space[j] = """<a class="quotelink" href="#p%s">%s</a>""" % (subsplit_by_space[j][8:], subsplit_by_space[j])
+                # handle >>>/<board-name>/
+                elif(subsplit_by_space[j][:12] == "&gt;&gt;&gt;" and '/' in subsplit_by_space[j][14:]):
+                    #TODO: build functionality
+                    print("board redirect not yet implemented!: " + subsplit_by_space[j], file=sys.stderr)
             split_by_line[i] = ' '.join(subsplit_by_space)
             
     return "</br>".join(
@@ -72,16 +83,20 @@ def convert(board_name:str, thread_id:int):
         #TODO: asagi records time using an incorrect timezone configuration which will need to be corrected 
         posts[i]['now'] = time.strftime('%m/%d/%y(%a)%H:%M:%S', time.localtime(thread[i]['timestamp'])) #convert timestamp to properly formatted time
         posts[i]['name'] = thread[i]['name']
-        posts[i]['sub'] = thread[i]['title']  
+        posts[i]['sub'] = thread[i]['title'] if thread[i]['title'] != None else ''
         posts[i]['com'] = restore_comment(thread[i]['comment'])
+        posts[i]['asagi_filename'] = thread[i]['media_orig']
         if(thread[i]['media_filename'] is not None and thread[i]['media_filename'] is not False):
-            posts[i]['filename'] = thread[i]['media_filename'][:-4]
-            posts[i]['ext'] = thread[i]['media_filename'][-4:] #grab the last four characters from the media filename
+            posts[i]['filename'] = thread[i]['media_filename'].split('.')[0]
+            posts[i]['ext'] = "." + thread[i]['media_filename'].split('.')[1]
         posts[i]['w'] = thread[i]['media_w']
         posts[i]['h'] = thread[i]['media_h']
         posts[i]['tn_w'] = thread[i]['preview_w']
         posts[i]['tn_h'] = thread[i]['preview_h']
-        posts[i]['tim'] = thread[i]['timestamp'] * 1000 #temporarily add 3 digits to fit microtime
+        try:
+            posts[i]['tim'] = thread[i]['timestamp'] * 1000 if thread[i]['media_orig'] is None else int(thread[i]['media_orig'].split('.')[0]) #temporarily add 3 digits to fit microtime
+        except ValueError:
+            print(thread[i]['media_orig'])
         posts[i]['time'] = thread[i]['timestamp']
         posts[i]['md5'] = thread[i]['media_hash']
         posts[i]['fsize'] = thread[i]['media_size']
@@ -99,6 +114,6 @@ def convert(board_name:str, thread_id:int):
         posts[i]['replies'] = details['nreplies']
         posts[i]['images'] = details['nimages']
     
-    connection.close()
+    
     result['posts'] = posts
     return result

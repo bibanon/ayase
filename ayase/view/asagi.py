@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*- 
 
+import hug
 from model.asagi import convert
 
 from jinja2 import Environment, FileSystemLoader, PackageLoader, select_autoescape
@@ -10,7 +11,13 @@ env = Environment(
     autoescape=select_autoescape(['html', 'xml'])
 )
 
-def thread_html(board_name:str, thread_id:int):
+@hug.get('/{board_name}/thread/{thread_id}.json')
+def thread(board_name:str, thread_id:int):
+    return convert(board_name, thread_id)
+    
+
+@hug.get('/{board_name}/thread/{thread_id}', output=hug.output_format.html)
+def thread_html(board_name:str, thread_id:int, skin="default"):
     template = env.get_template('thread.html')
     
     # use the existing json hug function to grab the data
@@ -21,11 +28,18 @@ def thread_html(board_name:str, thread_id:int):
         title = thread_dict['posts'][0]['sub']
     except KeyError:
         title = thread_dict['posts'][0]['no']
+        
+    except IndexError:
+        # no thread was returned
+        title = "Not found"
+        template = env.get_template('404.html')
     
     return template.render(
+        asagi=True,
         posts=thread_dict['posts'],
         board=board_name,
-        title=title
+        title=title,
+        skin=skin
     )
 
 #def thread_html(board_name:str, thread_num:int):

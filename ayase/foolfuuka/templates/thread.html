@@ -270,6 +270,33 @@
                             </div>
                             {% endif %}
                             <div class="thread_image_box">
+                            {% if asagi %}
+                            <a href="/img/{{ board }}/{{ post.asagi_filename }}" target="_blank" rel="noreferrer" class="thread_image_link">
+                                    <img src="/img/{{ board }}/{{ post.filename.split(".")[0] }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
+                                </a>
+                                {% if post.resto == 0 %}
+                                <div class="post_file" style="padding-left: 2px;{% if post.tn_w > 149 %} max-width: {{ post.tn_w }}px;{% endif %}">
+                                    {{ post.fsize }}, {{ post.w }}x{{ post.h }}, <a class="post_file_filename" href="/img/{{ board }}/{{ post.asagi_filename }}" target="_blank">{{ post.filename }}{{ post.ext }}</a>
+                                </div>
+
+                                <div class="post_file_controls">
+                                    <!--<a href="/{{ board }}/search/image/{{ post.md5 }}"
+                                       class="btnr parent">View Same</a>-->
+                                    <a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.filename.split(".")[0] }}s.jpg" target="_blank"
+                                       class="btnr parent">Google</a>
+                                    <a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.filename.split(".")[0] }}s.jpg" target="_blank"
+                                       class="btnr parent">ImgOps</a>
+                                    <a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.filename.split(".")[0] }}s.jpg" target="_blank"
+                                       class="btnr parent">iqdb</a>
+                                    <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.filename.split(".")[0] }}s.jpg" target="_blank"
+                                       class="btnr parent">SauceNAO</a>
+                                    <a href="/img/{{ board }}/{{ post.asagi_filename }}" download="{{ post.filename }}"
+                                       class="btnr parent"><i class="icon-download-alt"></i></a>
+                                </div>
+                                {% endif %}
+														</div>
+                            
+                            {% else %}
                                 <a href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" target="_blank" rel="noreferrer" class="thread_image_link">
                                     <img src="/img/{{ board }}/{{ post.tim }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
                                 </a>
@@ -294,6 +321,7 @@
                                 </div>
                                 {% endif %}
                             </div>
+                            {% endif %}
 
                             {% endif %}
                             <header>
@@ -332,9 +360,9 @@
                         {% if post.capcode == 'manager' %}<span class="post_level post_level_manager">## Manager</span>{% endif %}
                         </span>
                                     <span class="time_wrap">
-                            <time datetime="{{ post.time }}" title="4chan Time: {{ post.now }}">{{ post.time }}</time>
+                            <time datetime="{{ post.time }}" title="4chan Time: {{ post.now }}">{{ post.now }}</time>
                         </span>
-                                    <a href="./thread/{{ post.no }}" data-post="{{ post.no }}" data-function="highlight" title="Link to this post">No.</a><a href="./thread/{{ post.no }}" data-post="{{ post.no }}" data-function="quote" title="Reply to this post">{{ post.no }}</a>
+                                    <a href="./{{ post.no }}" data-post="{{ post.no }}" data-function="highlight" title="Link to this post">No.</a><a href="./{{ post.no }}" data-post="{{ post.no }}" data-function="quote" title="Reply to this post">{{ post.no }}</a>
 
                                     <span class="post_type">
                         {% if post.since4pass %}<i class="icon-tag" title="Pass user since {{ post.since4pass }}."></i>{% endif %}
@@ -344,7 +372,7 @@
                         {% if post.deleted and not post.timestamp_expired %}<i class="icon-trash" title="This post was prematurely deleted."></i>{% endif %}
                         {% if post.deleted and post.timestamp_expired %}<i class="icon-trash" title="This post was deleted on {{ post.timestamp_expired }}."></i>{% endif %}
                         </span>
-                                    <span class="mobile_view"><a href="./thread/{{ post.no }}" class="btnr parent">View</a></span>
+                                    <span class="mobile_view"><a href="./{{ post.no }}" class="btnr parent">View</a></span>
                                     <span class="mobile_bulk"></span>
                                     <!--<span class="post_controls">
                                         <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a>
