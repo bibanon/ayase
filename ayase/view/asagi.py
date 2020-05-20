@@ -11,6 +11,21 @@ env = Environment(
     autoescape=select_autoescape(['html', 'xml'])
 )
 
+#
+# Used for development, should be served with nginx
+#
+TEMPLATE_STATIC_CONTENT = 'foolfuuka/static/'
+@hug.get('/static/{filename}.css', output=hug.output_format.html)
+def get_static(filename:str):
+    with open(TEMPLATE_STATIC_CONTENT + filename, 'r') as f:
+        return f.read()
+
+@hug.get('/static/fontawesome/css/{filename}', output=hug.output_format.html)
+def get_fontawesome_static(filename:str):
+    with open(TEMPLATE_STATIC_CONTENT + filename, 'r') as f:
+        return f.read()
+
+
 @hug.get('/{board_name}/thread/{thread_id}.json')
 def thread(board_name:str, thread_id:int):
     return convert(board_name, thread_id)
@@ -21,7 +36,7 @@ def thread_html(board_name:str, thread_id:int, skin="default"):
     template = env.get_template('thread.html')
     
     # use the existing json hug function to grab the data
-    thread_dict = convert(board_name, thread_id)
+    thread_dict, quotelinks = convert(board_name, thread_id)
     
     try:
         # title comes from op's subject, use post id instead if not found
@@ -37,6 +52,7 @@ def thread_html(board_name:str, thread_id:int, skin="default"):
     return template.render(
         asagi=True,
         posts=thread_dict['posts'],
+        quotelinks=quotelinks,
         board=board_name,
         title=title,
         skin=skin

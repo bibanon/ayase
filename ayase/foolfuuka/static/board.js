@@ -1,3 +1,13 @@
+var labelOp = function()
+{
+	opPostNum = $('.isOp').text();
+	for(i=0; i<$('.quotelink').length; i++ ) {  
+			if($('.quotelink')[i].getAttribute("href").substring(2) == opPostNum){
+							$('.quotelink')[i].text += " (OP)";
+					}
+	}
+}
+
 var bindFunctions = function()
 {
 	// the following block of code deals with drag and drop of images for MD5 hashing
@@ -1542,3 +1552,5 @@ $.fn.extend({
 		obj.selectionEnd = insPos + text.length;
 	}
 });
+
+labelOp();

@@ -266,7 +266,7 @@
                            class="btnr parent"><i class="icon-download-alt"></i></a>
                     </span>
                                 <a href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" target="_blank" class="post_file_filename" rel="noreferrer">{{ post.filename }}{{ post.ext }}</a>,
-                                <span class="post_file_metadata">{{ post.fsize }}, {{ post.w }}x{{ post.h }}</span>
+                                <span class="post_file_metadata">{{ post.fsize }}, {{ post.w }}x{{ post.h }}, {{ post.tim }}</span>
                             </div>
                             {% endif %}
                             <div class="thread_image_box">
@@ -362,7 +362,7 @@
                                     <span class="time_wrap">
                             <time datetime="{{ post.time }}" title="4chan Time: {{ post.now }}">{{ post.now }}</time>
                         </span>
-                                    <a href="./{{ post.no }}" data-post="{{ post.no }}" data-function="highlight" title="Link to this post">No.</a><a href="./{{ post.no }}" data-post="{{ post.no }}" data-function="quote" title="Reply to this post">{{ post.no }}</a>
+                                    <a href="./{{ post.no }}" data-post="{{ post.no }}" data-function="highlight" title="Link to this post">No.</a><a href="./{{ post.no }}" data-post="{{ post.no }}" data-function="quote" title="Reply to this post" {% if post.resto == 0 %} class="isOp" {% endif %}>{{ post.no }}</a>
 
                                     <span class="post_type">
                         {% if post.since4pass %}<i class="icon-tag" title="Pass user since {{ post.since4pass }}."></i>{% endif %}
@@ -380,6 +380,16 @@
                                     </span>-->
                                 </div>
                             </header>
+                            {% if post.no|string in quotelinks %}
+                            <div class="backlink_list" style="display: block;">
+																Quoted By:
+																{% for quotelink in quotelinks[post.no|string] %}
+																<span class="post_backlink" data-post="{{ quotelink }}">
+																		<a href="#p{{ quotelink }}" class="quotelink" data-function="highlight" data-backlink="true" data-board="a" data-post="{{ quotelink }}">&gt;&gt;{{ quotelink }}</a>
+																</span>
+																{% endfor %}
+														</div>
+														{% endif %}
                             <div class="text">
                                 {{ post.com|safe }}
                             </div>

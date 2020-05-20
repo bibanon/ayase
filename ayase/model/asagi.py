@@ -35,19 +35,24 @@ def get_thread_details(board:str, thread_num:int):
     except:
         print("Failed to get thread details!")
         return ''
+#
 # Re-convert asagi stripped comment into clean html
-def restore_comment(com:str):
+# Also create a dictionary with keys containing the post.no, which maps to a tuple containing the posts it links to. 
+# Returns a String (the processed comment) and a list (list of quotelinks in the post).
+#
+def restore_comment(com:str, post_no:int):
     try:
         split_by_line = html.escape(com).split("\n")
     except AttributeError:
         if com != None:
             raise()
-        return ''
+        return '', []
+    quotelink_list = []
     #greentext definition: a line that begins with a single ">" and ends with a '\n'
     #redirect definition: a line that begins with a single ">>", has a thread number afterward that exists in the current thread or another thread (may be inline)
     # >> (show OP)
     # >>>/g/ (board redirect)
-    # >>>/g/ptg (general)
+    # >>>/g/<post_num> (board post redirect)
     for i in range(len(split_by_line)):
         if "&gt;" == split_by_line[i][:4] and "&gt;" != split_by_line[i][4:8]:
             split_by_line[i] = """<span class="greentext">%s</span>"""  % split_by_line[i]
@@ -56,21 +61,26 @@ def restore_comment(com:str):
             for j in range(len(subsplit_by_space)):
                 # handle >>(post-num)
                 if(subsplit_by_space[j][:8] == "&gt;&gt;" and subsplit_by_space[j][8:].isdigit()):
+                    quotelink_list.append(subsplit_by_space[j][8:])
                     subsplit_by_space[j] = """<a class="quotelink" href="#p%s">%s</a>""" % (subsplit_by_space[j][8:], subsplit_by_space[j])
                 # handle >>>/<board-name>/
                 elif(subsplit_by_space[j][:12] == "&gt;&gt;&gt;" and '/' in subsplit_by_space[j][14:]):
                     #TODO: build functionality
                     print("board redirect not yet implemented!: " + subsplit_by_space[j], file=sys.stderr)
             split_by_line[i] = ' '.join(subsplit_by_space)
-            
-    return "</br>".join(
-        split_by_line
-    )
+        elif "[spoiler]" in split_by_line[i]:
+            split_by_line[i] = """<span class="spoiler">""".join(split_by_line[i].split("[spoiler]"))
+            split_by_line[i] = "</span>".join(split_by_line[i].split("[/spoiler]"))
+        elif "[/spoiler]" in split_by_line[i]:
+            split_by_line[i] = "</span>".join(split_by_line[i].split("[/spoiler]"))
+    return quotelink_list, "</br>".join(split_by_line)
+
 
 # Convert to 4chan api
 def convert(board_name:str, thread_id:int):
     thread = get_thread(board_name, thread_id)
     result = {}
+    quotelink_map = {}
     posts = []
     
     details = get_thread_details(board_name, thread_id)
@@ -84,7 +94,14 @@ def convert(board_name:str, thread_id:int):
         posts[i]['now'] = time.strftime('%m/%d/%y(%a)%H:%M:%S', time.localtime(thread[i]['timestamp'])) #convert timestamp to properly formatted time
         posts[i]['name'] = thread[i]['name']
         posts[i]['sub'] = thread[i]['title'] if thread[i]['title'] != None else ''
-        posts[i]['com'] = restore_comment(thread[i]['comment'])
+
+        # generate comment content
+        post_quotelinks, posts[i]['com'] = restore_comment(thread[i]['comment'], thread[i]['num'])
+        for quotelink in post_quotelinks: # for each quotelink in the post, 
+            if(quotelink not in quotelink_map):
+                quotelink_map[quotelink] = []
+            quotelink_map[quotelink].append(posts[i]['no']) # add the current post.no to the quotelink's post.no key
+        
         posts[i]['asagi_filename'] = thread[i]['media_orig']
         if(thread[i]['media_filename'] is not None and thread[i]['media_filename'] is not False):
             posts[i]['filename'] = thread[i]['media_filename'].split('.')[0]
@@ -114,6 +131,6 @@ def convert(board_name:str, thread_id:int):
         posts[i]['replies'] = details['nreplies']
         posts[i]['images'] = details['nimages']
     
-    
+    #print(quotelink_map, file=sys.stderr)
     result['posts'] = posts
-    return result
+    return result, quotelink_map
