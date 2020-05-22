@@ -6,8 +6,10 @@ import html
 import time
 import pymysql.cursors
 
-SELECT_THREAD = "SELECT * FROM `{}` WHERE `thread_num`={}"
+SELECT_THREAD = "SELECT * FROM `{}` WHERE `thread_num`={} ORDER BY `num`"
 SELECT_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{}_threads` WHERE `thread_num`={}"
+SELECT_THREAD_PREVIEW = "SELECT * FROM `{}` WHERE `thread_num`={} ORDER BY `num` DESC LIMIT 5"
+SELECT_THREAD_LIST_BY_OFFSET = "SELECT `thread_num` FROM `{}_threads` ORDER BY `thread_num` DESC LIMIT 10 OFFSET {}"
 
 connection = pymysql.connect(host='192.168.2.52',
                              user='root',
@@ -35,6 +37,27 @@ def get_thread_details(board:str, thread_num:int):
     except:
         print("Failed to get thread details!")
         return ''
+    
+def get_thread_list(board:str, page_num:int):
+    try:
+        with connection.cursor() as cursor:
+            sql = SELECT_THREAD_LIST_BY_OFFSET.format(board, page_num * 10)
+            cursor.execute(sql)
+            return cursor.fetchall()
+    except:
+        print("Failed to get thread list!")
+        return ''
+    
+def get_thread_preview(board:str, thread_num:int):
+    try:
+        with connection.cursor() as cursor:
+            sql = SELECT_THREAD_PREVIEW.format(board, thread_num)
+            cursor.execute(sql)
+            return cursor.fetchall()
+    except:
+        print("Failed to get thread!")
+        return ''
+    
 #
 # Re-convert asagi stripped comment into clean html
 # Also create a dictionary with keys containing the post.no, which maps to a tuple containing the posts it links to. 
@@ -75,16 +98,38 @@ def restore_comment(com:str, post_no:int):
             split_by_line[i] = "</span>".join(split_by_line[i].split("[/spoiler]"))
     return quotelink_list, "</br>".join(split_by_line)
 
+def generate_index(board_name:str, page_num:int):
+    thread_list = get_thread_list(board_name, page_num)
+    
+    #for each thread, get the first 5 posts and put them in 'threads'
+    threads = []
+    for i in range(len(thread_list)):
+        asagi_thread, temp = convert_thread_preview(board_name, thread_list[i]['thread_num'])
+        threads.append(asagi_thread)
+    
+    #encapsulate threads around a dict
+    result = {}
+    result['threads'] = threads
+    
+    return result
+    
+
+def convert_thread_preview(board_name:str, thread_id:int):
+    thread = get_thread_preview(board_name, thread_id)
+    thread.reverse()
+    details = get_thread_details(board_name, thread_id)
+    return convert(thread, details)
 
 # Convert to 4chan api
-def convert(board_name:str, thread_id:int):
+def convert_thread(board_name:str, thread_id:int):
     thread = get_thread(board_name, thread_id)
+    details = get_thread_details(board_name, thread_id)
+    return convert(thread, details)
+    
+def convert(thread, details):
     result = {}
     quotelink_map = {}
     posts = []
-    
-    details = get_thread_details(board_name, thread_id)
-    
     for i in range(len(thread)):
         posts.append({})
         posts[i]['no'] = thread[i]['num']

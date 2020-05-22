@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*- 
 
 import hug
-from model.asagi import convert
+import sys
+from model.asagi import convert_thread, generate_index
 
 from jinja2 import Environment, FileSystemLoader, PackageLoader, select_autoescape
 env = Environment(
@@ -25,10 +26,48 @@ def get_fontawesome_static(filename:str):
     with open(TEMPLATE_STATIC_CONTENT + filename, 'r') as f:
         return f.read()
 
+@hug.get('/{board_name}.json')
+def index(board_name:str):
+    return
+
+@hug.get('/{board_name}', output=hug.output_format.html)
+def index_html(board_name:str):
+    template = env.get_template('index.html')
+    
+    index = generate_index(board_name, 0)
+    
+    title = board_name
+    return template.render(
+        asagi=True,
+        posts=thread_dict['posts'],
+        quotelinks=quotelinks,
+        board=board_name,
+        title=title,
+        skin=skin
+    )
+
+@hug.get('/{board_name}/page/{page_num}', output=hug.output_format.html)
+def index_html(board_name:str, page_num:int):
+    template = env.get_template('index.html')
+    
+    index = generate_index(board_name, page_num)
+    
+    for thread in index['threads']:
+        print(str(thread['posts'][0]) + "\n", file=sys.stderr)
+        
+    title = board_name
+    return template.render(
+        asagi=True,
+        threads=index['threads'],
+        #quotelinks=quotelinks,
+        board=board_name,
+        title=title,
+        skin='default'
+    )
 
 @hug.get('/{board_name}/thread/{thread_id}.json')
 def thread(board_name:str, thread_id:int):
-    return convert(board_name, thread_id)
+    return convert_thread(board_name, thread_id)
     
 
 @hug.get('/{board_name}/thread/{thread_id}', output=hug.output_format.html)
@@ -36,7 +75,7 @@ def thread_html(board_name:str, thread_id:int, skin="default"):
     template = env.get_template('thread.html')
     
     # use the existing json hug function to grab the data
-    thread_dict, quotelinks = convert(board_name, thread_id)
+    thread_dict, quotelinks = convert_thread(board_name, thread_id)
     
     try:
         # title comes from op's subject, use post id instead if not found

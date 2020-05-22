@@ -243,8 +243,8 @@
         </div>-->
 
         <div class="board">
-            {% for page in pages %}
-            {% for thread in page.threads %}
+            {% for i in threads %}
+            {% set thread = i['posts'][0] %}
             <article class="clearfix thread post_is_op {% if thread.md5 %}has_image{% endif %}" id="{{ thread.no }}" data-board="{{ board }}" data-thread-num="{{ thread.no }}">
                 {% if thread.md5 %}
             <div class="thread_image_box">
@@ -445,7 +445,6 @@
                 {% endfor %}
             </aside>
             </article>
-            {% endfor %}
             {% endfor %}
         </div>
 
