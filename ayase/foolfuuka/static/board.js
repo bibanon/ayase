@@ -1022,7 +1022,7 @@ var bindFunctions = function()
 		if (event.type == "mouseover")
 		{
 
-			var backlink = jQuery("#backlink");
+			var backlink = jQuery("#quotelink");
 			var el = jQuery(this);
 
 			var pos = el.offset();
@@ -1037,10 +1037,10 @@ var bindFunctions = function()
 				backlink.css('display', 'block');
 				backlink.html(quote.formatted);
 			}
-			else if (jQuery('#' + el.data('post')).hasClass('post'))
+			else if (jQuery('#p' + el.data('post')).hasClass('post'))
 			{
 				// normal posts
-				var toClone = jQuery('#' + el.data('post'));
+				var toClone = jQuery('#p' + el.data('post'));
 				if (toClone.length == 0)
 					return false;
 				backlink.css('display', 'block');
@@ -1111,7 +1111,7 @@ var bindFunctions = function()
 				}, 50);
 			}
 
-			backlink.find("time").localize('ddd dd mmm yyyy HH:MM:ss');
+			//backlink.find("time").localize('ddd dd mmm yyyy HH:MM:ss');
 			showBacklink(backlink, pos, height, width);
 		}
 		else
@@ -1119,7 +1119,7 @@ var bindFunctions = function()
 			show_post_board = false;
 			show_post_num = false;
 			clearTimeout(timeout);
-			jQuery("#backlink").css('display', 'none').html('');
+			jQuery("#quotelink").css('display', 'none').html('');
 		}
 	});
 };

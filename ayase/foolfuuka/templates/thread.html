@@ -349,7 +349,7 @@
 
                                     <h2 class="post_title">{{ post.sub|safe if post.resto == 0}}</h2>
                                     <span class="post_poster_data">
-                        {% if post.email and post.email != 'noko' %}<a href="mailto:{{ post.email }}">{% endif %}<span class="post_author">{{ post.name }}</span><span class="post_tripcode">{{ post.tripcode }}</span>{% if post.email and post.email != 'noko' %}</a>{% endif %}
+                        {% if post.email and post.email != 'noko' %}<a href="mailto:{{ post.email }}">{% endif %}<span class="post_author">{{ post.name }}</span><span class="post_tripcode">{% if post.trip %}{{ post.trip }}{% endif %}</span>{% if post.email and post.email != 'noko' %}</a>{% endif %}
 
                         {% if post.id %}<span class="poster_hash">ID:{{ post.id }}</span>{% endif %}
                         {% if post.capcode == 'mod' %}<span class="post_level post_level_moderator">## Mod</span>{% endif %}
@@ -404,6 +404,9 @@
             {% endfor %}
             </aside>
             </article>
+            <article class="clearfix thread backlink_container">
+							<div id="quotelink" style="position: absolute; top: 0; left: 0; z-index: 5;"></div>
+						</article>
         </div>
 
     </div> <!-- end of #main -->

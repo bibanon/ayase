@@ -130,6 +130,11 @@ def convert(board_name:str, thread_id:int):
         # leaving semantic_url empty for now
         posts[i]['replies'] = details['nreplies']
         posts[i]['images'] = details['nimages']
+        posts[i]['trip'] = thread[i]['trip']
+        posts[i]['spoiler'] = thread[i]['spoiler']
+        posts[i]['country_name'] = thread[i]['poster_country']
+        posts[i]['closed'] = thread[i]['locked']
+        posts[i]['filedeleted'] = thread[i]['deleted']
     
     #print(quotelink_map, file=sys.stderr)
     result['posts'] = posts
