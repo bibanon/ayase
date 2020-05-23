@@ -1,8 +1,10 @@
 var labelOp = function()
 {
-	opPostNum = $('.isOp').text();
+	opPostNum = $('.isOp').map(function(){
+										return $.trim($(this).text());
+							}).get();
 	for(i=0; i<$('.quotelink').length; i++ ) {  
-			if($('.quotelink')[i].getAttribute("href").substring(2) == opPostNum){
+			if(opPostNum.includes($('.quotelink')[i].getAttribute("href").substring(2))){
 							$('.quotelink')[i].text += " (OP)";
 					}
 	}

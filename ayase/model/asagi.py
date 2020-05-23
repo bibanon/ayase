@@ -8,7 +8,8 @@ import pymysql.cursors
 
 SELECT_THREAD = "SELECT * FROM `{}` WHERE `thread_num`={} ORDER BY `num`"
 SELECT_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{}_threads` WHERE `thread_num`={}"
-SELECT_THREAD_PREVIEW = "SELECT * FROM `{}` WHERE `thread_num`={} ORDER BY `num` DESC LIMIT 5"
+SELECT_THREAD_OP = "SELECT * FROM `{}` WHERE `thread_num`={} AND op=1"
+SELECT_THREAD_PREVIEW = "SELECT * FROM `{}` WHERE `thread_num`={} ORDER BY `num` DESC LIMIT 4"
 SELECT_THREAD_LIST_BY_OFFSET = "SELECT `thread_num` FROM `{}_threads` ORDER BY `thread_num` DESC LIMIT 10 OFFSET {}"
 
 connection = pymysql.connect(host='192.168.2.52',
@@ -37,17 +38,17 @@ def get_thread_details(board:str, thread_num:int):
     except:
         print("Failed to get thread details!")
         return ''
-    
-def get_thread_list(board:str, page_num:int):
+
+def get_thread_op(board:str, thread_num:int):
     try:
         with connection.cursor() as cursor:
-            sql = SELECT_THREAD_LIST_BY_OFFSET.format(board, page_num * 10)
+            sql = SELECT_THREAD_OP.format(board, thread_num)
             cursor.execute(sql)
-            return cursor.fetchall()
+            return cursor.fetchone()
     except:
-        print("Failed to get thread list!")
+        print("Failed to get OP post!")
         return ''
-    
+
 def get_thread_preview(board:str, thread_num:int):
     try:
         with connection.cursor() as cursor:
@@ -56,6 +57,16 @@ def get_thread_preview(board:str, thread_num:int):
             return cursor.fetchall()
     except:
         print("Failed to get thread!")
+        return ''
+
+def get_thread_list(board:str, page_num:int):
+    try:
+        with connection.cursor() as cursor:
+            sql = SELECT_THREAD_LIST_BY_OFFSET.format(board, page_num * 10)
+            cursor.execute(sql)
+            return cursor.fetchall()
+    except:
+        print("Failed to get thread list!")
         return ''
     
 #
@@ -69,7 +80,7 @@ def restore_comment(com:str, post_no:int):
     except AttributeError:
         if com != None:
             raise()
-        return '', []
+        return '', ''
     quotelink_list = []
     #greentext definition: a line that begins with a single ">" and ends with a '\n'
     #redirect definition: a line that begins with a single ">>", has a thread number afterward that exists in the current thread or another thread (may be inline)
@@ -85,11 +96,11 @@ def restore_comment(com:str, post_no:int):
                 # handle >>(post-num)
                 if(subsplit_by_space[j][:8] == "&gt;&gt;" and subsplit_by_space[j][8:].isdigit()):
                     quotelink_list.append(subsplit_by_space[j][8:])
-                    subsplit_by_space[j] = """<a class="quotelink" href="#p%s">%s</a>""" % (subsplit_by_space[j][8:], subsplit_by_space[j])
+                    subsplit_by_space[j] = """<a class="quotelink" href="#p%s" data-function="highlight" data-backlink="true" data-board="" data-post="%s">%s</a>""" % (subsplit_by_space[j][8:], subsplit_by_space[j][8:], subsplit_by_space[j])
                 # handle >>>/<board-name>/
-                elif(subsplit_by_space[j][:12] == "&gt;&gt;&gt;" and '/' in subsplit_by_space[j][14:]):
-                    #TODO: build functionality
-                    print("board redirect not yet implemented!: " + subsplit_by_space[j], file=sys.stderr)
+                #elif(subsplit_by_space[j][:12] == "&gt;&gt;&gt;" and '/' in subsplit_by_space[j][14:]):
+                    ##TODO: build functionality
+                    #print("board redirect not yet implemented!: " + subsplit_by_space[j], file=sys.stderr)
             split_by_line[i] = ' '.join(subsplit_by_space)
         elif "[spoiler]" in split_by_line[i]:
             split_by_line[i] = """<span class="spoiler">""".join(split_by_line[i].split("[spoiler]"))
@@ -99,13 +110,42 @@ def restore_comment(com:str, post_no:int):
     return quotelink_list, "</br>".join(split_by_line)
 
 def generate_index(board_name:str, page_num:int):
+    page_num -= 1
     thread_list = get_thread_list(board_name, page_num)
     
     #for each thread, get the first 5 posts and put them in 'threads'
     threads = []
     for i in range(len(thread_list)):
-        asagi_thread, temp = convert_thread_preview(board_name, thread_list[i]['thread_num'])
-        threads.append(asagi_thread)
+        thread_id = thread_list[i]['thread_num']
+        thread_op, temp = convert_thread_op(board_name, thread_id)
+
+        asagi_thread, temp = convert_thread_preview(board_name, thread_id)
+        details = get_thread_details(board_name, thread_id)
+        
+        combined = {}
+        
+        #determine number of omitted posts
+        omitted_posts = details['nreplies'] - len(asagi_thread['posts']) - 1 #subtract OP 
+        thread_op['posts'][0]['omitted_posts'] = omitted_posts
+        
+        #determine number of omitted images
+        num_images_shown = 0
+        for post in asagi_thread['posts']:
+            if(post['md5'] and post['resto'] != 0):
+                num_images_shown += 1
+        omitted_images = details['nimages'] - num_images_shown 
+        if thread_op['posts'][0]['md5']:
+            omitted_images -= 1 #subtract OP if OP has image
+        
+        thread_op['posts'][0]['omitted_images'] = omitted_images
+
+        # if the thread has only one post, don't repeat OP post.
+        if(thread_op['posts']==asagi_thread['posts']):
+            combined = thread_op
+        else:
+            combined['posts'] = thread_op['posts'] + asagi_thread['posts']
+
+        threads.append(combined)
     
     #encapsulate threads around a dict
     result = {}
@@ -113,12 +153,19 @@ def generate_index(board_name:str, page_num:int):
     
     return result
     
+def convert_thread_op(board_name:str, thread_id:int):
+    op_post = [get_thread_op(board_name, thread_id)]
+    details = get_thread_details(board_name, thread_id)
+    return convert(op_post, details)
 
 def convert_thread_preview(board_name:str, thread_id:int):
     thread = get_thread_preview(board_name, thread_id)
+    for i in range(len(thread)):
+        if(thread[i]['op'] == 1):
+            del thread[i]
+            
     thread.reverse()
-    details = get_thread_details(board_name, thread_id)
-    return convert(thread, details)
+    return convert(thread)
 
 # Convert to 4chan api
 def convert_thread(board_name:str, thread_id:int):
@@ -126,7 +173,7 @@ def convert_thread(board_name:str, thread_id:int):
     details = get_thread_details(board_name, thread_id)
     return convert(thread, details)
     
-def convert(thread, details):
+def convert(thread, details=None):
     result = {}
     quotelink_map = {}
     posts = []
@@ -138,15 +185,7 @@ def convert(thread, details):
         #TODO: asagi records time using an incorrect timezone configuration which will need to be corrected 
         posts[i]['now'] = time.strftime('%m/%d/%y(%a)%H:%M:%S', time.localtime(thread[i]['timestamp'])) #convert timestamp to properly formatted time
         posts[i]['name'] = thread[i]['name']
-        posts[i]['sub'] = thread[i]['title'] if thread[i]['title'] != None else ''
-
-        # generate comment content
-        post_quotelinks, posts[i]['com'] = restore_comment(thread[i]['comment'], thread[i]['num'])
-        for quotelink in post_quotelinks: # for each quotelink in the post, 
-            if(quotelink not in quotelink_map):
-                quotelink_map[quotelink] = []
-            quotelink_map[quotelink].append(posts[i]['no']) # add the current post.no to the quotelink's post.no key
-        
+        posts[i]['sub'] = thread[i]['title'] if thread[i]['title'] != None else ''        
         posts[i]['asagi_filename'] = thread[i]['media_orig']
         if(thread[i]['media_filename'] is not None and thread[i]['media_filename'] is not False):
             posts[i]['filename'] = thread[i]['media_filename'].split('.')[0]
@@ -173,13 +212,21 @@ def convert(thread, details):
         else:
             posts[i]['capcode'] = thread[i]['capcode']
         # leaving semantic_url empty for now
-        posts[i]['replies'] = details['nreplies']
-        posts[i]['images'] = details['nimages']
+        if(details):
+            posts[i]['replies'] = details['nreplies']
+            posts[i]['images'] = details['nimages']
         posts[i]['trip'] = thread[i]['trip']
         posts[i]['spoiler'] = thread[i]['spoiler']
         posts[i]['country_name'] = thread[i]['poster_country']
         posts[i]['closed'] = thread[i]['locked']
         posts[i]['filedeleted'] = thread[i]['deleted']
+        
+        # generate comment content
+        post_quotelinks, posts[i]['com'] = restore_comment(thread[i]['comment'], thread[i]['num'])
+        for quotelink in post_quotelinks: # for each quotelink in the post, 
+            if(quotelink not in quotelink_map):
+                quotelink_map[quotelink] = []
+            quotelink_map[quotelink].append(posts[i]['no']) # add the current post.no to the quotelink's post.no key
     
     #print(quotelink_map, file=sys.stderr)
     result['posts'] = posts

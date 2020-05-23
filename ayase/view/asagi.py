@@ -34,16 +34,17 @@ def index(board_name:str):
 def index_html(board_name:str):
     template = env.get_template('index.html')
     
-    index = generate_index(board_name, 0)
+    index = generate_index(board_name, 1)
     
     title = board_name
     return template.render(
         asagi=True,
-        posts=thread_dict['posts'],
-        quotelinks=quotelinks,
+        page_num=1,
+        threads=index['threads'],
+        #quotelinks=quotelinks,
         board=board_name,
         title=title,
-        skin=skin
+        skin='default'
     )
 
 @hug.get('/{board_name}/page/{page_num}', output=hug.output_format.html)
@@ -52,12 +53,13 @@ def index_html(board_name:str, page_num:int):
     
     index = generate_index(board_name, page_num)
     
-    for thread in index['threads']:
-        print(str(thread['posts'][0]) + "\n", file=sys.stderr)
+    if(len(index['threads']) == 0):
+        template = env.get_template('404.html')
         
     title = board_name
     return template.render(
         asagi=True,
+        page_num=page_num,
         threads=index['threads'],
         #quotelinks=quotelinks,
         board=board_name,
