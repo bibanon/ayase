@@ -1,0 +1,133 @@
+<article class="{% if post.resto == 0 %}clearfix thread post_is_op{% else %}post{% endif %} {% if post.md5 %}has_image{% endif %}" id="{{ post.no }}" data-board="{{ board }}" data-thread-num="{{ post.resto }}">
+    {% if post.resto != 0 %}
+    <div class="post_wrapper">
+        {% endif %}
+        {% if post.md5 %}
+        {% if post.resto != 0 %}
+        <div class="post_file">
+            <span class="post_file_controls">
+                <!--<a href="/{{ board }}/search/image/{{ post.md5 }}" class="btnr parent">View Same</a>-->
+                <a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+                   class="btnr parent">Google</a>
+                <a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+                   class="btnr parent">ImgOps</a>
+                <a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+                   class="btnr parent">iqdb</a>
+                <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+                   class="btnr parent">SauceNAO</a>
+                <a href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" download="{{ post.filename }}"
+                   class="btnr parent"><i class="icon-download-alt"></i></a>
+            </span>
+            <a href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" target="_blank" class="post_file_filename" rel="noreferrer">{{ post.filename }}{{ post.ext }}</a>,
+            <span class="post_file_metadata">{{ post.fsize }}, {{ post.w }}x{{ post.h }}</span>
+        </div>
+        {% endif %}
+        <div class="thread_image_box">
+            <a href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" target="_blank" rel="noreferrer" class="thread_image_link">
+                <img src="/img/{{ board }}/{{ post.tim }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
+            </a>
+            {% if post.resto == 0 %}
+            <div class="post_file" style="padding-left: 2px;{% if post.tn_w > 149 %} max-width: {{ post.tn_w }}px;{% endif %}">
+                {{ post.fsize }}, {{ post.w }}x{{ post.h }}, <a class="post_file_filename" href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" target="_blank">{{ post.filename }}{{ post.ext }}</a>
+            </div>
+
+            <div class="post_file_controls">
+                <!--<a href="/{{ board }}/search/image/{{ post.md5 }}"
+                   class="btnr parent">View Same</a>-->
+                <a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+                   class="btnr parent">Google</a>
+                <a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+                   class="btnr parent">ImgOps</a>
+                <a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+                   class="btnr parent">iqdb</a>
+                <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+                   class="btnr parent">SauceNAO</a>
+                <a href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" download="{{ post.filename }}"
+                   class="btnr parent"><i class="icon-download-alt"></i></a>
+            </div>
+            {% endif %}
+        </div>
+
+        {% endif %}
+        <header>
+            <div class="post_data">
+                <div class="post_mobile_controls_collapse dropdown">
+                    <button data-toggle="dropdown" class="btnr parent"><i class="icon-th-list"></i></button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li class="nav-header">Post</li>
+                        <!--<li><a href="#" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a></li>
+                        <li><a href="#" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a></li>-->
+                        {% if post.md5 %}
+                        <li class="divider"></li>
+                        <li class="nav-header">Media</li>
+                        <li><a href="/{{ board }}/search/image/{{ post.md5 }}">View Same</a></li>
+                        <li><a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">Google</a></li>
+                        <li><a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">ImgOps</a></li>
+                        <li><a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">iqdb</a></li>
+                        <li><a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">SauceNAO</a></li>
+                        <li><a href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" download="{{ post.filename }}">
+                            <i class="icon-download-alt"></i> Download</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <!--<span class="post_show_board">/{{ board }}/</span>-->
+
+                <h2 class="post_title">{{ post.sub|safe }}</h2>
+                <span class="post_poster_data">
+                    {% if post.email and post.email != 'noko' %}<a href="mailto:{{ post.email }}">{% endif %}<span class="post_author">{{ post.name }}</span><span class="post_tripcode">{{ post.tripcode }}</span>{% if post.email and post.email != 'noko' %}</a>{% endif %}
+                    {% if post.id %}<span class="poster_hash">ID:{{ post.id }}</span>{% endif %}
+                    {% if post.capcode == 'mod' %}<span class="post_level post_level_moderator">## Mod</span>{% endif %}
+                    {% if post.capcode == 'admin' %}<span class="post_level post_level_administrator">## Admin</span>{% endif %}
+                    {% if post.capcode == 'developer' %}<span class="post_level post_level_developer">## Developer</span>{% endif %}
+                    {% if post.capcode == 'verified' %}<span class="post_level post_level_verified">## Verified</span>{% endif %}
+                    {% if post.capcode == 'founder' %}<span class="post_level post_level_founder">## Founder</span>{% endif %}
+                    {% if post.capcode == 'manager' %}<span class="post_level post_level_manager">## Manager</span>{% endif %}
+                </span>
+                <span class="time_wrap">
+                    <time datetime="{{ post.time }}" title="4chan Time: {{ post.now }}">{{ post.time }}</time>
+                </span>
+                <a href="/{{ board }}/thread/{% if post.resto == 0 %}{{ post.no }}#{{ post.no }}{% else %}{{ post.resto }}#{{ post.no }}{% endif %}" data-post="{{ post.no }}" data-function="highlight" title="Link to this post">No.</a><a href="/{{ board }}/thread/{% if post.resto == 0 %}{{ post.no }}#q{{ post.no }}{% else %}{{ post.resto }}#q{{ post.no }}{% endif %}" data-post="{{ post.no }}" data-function="quote" title="Reply to this post">{{ post.no }}</a>
+                <span class="post_type">
+                    {% if post.since4pass %}<i class="icon-tag" title="Pass user since {{ post.since4pass }}."></i>{% endif %}
+                    {% if post.country %}<span title="{{ post.country_name }}" class="flag flag-{{ post.country|lower }}"></span>{% endif %}
+                    {% if post.troll_country %}<span title="{{ post.country_name }}" class="flag-pol2 flag-{{ post.troll_country|lower }}"></span>{% endif %}
+                    {% if post.spoiler %}<i class="icon-eye-close" title="The image in this post has been marked spoiler."></i>{% endif %}
+                    {% if post.deleted and not post.timestamp_expired %}<i class="icon-trash" title="This post was prematurely deleted."></i>{% endif %}
+                    {% if post.deleted and post.timestamp_expired %}<i class="icon-trash" title="This post was deleted on {{ post.timestamp_expired }}."></i>{% endif %}
+                </span>
+                <span class="mobile_view"><a href="/{{ board }}/thread/{{ post.no }}" class="btnr parent">View</a></span>
+                <span class="mobile_bulk"></span>
+                <span class="post_controls">
+                    {% if post.resto == 0 %}
+                    <a href="/{{ board }}/thread/{{ post.no }}" class="btnr parent">View</a>
+                    <a href="/{{ board }}/thread/{{ post.no }}" class="btnr parent">Reply</a>
+                    <a href="//boards.4chan.org/{{ board }}/thread/{{ post.no }}" class="btnr parent">Original</a>
+                    {% endif %}
+                    <!--<a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a>
+                    <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a>-->
+                </span>
+            </div>
+        </header>
+        <div class="text">
+            {{ post.com|safe }}
+        </div>
+        {% if post.omitted_posts %}
+        <div class="thread_tools_bottom">
+            <span class="omitted">
+            <a style="display:inline-block" href="/{{ board }}/thread/{{ thread.no }}" data-function="expandThread" data-thread-num="{{ thread.no }}">
+                <i class="icon icon-resize-full"></i></a>
+            <span class="omitted_text">
+                <span class="omitted_posts">{{ thread.omitted_posts }}</span> posts omitted
+                {% if thread.omitted_images %}and <span class="omitted_images">{{ thread.omitted_images }}</span> images omitted{% endif %}
+            </span>
+            </span>
+        </div>
+        {% endif %}
+    {% if post.resto != 0 %}
+    </div>
+    {% endif %}
+    {% if post.resto == 0 %}
+    <aside class="posts">
+    {% else %}
+</article>
+{% endif %}
