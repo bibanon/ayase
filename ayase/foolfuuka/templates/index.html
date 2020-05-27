@@ -407,7 +407,7 @@
 
                         <h2 class="post_title">{{ reply.sub|safe }}</h2>
                         <span class="post_poster_data">
-                        {% if reply.email and reply.email != 'noko' %}<a href="mailto:{{ reply.email }}">{% endif %}<span class="post_author">{{ reply.name }}</span><span class="post_tripcode">{{ reply.tripcode }}</span>{% if reply.email and reply.email != 'noko' %}</a>{% endif %}
+                        {% if reply.email and reply.email != 'noko' %}<a href="mailto:{{ reply.email }}">{% endif %}<span class="post_author">{{ reply.name }}</span><span class="post_tripcode">{% if reply.trip %}{{ reply.trip }}{% endif %}</span>{% if reply.email and reply.email != 'noko' %}</a>{% endif %}
 
                         {% if reply.id %}<span class="poster_hash">ID:{{ reply.id }}</span>{% endif %}
                         {% if reply.capcode == 'mod' %}<span class="post_level post_level_moderator">## Mod</span>{% endif %}
@@ -472,10 +472,11 @@
 							<li class="disabled"><span>...</span></li>
 							<li class="next"><a href="/{{ board }}/page/{{ page_num + 1 }}/">Next →</a></li>
 					</ul>
-				<article class="clearfix thread backlink_container">
-					<div id="quotelink" style="position: absolute; top: 0; left: 0; z-index: 5;"></div>
-				</article>
+
 			</div>
+			<article class="clearfix thread backlink_container">
+				<div id="quotelink" style="position: absolute; top: 0; left: 0; z-index: 5;"></div>
+			</article>
     </div> <!-- end of #main -->
     <div id="push"></div>
 </div>

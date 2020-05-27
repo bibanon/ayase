@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*- 
 
+import timeit
 import hug
 import sys
 from model.asagi import convert_thread, generate_index
@@ -32,12 +33,17 @@ def index(board_name:str):
 
 @hug.get('/{board_name}', output=hug.output_format.html)
 def index_html(board_name:str):
+    
+    start = timeit.default_timer()
+
     template = env.get_template('index.html')
     
     index = generate_index(board_name, 1)
     
+    if(len(index['threads']) == 0):
+        template = env.get_template('404.html')
     title = board_name
-    return template.render(
+    result =  template.render(
         asagi=True,
         page_num=1,
         threads=index['threads'],
@@ -46,6 +52,10 @@ def index_html(board_name:str):
         title=title,
         skin='default'
     )
+    end = timeit.default_timer()
+    print('Time to generate index: ', end-start, file=sys.stderr)
+
+    return result
 
 @hug.get('/{board_name}/page/{page_num}', output=hug.output_format.html)
 def index_html(board_name:str, page_num:int):
@@ -74,6 +84,8 @@ def thread(board_name:str, thread_id:int):
 
 @hug.get('/{board_name}/thread/{thread_id}', output=hug.output_format.html)
 def thread_html(board_name:str, thread_id:int, skin="default"):
+    start = timeit.default_timer()
+    
     template = env.get_template('thread.html')
     
     # use the existing json hug function to grab the data
@@ -89,8 +101,8 @@ def thread_html(board_name:str, thread_id:int, skin="default"):
         # no thread was returned
         title = "Not found"
         template = env.get_template('404.html')
-    
-    return template.render(
+        
+    result = template.render(
         asagi=True,
         posts=thread_dict['posts'],
         quotelinks=quotelinks,
@@ -98,21 +110,7 @@ def thread_html(board_name:str, thread_id:int, skin="default"):
         title=title,
         skin=skin
     )
-
-#def thread_html(board_name:str, thread_num:int):
-    #template = env.get_template('thread.html')
+    end = timeit.default_timer()
+    print('Time to generate thread: ', end-start, file=sys.stderr)
     
-    #thread = get_thread(board_name, thread_num)
-    
-    #try:
-        ## title comes from op's subject, use post id instead if not found
-        #title = thread[0]['title']
-    #except:
-        #print("Missing title!")
-        #title = ''
-    
-    #return template.render(
-        #posts=thread,
-        #board=board_name,
-        #title=title
-    #)
+    return result

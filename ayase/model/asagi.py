@@ -9,7 +9,7 @@ import pymysql.cursors
 SELECT_THREAD = "SELECT * FROM `{}` WHERE `thread_num`={} ORDER BY `num`"
 SELECT_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{}_threads` WHERE `thread_num`={}"
 SELECT_THREAD_OP = "SELECT * FROM `{}` WHERE `thread_num`={} AND op=1"
-SELECT_THREAD_PREVIEW = "SELECT * FROM `{}` WHERE `thread_num`={} ORDER BY `num` DESC LIMIT 4"
+SELECT_THREAD_PREVIEW = "SELECT * FROM `{}` WHERE `thread_num`={} ORDER BY `num` DESC LIMIT 5"
 SELECT_THREAD_LIST_BY_OFFSET = "SELECT `thread_num` FROM `{}_threads` ORDER BY `thread_num` DESC LIMIT 10 OFFSET {}"
 
 connection = pymysql.connect(host='192.168.2.52',
@@ -88,24 +88,26 @@ def restore_comment(com:str, post_no:int):
     # >>>/g/ (board redirect)
     # >>>/g/<post_num> (board post redirect)
     for i in range(len(split_by_line)):
-        if "&gt;" == split_by_line[i][:4] and "&gt;" != split_by_line[i][4:8]:
-            split_by_line[i] = """<span class="greentext">%s</span>"""  % split_by_line[i]
-        elif "&gt;&gt;" in split_by_line[i]: #TODO: handle situations where text is in front or after the redirect 
-            subsplit_by_space = split_by_line[i].split(" ")
+        curr_line = split_by_line[i]
+        if "&gt;" == curr_line[:4] and "&gt;" != curr_line[4:8]:
+            split_by_line[i] = """<span class="greentext">%s</span>"""  % curr_line
+        elif "&gt;&gt;" in curr_line: #TODO: handle situations where text is in front or after the redirect 
+            subsplit_by_space = curr_line.split(" ")
             for j in range(len(subsplit_by_space)):
+                curr_word = subsplit_by_space[j]
                 # handle >>(post-num)
-                if(subsplit_by_space[j][:8] == "&gt;&gt;" and subsplit_by_space[j][8:].isdigit()):
-                    quotelink_list.append(subsplit_by_space[j][8:])
-                    subsplit_by_space[j] = """<a class="quotelink" href="#p%s" data-function="highlight" data-backlink="true" data-board="" data-post="%s">%s</a>""" % (subsplit_by_space[j][8:], subsplit_by_space[j][8:], subsplit_by_space[j])
+                if(curr_word[:8] == "&gt;&gt;" and curr_word[8:].isdigit()):
+                    quotelink_list.append(curr_word[8:])
+                    subsplit_by_space[j] = """<a class="quotelink" href="#p%s" data-function="highlight" data-backlink="true" data-board="" data-post="%s">%s</a>""" % (curr_word[8:], curr_word[8:], curr_word)
                 # handle >>>/<board-name>/
-                #elif(subsplit_by_space[j][:12] == "&gt;&gt;&gt;" and '/' in subsplit_by_space[j][14:]):
+                #elif(curr_word[:12] == "&gt;&gt;&gt;" and '/' in curr_word[14:]):
                     ##TODO: build functionality
-                    #print("board redirect not yet implemented!: " + subsplit_by_space[j], file=sys.stderr)
+                    #print("board redirect not yet implemented!: " + curr_word, file=sys.stderr)
             split_by_line[i] = ' '.join(subsplit_by_space)
-        elif "[spoiler]" in split_by_line[i]:
+        if "[spoiler]" in curr_line:
             split_by_line[i] = """<span class="spoiler">""".join(split_by_line[i].split("[spoiler]"))
             split_by_line[i] = "</span>".join(split_by_line[i].split("[/spoiler]"))
-        elif "[/spoiler]" in split_by_line[i]:
+        elif "[/spoiler]" in curr_line:
             split_by_line[i] = "</span>".join(split_by_line[i].split("[/spoiler]"))
     return quotelink_list, "</br>".join(split_by_line)
 
