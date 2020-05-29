@@ -6,6 +6,7 @@ import html
 import time
 import pymysql.cursors
 
+SELECT_POST = "SELECT * FROM `{}` WHERE `num`={}"
 SELECT_THREAD = "SELECT * FROM `{}` WHERE `thread_num`={} ORDER BY `num`"
 SELECT_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{}_threads` WHERE `thread_num`={}"
 SELECT_THREAD_OP = "SELECT * FROM `{}` WHERE `thread_num`={} AND op=1"
@@ -18,6 +19,16 @@ connection = pymysql.connect(host='192.168.2.52',
                              db='4ch',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
+
+def get_post(board:str, post_num:int):
+    try:
+        with connection.cursor() as cursor:
+            sql = SELECT_POST.format(board, post_num)
+            cursor.execute(sql)
+            return cursor.fetchone()
+    except:
+        print("Failed to get post!")
+        return ''
 
 def get_thread(board:str, thread_num:int):
     try:
@@ -90,7 +101,7 @@ def restore_comment(com:str, post_no:int):
     for i in range(len(split_by_line)):
         curr_line = split_by_line[i]
         if "&gt;" == curr_line[:4] and "&gt;" != curr_line[4:8]:
-            split_by_line[i] = """<span class="greentext">%s</span>"""  % curr_line
+            split_by_line[i] = """<span class="quote">%s</span>"""  % curr_line
         elif "&gt;&gt;" in curr_line: #TODO: handle situations where text is in front or after the redirect 
             subsplit_by_space = curr_line.split(" ")
             for j in range(len(subsplit_by_space)):
@@ -98,7 +109,7 @@ def restore_comment(com:str, post_no:int):
                 # handle >>(post-num)
                 if(curr_word[:8] == "&gt;&gt;" and curr_word[8:].isdigit()):
                     quotelink_list.append(curr_word[8:])
-                    subsplit_by_space[j] = """<a class="quotelink" href="#p%s" data-function="highlight" data-backlink="true" data-board="" data-post="%s">%s</a>""" % (curr_word[8:], curr_word[8:], curr_word)
+                    subsplit_by_space[j] = """<a href="#p%s" class="quotelink">%s</a>""" % (curr_word[8:], curr_word)
                 # handle >>>/<board-name>/
                 #elif(curr_word[:12] == "&gt;&gt;&gt;" and '/' in curr_word[14:]):
                     ##TODO: build functionality
@@ -154,6 +165,10 @@ def generate_index(board_name:str, page_num:int):
     result['threads'] = threads
     
     return result
+
+def convert_post(board_name:str, post_id:int):
+    post = [get_post(board_name, post_id)]
+    return convert(post, isPost=True)
     
 def convert_thread_op(board_name:str, thread_id:int):
     op_post = [get_thread_op(board_name, thread_id)]
@@ -175,7 +190,7 @@ def convert_thread(board_name:str, thread_id:int):
     details = get_thread_details(board_name, thread_id)
     return convert(thread, details)
     
-def convert(thread, details=None):
+def convert(thread, details=None, isPost=False):
     result = {}
     quotelink_map = {}
     posts = []
@@ -229,6 +244,8 @@ def convert(thread, details=None):
             if(quotelink not in quotelink_map):
                 quotelink_map[quotelink] = []
             quotelink_map[quotelink].append(posts[i]['no']) # add the current post.no to the quotelink's post.no key
+    if(isPost):
+        return posts[0]
     
     #print(quotelink_map, file=sys.stderr)
     result['posts'] = posts

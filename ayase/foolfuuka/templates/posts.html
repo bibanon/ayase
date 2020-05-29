@@ -1,0 +1,91 @@
+
+{% for reply in posts %}
+	<article class="post {% if reply.md5 %}has_image{% endif %}" id="p{{ reply.no }}" data-board="{{ board }}" data-thread-num="{{ reply.resto }}">
+                <div class="post_wrapper">
+                {% if reply.md5 %}
+                    <div class="post_file">
+                    <span class="post_file_controls">
+                        <!--<a href="/{{ board }}/search/image/{{ reply.md5 }}"
+                       class="btnr parent">View Same</a>-->
+                        <a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank"
+                           class="btnr parent">Google</a>
+                        <a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank"
+                           class="btnr parent">ImgOps</a>
+                        <a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank"
+                           class="btnr parent">iqdb</a>
+                        <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank"
+                           class="btnr parent">SauceNAO</a>
+                        <a href="/img/{{ board }}/{{ reply.tim }}{{ reply.ext }}" download="{{ reply.filename }}"
+                           class="btnr parent"><i class="icon-download-alt"></i></a>
+                    </span>
+                        <a href="/img/{{ board }}/{{ reply.tim }}{{ reply.ext }}" target="_blank" class="post_file_filename" rel="noreferrer">{{ reply.filename }}{{ reply.ext }}</a>,
+                        <span class="post_file_metadata">{{ reply.fsize }}, {{ reply.w }}x{{ reply.h }}</span>
+                    </div>
+                <div class="thread_image_box">
+                    <a href="/img/{{ board }}/{{ reply.tim }}{{ reply.ext }}" target="_blank" rel="noreferrer" class="thread_image_link">
+                        <img src="/img/{{ board }}/{{ reply.tim }}s.jpg" width="{{ reply.tn_w }}" height="{{ reply.tn_h }}" class="post_image{% if reply.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ reply.md5 }}" />
+                    </a>
+                </div>
+                {% endif %}
+                <header>
+                    <div class="post_data">
+                        <div class="post_mobile_controls_collapse dropdown">
+                            <button data-toggle="dropdown" class="btnr parent"><i class="icon-th-list"></i></button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li class="nav-header">Post</li>
+                                <!--<li><a href="#" data-post-id="{{ reply.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a></li>
+                                <li><a href="#" data-post-id="{{ reply.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a></li>-->
+                                {% if reply.md5 %}
+                                <li class="divider"></li>
+                                <li class="nav-header">Media</li>
+                                <!--<li><a href="/{{ board }}/search/image/{{ reply.md5 }}">View Same</a></li>-->
+                                <li><a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank">Google</a></li>
+                                <li><a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank">ImgOps</a></li>
+                                <li><a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank">iqdb</a></li>
+                                <li><a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank">SauceNAO</a></li>
+                                <li><a href="/img/{{ board }}/{{ reply.tim }}{{ reply.ext }}" download="{{ reply.filename }}">
+                                    <i class="icon-download-alt"></i> Download</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <!--<span class="post_show_board">/{{ board }}/</span>-->
+
+                        <h2 class="post_title">{{ reply.sub|safe }}</h2>
+                        <span class="post_poster_data">
+                        {% if reply.email and reply.email != 'noko' %}<a href="mailto:{{ reply.email }}">{% endif %}<span class="post_author">{{ reply.name }}</span><span class="post_tripcode">{% if reply.trip %}{{ reply.trip }}{% endif %}</span>{% if reply.email and reply.email != 'noko' %}</a>{% endif %}
+
+                        {% if reply.id %}<span class="poster_hash">ID:{{ reply.id }}</span>{% endif %}
+                        {% if reply.capcode == 'mod' %}<span class="post_level post_level_moderator">## Mod</span>{% endif %}
+                        {% if reply.capcode == 'admin' %}<span class="post_level post_level_administrator">## Admin</span>{% endif %}
+                        {% if reply.capcode == 'developer' %}<span class="post_level post_level_developer">## Developer</span>{% endif %}
+                        {% if reply.capcode == 'verified' %}<span class="post_level post_level_verified">## Verified</span>{% endif %}
+                        {% if reply.capcode == 'founder' %}<span class="post_level post_level_founder">## Founder</span>{% endif %}
+                        {% if reply.capcode == 'manager' %}<span class="post_level post_level_manager">## Manager</span>{% endif %}
+                        </span>
+                        <span class="time_wrap">
+                            <time datetime="{{ reply.time }}" title="4chan Time: {{ reply.now }}">{{ reply.now }}</time>
+                        </span>
+                        <a href="/{{ board }}/thread/{{ reply.resto }}" data-post="{{ reply.no }}" data-function="highlight" title="Link to this post">No.</a><a href="/{{ board }}/thread/{{ reply.resto }}" data-post="{{ reply.no }}" data-function="quote" title="Reply to this post">{{ reply.no }}</a>
+
+                        <span class="post_type">
+                        {% if reply.since4pass %}<i class="icon-tag" title="Pass user since {{ reply.since4pass }}."></i>{% endif %}
+                        {% if reply.country %}<span title="{{ reply.country_name }}" class="flag flag-{{ reply.country|lower }}"></span>{% endif %}
+                        {% if reply.troll_country %}<span title="{{ reply.country_name }}" class="flag-pol2 flag-{{ reply.troll_country|lower }}"></span>{% endif %}
+                        {% if reply.spoiler %}<i class="icon-eye-close" title="The image in this post has been marked spoiler."></i>{% endif %}
+                        {% if reply.deleted and not reply.timestamp_expired %}<i class="icon-trash" title="This post was prematurely deleted."></i>{% endif %}
+                        {% if reply.deleted and reply.timestamp_expired %}<i class="icon-trash" title="This post was deleted on {{ reply.timestamp_expired }}."></i>{% endif %}
+                        </span>
+                        <span class="mobile_view"><a href="/{{ board }}/thread/{{ reply.resto }}" class="btnr parent">View</a></span>
+                        <span class="mobile_bulk"></span>
+                        <!--<span class="post_controls">
+                            <a href="#" class="btnr parent" data-post-id="{{ reply.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a>
+                            <a href="#" class="btnr parent" data-post-id="{{ reply.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a>
+                        </span>-->
+                    </div>
+                </header>
+                <div class="text">
+                    {{ reply.com|safe }}
+                </div>
+                </div>
+            </article>
+{% endfor %}

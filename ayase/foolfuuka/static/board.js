@@ -4,9 +4,23 @@ var labelOp = function()
 										return $.trim($(this).text());
 							}).get();
 	for(i=0; i<$('.quotelink').length; i++ ) {  
-			if(opPostNum.includes($('.quotelink')[i].getAttribute("href").substring(2))){
+			if(opPostNum.includes($('.quotelink')[i].getAttribute("href").substring(2)) && !$('.quotelink')[i].text.includes("(OP)") ){
 							$('.quotelink')[i].text += " (OP)";
 					}
+	}
+}
+
+var labelQuotelinks = function()
+{
+	board_name = $('.post_is_op').attr('data-board');
+	for (i=0; i<$('.quotelink').length; i++){
+		//TODO: awful way to find the quotelink postnum
+		post_num = $('.quotelink')[i].attributes.href.value.substring(2)
+		quotelink = $('.quotelink')[i]
+		quotelink.setAttribute('data-function', 'highlight')
+		quotelink.setAttribute('data-backlink', 'true')
+		quotelink.setAttribute('data-board', board_name)
+		quotelink.setAttribute('data-post', post_num)
 	}
 }
 
@@ -317,19 +331,14 @@ var bindFunctions = function()
 			{
 				el.spin('small');
 				jQuery.ajax({
-					url: backend_vars.api_url + '_/api/chan/thread/',
+					url: backend_vars.api_url + `${$('.post_is_op').attr('data-board')}/thread/${thread_num}.json`,
 					dataType: 'json',
 					type: 'GET',
-					data: {
-						num : thread_num,
-						board: backend_vars.board_shortname,
-						theme: backend_vars.selected_theme
-					},
 					success: function(data, textStatus, jqXHR){
-						insertPost(data, textStatus, jqXHR);
+						insertPosts(data, textStatus, jqXHR);
 						var post_count = 0;
 						var media_count = 0;
-						jQuery.each(data[thread_num].posts, function(id, val){
+						jQuery.each(data[0].posts, function(id, val){
 							post_count++;
 							if (val.media !== null)
 							{
@@ -1057,7 +1066,7 @@ var bindFunctions = function()
 					return false;
 				}
 				var data = backend_vars.loaded_posts[el.data('board') + ':' + el.data('post')];
-				backlink.html(data.formatted);
+				backlink.html(data);
 				backlink.css('display', 'block');
 			}
 			else
@@ -1074,15 +1083,10 @@ var bindFunctions = function()
 					var backlink_spin = el;
 					backlink_spin.spin('small');
 					backlink_jqxhr = jQuery.ajax({
-						url: backend_vars.api_url + '_/api/chan/post/' ,
-						dataType: 'json',
+						url: backend_vars.api_url + `${el.data('board')}/post/${el.data('post')}` ,
+						dataType: 'html',
 						type: 'GET',
 						cache: false,
-						data: {
-							board: el.data('board'),
-							num: el.data('post'),
-							theme: backend_vars.selected_theme
-						},
 						success: function(data){
 							backlink_spin.spin(false);
 							if (typeof data.error !== "undefined")
@@ -1096,8 +1100,8 @@ var bindFunctions = function()
 							// avoid showing the post if the mouse is not there anymore
 							if (show_post_board === el.data('board') && show_post_num === el.data('post'))
 							{
-								backlink.html(data.formatted);
-								backlink.find("time").localize('ddd dd mmm yyyy HH:MM:ss');
+								backlink.html(data);
+								//backlink.find("time").localize('ddd dd mmm yyyy HH:MM:ss');
 								backlink.css('display', 'block');
 								showBacklink(backlink, pos, height, width);
 							}
@@ -1303,6 +1307,29 @@ var realtimethread = function(){
 };
 
 var ghost = false;
+
+var insertPosts = function(data, textStatus, jqXHR)
+{
+	var w_height = jQuery(document).height();
+	var found_posts = false;
+	jQuery.each(data, function(id, val)
+	{
+		if (typeof val.posts !== "undefined"){
+			var aside = jQuery('article.thread[data-thread-num=' + val.posts[0].no + '] aside.posts');
+			$.ajax({
+				url: backend_vars.api_url + `${$('.post_is_op').attr('data-board')}/posts/${val.posts[0].no }`,
+				type: 'GET',
+				async: false,
+				success: function(data){
+					aside.html(data);
+					labelOp();
+					labelQuotelinks();
+				}
+			});
+		}
+	});
+}
+
 var insertPost = function(data, textStatus, jqXHR)
 {
 	var w_height = jQuery(document).height();
@@ -1314,13 +1341,27 @@ var insertPost = function(data, textStatus, jqXHR)
 		{
 			if (typeof val.posts !== "undefined")
 			{
-				var aside = jQuery('article.thread[data-thread-num=' + id + '] aside.posts');
+				var aside = jQuery('article.thread[data-thread-num=' + val.posts[0].no + '] aside.posts');
 				jQuery.each(val.posts, function(idx, value)
 				{
+					//process all posts except OP
+					if(value.resto == 0){
+						return;
+					}
 					found_posts = true;
-					var post = jQuery(value.formatted);
+					var obtained_post;
+					$.ajax({
+						url: backend_vars.api_url + `${$('.post_is_op').attr('data-board')}/post/${value.no}`,
+						type: 'GET',
+						async: false,
+						success: function(data){
+							obtained_post = data;
+							
+						}
+					});
+					var post = jQuery(obtained_post);
 
-					post.find("time").localize('ddd dd mmm yyyy HH:MM:ss');
+					//post.find("time").localize('ddd dd mmm yyyy HH:MM:ss');
 					post.find('[rel=tooltip]').tooltip({
 						placement: 'top',
 						delay: 200
@@ -1332,13 +1373,13 @@ var insertPost = function(data, textStatus, jqXHR)
 					});
 
 					// avoid inserting twice
-					if (jQuery('.doc_id_' + value.doc_id).length != 0)
+					if (jQuery('#p' + value.no).length != 0)
 					{
-						jQuery('.doc_id_' + value.doc_id).remove();
+						jQuery('#p' + value.no).remove();
 					}
 
 					aside.append(post);
-					backlinkify(post, value.num, value.subnum);
+					backlinkify(post, value.no, value.subnum);
 
 					$('pre,code').each(function(i, block) {
 						hljs.highlightBlock(block);
@@ -1556,3 +1597,4 @@ $.fn.extend({
 });
 
 labelOp();
+labelQuotelinks();

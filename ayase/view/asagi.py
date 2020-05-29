@@ -4,7 +4,7 @@
 import timeit
 import hug
 import sys
-from model.asagi import convert_thread, generate_index
+from model.asagi import convert_thread, generate_index, convert_post
 
 from jinja2 import Environment, FileSystemLoader, PackageLoader, select_autoescape
 env = Environment(
@@ -114,3 +114,34 @@ def thread_html(board_name:str, thread_id:int, skin="default"):
     print('Time to generate thread: ', end-start, file=sys.stderr)
     
     return result
+
+@hug.get('/{board_name}/posts/{thread_id}', output=hug.output_format.html)
+def posts_html(board_name:str, thread_id:int, skin="default"):
+    template = env.get_template('posts.html')
+    thread_dict, quotelinks = convert_thread(board_name, thread_id)
+    
+    if(len(thread_dict['posts']) == 0):
+        template = env.get_template('404.html')
+        return template.render()
+    
+    #remove OP post     
+    del thread_dict['posts'][0]
+    
+    return template.render(
+        posts=thread_dict['posts'],
+        board=board_name
+    )
+
+@hug.get('/{board_name}/post/{post_id}', output=hug.output_format.html)
+def post_html(board_name:str, post_id:int, skin="default"):
+    template = env.get_template('post.html')
+    
+    post = convert_post(board_name, post_id)
+    
+    if(len(post) == 0):
+        template = env.get_template('404.html')
+    
+    return template.render(
+        reply=post,
+        board=board_name
+    )
