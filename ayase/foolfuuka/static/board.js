@@ -339,8 +339,11 @@ var bindFunctions = function()
 						var post_count = 0;
 						var media_count = 0;
 						jQuery.each(data[0].posts, function(id, val){
+							if(val.resto == 0){
+								return;
+							}
 							post_count++;
-							if (val.media !== null)
+							if (val.md5 !== null)
 							{
 								media_count++;
 							}

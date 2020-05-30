@@ -23,7 +23,11 @@
                     </div>
                 <div class="thread_image_box">
                     <a href="/img/{{ board }}/{{ reply.tim }}{{ reply.ext }}" target="_blank" rel="noreferrer" class="thread_image_link">
-                        <img src="/img/{{ board }}/{{ reply.tim }}s.jpg" width="{{ reply.tn_w }}" height="{{ reply.tn_h }}" class="post_image{% if reply.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ reply.md5 }}" />
+                    {% if reply.asagi_preview_filename %}
+                        <img src="/img/{{ board }}/thumb/{{ (reply.asagi_preview_filename|string)[0:4] }}/{{ (reply.asagi_preview_filename|string)[4:6] }}/{{ reply.asagi_preview_filename}}" width="{{ reply.tn_w }}" height="{{ reply.tn_h }}" class="post_image{% if reply.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ reply.md5 }}" />
+                    {% else %}
+                        <img src="/img/{{ board }}/thumb/{{ (reply.tim|string)[0:4] }}/{{ (reply.tim|string)[4:6] }}/{{ reply.tim }}s.jpg" width="{{ reply.tn_w }}" height="{{ reply.tn_h }}" class="post_image{% if reply.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ reply.md5 }}" />
+                    {% endif %}
                     </a>
                 </div>
                 {% endif %}
@@ -83,6 +87,16 @@
                         </span>-->
                     </div>
                 </header>
+                {% if reply.no|string in quotelinks %}
+                            <div class="backlink_list" style="display: block;">
+																Quoted By:
+																{% for quotelink in quotelinks[reply.no|string] %}
+																<span class="post_backlink" data-post="{{ quotelink }}">
+																		<a href="#p{{ quotelink }}" class="quotelink" data-function="highlight" data-backlink="true" data-board="a" data-post="{{ quotelink }}">&gt;&gt;{{ quotelink }}</a>
+																</span>
+																{% endfor %}
+														</div>
+								{% endif %}
                 <div class="text">
                     {{ reply.com|safe }}
                 </div>

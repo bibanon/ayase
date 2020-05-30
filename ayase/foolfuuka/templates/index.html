@@ -250,7 +250,11 @@
                 {% if op.md5 %}
             <div class="thread_image_box">
                 <a href="/img/{{ board }}/{{ op.tim }}{{ op.ext }}" target="_blank" rel="noreferrer" class="thread_image_link">
-                    <img src="/img/{{ board }}/{{ op.tim }}s.jpg" width="{{ op.tn_w }}" height="{{ op.tn_h }}" class="post_image{% if op.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ op.md5 }}" />
+                    {% if op.asagi_preview_filename %}
+                        <img src="/img/{{ board }}/thumb/{{ (op.asagi_preview_filename|string)[0:4] }}/{{ (op.asagi_preview_filename|string)[4:6] }}/{{ op.asagi_preview_filename}}" width="{{ op.tn_w }}" height="{{ op.tn_h }}" class="post_image{% if op.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ op.md5 }}" />
+                    {% else %}
+                        <img src="/img/{{ board }}/thumb/{{ (op.tim|string)[0:4] }}/{{ (op.tim|string)[4:6] }}/{{ op.tim }}s.jpg" width="{{ op.tn_w }}" height="{{ op.tn_h }}" class="post_image{% if op.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ op.md5 }}" />
+                    {% endif %}
                 </a>
 
                 <div class="post_file" style="padding-left: 2px;{% if op.tn_w > 149 %} max-width: {{ op.tn_w }}px;{% endif %}">
@@ -378,7 +382,11 @@
                     </div>
                 <div class="thread_image_box">
                     <a href="/img/{{ board }}/{{ reply.tim }}{{ reply.ext }}" target="_blank" rel="noreferrer" class="thread_image_link">
-                        <img src="/img/{{ board }}/{{ reply.tim }}s.jpg" width="{{ reply.tn_w }}" height="{{ reply.tn_h }}" class="post_image{% if reply.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ reply.md5 }}" />
+                    {% if reply.asagi_preview_filename %}
+                        <img src="/img/{{ board }}/thumb/{{ (reply.asagi_preview_filename|string)[0:4] }}/{{ (reply.asagi_preview_filename|string)[4:6] }}/{{ reply.asagi_preview_filename}}" width="{{ reply.tn_w }}" height="{{ reply.tn_h }}" class="post_image{% if reply.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ reply.md5 }}" />
+                    {% else %}
+                        <img src="/img/{{ board }}/thumb/{{ (reply.tim|string)[0:4] }}/{{ (reply.tim|string)[4:6] }}/{{ reply.tim }}s.jpg" width="{{ reply.tn_w }}" height="{{ reply.tn_h }}" class="post_image{% if reply.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ reply.md5 }}" />
+                    {% endif %}
                     </a>
                 </div>
                 {% endif %}

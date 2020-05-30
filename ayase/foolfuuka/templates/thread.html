@@ -272,7 +272,11 @@
                             <div class="thread_image_box">
                             {% if asagi %}
                             <a href="/img/{{ board }}/{{ post.asagi_filename }}" target="_blank" rel="noreferrer" class="thread_image_link">
-                                    <img src="/img/{{ board }}/{{ post.filename.split(".")[0] }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
+                                {% if post.asagi_preview_filename %}
+                                    <img src="/img/{{ board }}/thumb/{{ (post.asagi_preview_filename|string)[0:4] }}/{{ (post.asagi_preview_filename|string)[4:6] }}/{{ post.asagi_preview_filename}}" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
+                                {% else %}
+                                    <img src="/img/{{ board }}/thumb/{{ (post.tim|string)[0:4] }}/{{ (post.tim|string)[4:6] }}/{{ post.tim }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
+                                {% endif %}
                                 </a>
                                 {% if post.resto == 0 %}
                                 <div class="post_file" style="padding-left: 2px;{% if post.tn_w > 149 %} max-width: {{ post.tn_w }}px;{% endif %}">

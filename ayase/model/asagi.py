@@ -11,7 +11,7 @@ SELECT_THREAD = "SELECT * FROM `{}` WHERE `thread_num`={} ORDER BY `num`"
 SELECT_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{}_threads` WHERE `thread_num`={}"
 SELECT_THREAD_OP = "SELECT * FROM `{}` WHERE `thread_num`={} AND op=1"
 SELECT_THREAD_PREVIEW = "SELECT * FROM `{}` WHERE `thread_num`={} ORDER BY `num` DESC LIMIT 5"
-SELECT_THREAD_LIST_BY_OFFSET = "SELECT `thread_num` FROM `{}_threads` ORDER BY `thread_num` DESC LIMIT 10 OFFSET {}"
+SELECT_THREAD_LIST_BY_OFFSET = "SELECT `thread_num` FROM `{}_threads` ORDER BY `time_last` DESC LIMIT 10 OFFSET {}"
 
 connection = pymysql.connect(host='192.168.2.52',
                              user='root',
@@ -130,7 +130,11 @@ def generate_index(board_name:str, page_num:int):
     threads = []
     for i in range(len(thread_list)):
         thread_id = thread_list[i]['thread_num']
-        thread_op, temp = convert_thread_op(board_name, thread_id)
+        try:
+            thread_op, temp = convert_thread_op(board_name, thread_id)
+        except TypeError:
+            print("Thread", thread_id, "is empty! Skipping it.", file=sys.stderr)
+            continue
 
         asagi_thread, temp = convert_thread_preview(board_name, thread_id)
         details = get_thread_details(board_name, thread_id)
@@ -202,7 +206,8 @@ def convert(thread, details=None, isPost=False):
         #TODO: asagi records time using an incorrect timezone configuration which will need to be corrected 
         posts[i]['now'] = time.strftime('%m/%d/%y(%a)%H:%M:%S', time.localtime(thread[i]['timestamp'])) #convert timestamp to properly formatted time
         posts[i]['name'] = thread[i]['name']
-        posts[i]['sub'] = thread[i]['title'] if thread[i]['title'] != None else ''        
+        posts[i]['sub'] = thread[i]['title'] if thread[i]['title'] != None else ''   
+        posts[i]['asagi_preview_filename'] = thread[i]['preview_orig']
         posts[i]['asagi_filename'] = thread[i]['media_orig']
         if(thread[i]['media_filename'] is not None and thread[i]['media_filename'] is not False):
             posts[i]['filename'] = thread[i]['media_filename'].split('.')[0]
@@ -212,7 +217,10 @@ def convert(thread, details=None, isPost=False):
         posts[i]['tn_w'] = thread[i]['preview_w']
         posts[i]['tn_h'] = thread[i]['preview_h']
         try:
-            posts[i]['tim'] = thread[i]['timestamp'] * 1000 if thread[i]['media_orig'] is None else int(thread[i]['media_orig'].split('.')[0]) #temporarily add 3 digits to fit microtime
+            if thread[i]['media_orig'] is None:
+                posts[i]['tim'] = (thread[i]['timestamp'] * 1000)  #temporarily add 3 digits to fit microtime
+            else:
+                posts[i]['tim'] = int(thread[i]['media_orig'].split('.')[0]) 
         except ValueError:
             print(thread[i]['media_orig'])
         posts[i]['time'] = thread[i]['timestamp']
@@ -234,9 +242,10 @@ def convert(thread, details=None, isPost=False):
             posts[i]['images'] = details['nimages']
         posts[i]['trip'] = thread[i]['trip']
         posts[i]['spoiler'] = thread[i]['spoiler']
-        posts[i]['country_name'] = thread[i]['poster_country']
+        posts[i]['country'] = thread[i]['poster_country']
         posts[i]['closed'] = thread[i]['locked']
         posts[i]['filedeleted'] = thread[i]['deleted']
+        posts[i]['exif'] = thread[i]['exif']
         
         # generate comment content
         post_quotelinks, posts[i]['com'] = restore_comment(thread[i]['comment'], thread[i]['num'])
