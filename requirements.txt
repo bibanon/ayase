@@ -1,2 +1,3 @@
 hug
 jinja2
+pymysql

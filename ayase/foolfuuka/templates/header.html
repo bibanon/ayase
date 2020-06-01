@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="generator" content="FoolFuuka 2.2.0">
+    <title>{{ title|safe }}</title>
+    <link href="/" rel="index" title="FoolFuuka">
+
+    <link rel="stylesheet" type="text/css" href="/static/bootstrap.legacy.css">
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome-ie7.css">
+    <![endif]-->
+
+    <link href="/static/style.css" rel="stylesheet" type="text/css">
+    <link href="/static/flags.css" rel="stylesheet" type="text/css">
+    <link href="/static/polflags.css" rel="stylesheet" type="text/css">
+    <link href="/static/polflags2.css" rel="stylesheet" type="text/css">
+    <link href="/static/mobile.css" rel="stylesheet" type="text/css">
+    {% if skin != 'default' and skin != 'midnight' %}
+    <link href="/static/{{ skin }}.css" rel="stylesheet" type="text/css">
+    {% endif %}
+    <link rel="search" type="application/opensearchdescription+xml" title="FoolFuuka" href="/_/opensearch/">
+</head>
+<body class="theme_default {{ skin }}">
+<div class="container-fluid">
+    <div class="navbar navbar-fixed-top navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container">
+                <ul class="nav">
+                    <li class="dropdown">
+                        <a href="/" id="brand" class="brand dropdown-toggle"
+                           data-toggle="dropdown">{{ title|safe }} <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/">Index</a></li><li class="divider"></li>
+                            <li class="nav-header">Archives</li>
+                            {% for archive in archives %}
+                            <li><a href="/{{ archive.shortname }}/">/{{ archive.shortname }}/ - {{ archive.name }}</a></li>
+                            {% endfor %}
+                            <li class="divider"></li>
+                            <li class="nav-header">Boards</li>
+                            {% for board in boards %}
+                            <li><a href="/{{ board.shortname }}/">/{{ board.shortname }}/ - {{ board.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="nav">
+                    <li>
+                        <a href="https://boards.4chan.org/{{ board }}/" style="padding-right:4px;">4chan <i class="icon-share icon-white text-small"></i></a>
+                    </li>
+                    <li style="padding-right:0px;">
+                        <a href="/{{ board }}/" style="padding-right:4px;">Index</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-left:2px; padding-right:4px;">
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu" style="margin-left:-9px">
+                            <li>
+                                <a href="#">By Post <i class="icon-ok"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">By Thread </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="/{{ board }}/ghost/">Ghost</a></li>
+                    <li><a href="/{{ board }}/gallery/">Gallery</a></li>
+                    <li><a href="/{{ board }}/statistics/">Stats</a></li>
+                </ul>
+                <ul class="nav pull-right">
+                    <!--<form class="navbar-search" method="GET" action="/{{ board }}/search/">
+                        <li><input name="text" value="" class="search-query" placeholder="Search through all the boards" type="text"></li>
+                    </form>-->
+                </ul>
+            </div>
+        </div>
+    </div>

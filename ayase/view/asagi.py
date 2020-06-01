@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 import timeit
+import yaml
 import hug
 import sys
 from model.asagi import convert_thread, generate_index, convert_post
@@ -13,21 +14,31 @@ env = Environment(
     autoescape=select_autoescape(['html', 'xml'])
 )
 
-board_data = ({'shortname': 'g', 'name': 'Technology'},{'shortname': 'a', 'name': 'Anime & Manga'},{'shortname': 'jp', 'name': 'jp'},{'shortname': 'int', 'name': 'int'},{'shortname': 'ck', 'name': 'Cooking'}, {'shortname': 'pol', 'name': 'Politically Incorrect'}, {'shortname': 'p', 'name': 'Photography'})
+# load the boards list
+with open("config.yml", 'r') as yaml_conf:
+    CONF = yaml.safe_load(yaml_conf)
+
+archives = CONF['archives']
+archive_list = []
+
+boards = CONF['boards']
 board_list = []
 
-for i in board_data:
+for i in boards:
     board_list.append(i['shortname'])
+    
+for i in archives:
+    archive_list.append(i['shortname'])
 
 @hug.get('/{board_name}/{page_num}.json')
 def index(board_name:str, page_num:int):
-    if(board_name in board_list):
-        return generate_index(board_name, page_num)
+    if(board_name in archive_list or board_name in board_list):
+        return generate_index(board_name, page_num, html=False)
     return {'error': 404}
 
 @hug.get('/{board_name}', output=hug.output_format.html)
 def index_html(board_name:str):
-    if(board_name in board_list):
+    if(board_name in archive_list or board_name in board_list):
         start = timeit.default_timer()
 
         template = env.get_template('index.html')
@@ -37,13 +48,14 @@ def index_html(board_name:str):
         if(len(index['threads']) == 0):
             template = env.get_template('404.html')
         title = board_name
-        result =  template.render(
+        #print(index['threads'][0]['quotelinks'])
+        result = template.render(
             asagi=True,
             page_num=1,
             threads=index['threads'],
-            #quotelinks=quotelinks,
+            archives=archives,
             board=board_name,
-            boards=board_data,
+            boards=boards,
             title=title,
             skin='default'
         )
@@ -55,7 +67,7 @@ def index_html(board_name:str):
 
 @hug.get('/{board_name}/page/{page_num}', output=hug.output_format.html)
 def index_html(board_name:str, page_num:int):
-    if(board_name in board_list):
+    if(board_name in archive_list or board_name in board_list):
         template = env.get_template('index.html')
         
         index = generate_index(board_name, page_num)
@@ -68,9 +80,9 @@ def index_html(board_name:str, page_num:int):
             asagi=True,
             page_num=page_num,
             threads=index['threads'],
-            #quotelinks=quotelinks,
+            archives=archives,
             board=board_name,
-            boards=board_data,
+            boards=boards,
             title=title,
             skin='default'
         )
@@ -78,14 +90,14 @@ def index_html(board_name:str, page_num:int):
 
 @hug.get('/{board_name}/thread/{thread_id}.json')
 def thread(board_name:str, thread_id:int):
-    if(board_name in board_list):
+    if(board_name in archive_list or board_name in board_list):
         return convert_thread(board_name, thread_id)
     return {'error': 404}
     
 
 @hug.get('/{board_name}/thread/{thread_id}', output=hug.output_format.html)
 def thread_html(board_name:str, thread_id:int, skin="default"):
-    if(board_name in board_list):
+    if(board_name in archive_list or board_name in board_list):
         start = timeit.default_timer()
         
         template = env.get_template('thread.html')
@@ -108,8 +120,9 @@ def thread_html(board_name:str, thread_id:int, skin="default"):
             asagi=True,
             posts=thread_dict['posts'],
             quotelinks=quotelinks,
+            archives=archives,
             board=board_name,
-            boards=board_data,
+            boards=boards,
             title=title,
             skin=skin
         )
@@ -121,7 +134,7 @@ def thread_html(board_name:str, thread_id:int, skin="default"):
 
 @hug.get('/{board_name}/posts/{thread_id}', output=hug.output_format.html)
 def posts_html(board_name:str, thread_id:int, skin="default"):
-    if(board_name in board_list):
+    if(board_name in archive_list or board_name in board_list):
         template = env.get_template('posts.html')
         thread_dict, quotelinks = convert_thread(board_name, thread_id)
         
@@ -144,16 +157,21 @@ def posts_html(board_name:str, thread_id:int, skin="default"):
 
 @hug.get('/{board_name}/post/{post_id}', output=hug.output_format.html)
 def post_html(board_name:str, post_id:int, skin="default"):
-    if(board_name in board_list):
+    if(board_name in archive_list or board_name in board_list):
         template = env.get_template('post.html')
         
         post = convert_post(board_name, post_id)
         
         if(len(post) == 0):
             template = env.get_template('404.html')
+            
+        if(post['resto'] == 0):
+            post['resto'] = -1
         
         return template.render(
-            reply=post,
-            board=board_name
+            asagi=True,
+            post=post,
+            board=board_name,
+            quotelink=True
         )
     return env.get_template('404.html').render()

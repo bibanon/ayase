@@ -336,6 +336,33 @@ var bindFunctions = function()
 					type: 'GET',
 					success: function(data, textStatus, jqXHR){
 						insertPosts(data, textStatus, jqXHR);
+						
+						var op_bl = $(`#p${thread_num}`).find('.backlink_list.is_op');
+						if(!op_bl.attr('expanded')){
+							var op_quotelinks = []
+							//insert quotedby into quotelinks
+							$(`#p${thread_num}`).find('.quotelink').each(function(index, value){
+								var redir = value.attributes['data-post'].value;
+								if(thread_num == redir){
+									op_quotelinks.push($(value).closest('div.post_wrapper').attr('id'));
+								}
+							});
+							
+							
+								
+								op_bl.append("Quoted By:");
+								//quotelink list should consist of post no
+								for(i=0; i<op_quotelinks.length; i++){
+									var post_num = op_quotelinks[i];
+									var ql_content = `<span class="post_backlink" data-post="${post_num}">
+										<a href="#p${post_num}" class="quotelink" data-function="highlight" data-backlink="true" data-board="a" data-post="${post_num}">&gt;&gt;${post_num}</a>
+								</span>`;
+								op_bl.append(ql_content);
+								}
+								op_bl.attr('expanded', 1);
+							}
+						
+						
 						var post_count = 0;
 						var media_count = 0;
 						jQuery.each(data[0].posts, function(id, val){
@@ -1526,7 +1553,7 @@ jQuery(document).ready(function() {
 	}
 
 	// firefox sucks at styling input, so we need to add size="", that guess what? It's not w3 compliant!
-	jQuery('#file_image').attr({size: '16'});
+	//jQuery('#file_image').attr({size: '16'});
 
 	var post = location.href.split(/#/);
 	if (post[1]) {
@@ -1538,7 +1565,7 @@ jQuery(document).ready(function() {
 		}
 
 		toggleHighlight(post[1]);
-		jQuery('#'+post[1].replace('q', ''))[0].scrollIntoView( true );
+		//jQuery('#'+post[1].replace('q', ''))[0].scrollIntoView( true );
 	}
 
 	if (typeof backend_vars.thread_id !== "undefined" && (Math.round(new Date().getTime() / 1000) - backend_vars.latest_timestamp < 6 * 60 * 60))
@@ -1549,6 +1576,8 @@ jQuery(document).ready(function() {
 	bindFunctions();
 	hideThreads();
 	hidePosts();
+	labelOp();
+	labelQuotelinks();
 
 	// localize and add 4chan tooltip where title
 	jQuery("article time").localize('ddd dd mmm yyyy HH:MM:ss').filter('[title]').tooltip({
@@ -1598,6 +1627,3 @@ $.fn.extend({
 		obj.selectionEnd = insPos + text.length;
 	}
 });
-
-labelOp();
-labelQuotelinks();
