@@ -131,7 +131,9 @@ def get_thread_preview(board:str, thread_num:int):
             sql = SELECT_THREAD_PREVIEW.format(board, thread_num)
             cursor.execute(sql)
             return cursor.fetchall()
-    except:
+    except Exception as e:
+        print(sql)
+        print(e)
         print("Failed to get thread!")
         return ''
     
@@ -329,7 +331,6 @@ def convert(thread, details=None, images=None, isPost=False):
                 for media in filter(lambda image: image['media_hash'] == thread[i]['media_hash'], images):
                     if(media['preview_reply'] is None and media['media']):
                         posts[i]['asagi_preview_filename'] = media['media'].split('.')[0] + "s.jpg"
-                        print(posts[i]['asagi_preview_filename'])
                     posts[i]['asagi_preview_filename'] = media['preview_reply']
                     posts[i]['asagi_filename'] = media['media']
             except TypeError:

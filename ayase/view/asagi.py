@@ -24,24 +24,37 @@ archive_list = []
 boards = CONF['boards']
 board_list = []
 
+image_uri = CONF['image_location']['image']
+thumb_uri = CONF['image_location']['thumb']
+
 for i in boards:
     board_list.append(i['shortname'])
     
 for i in archives:
     archive_list.append(i['shortname'])
+    
+    
+@hug.get('/', output=hug.output_format.html)
+def index_html():
+    template = env.get_template('index.html')
+    return template.render(
+        archives=archives,
+        boards=boards,
+        skin='default'
+    )
 
 @hug.get('/{board_name}/{page_num}.json')
-def index(board_name:str, page_num:int):
+def board_index(board_name:str, page_num:int):
     if(board_name in archive_list or board_name in board_list):
         return generate_index(board_name, page_num, html=False)
     return {'error': 404}
 
 @hug.get('/{board_name}', output=hug.output_format.html)
-def index_html(board_name:str):
+def board_index_html(board_name:str):
     if(board_name in archive_list or board_name in board_list):
         start = timeit.default_timer()
 
-        template = env.get_template('index.html')
+        template = env.get_template('board_index.html')
         
         index = generate_index(board_name, 1)
         
@@ -56,6 +69,8 @@ def index_html(board_name:str):
             archives=archives,
             board=board_name,
             boards=boards,
+            image_uri=image_uri.format(board_name=board_name),
+            thumb_uri=thumb_uri.format(board_name=board_name),
             title=title,
             skin='default'
         )
@@ -63,12 +78,12 @@ def index_html(board_name:str):
         print('Time to generate index: ', end-start, file=sys.stderr)
 
         return result
-    return env.get_template('404.html').render()
+    return env.get_template('404.html').render(archives=archives, boards=boards, title='Not Found')
 
 @hug.get('/{board_name}/page/{page_num}', output=hug.output_format.html)
-def index_html(board_name:str, page_num:int):
+def board_index_html(board_name:str, page_num:int):
     if(board_name in archive_list or board_name in board_list):
-        template = env.get_template('index.html')
+        template = env.get_template('board_index.html')
         
         index = generate_index(board_name, page_num)
         
@@ -83,10 +98,12 @@ def index_html(board_name:str, page_num:int):
             archives=archives,
             board=board_name,
             boards=boards,
+            image_uri=image_uri.format(board_name=board_name),
+            thumb_uri=thumb_uri.format(board_name=board_name),
             title=title,
             skin='default'
         )
-    return env.get_template('404.html').render()
+    return env.get_template('404.html').render(archives=archives, boards=boards, title='Not Found')
 
 @hug.get('/{board_name}/thread/{thread_id}.json')
 def thread(board_name:str, thread_id:int):
@@ -123,6 +140,8 @@ def thread_html(board_name:str, thread_id:int, skin="default"):
             archives=archives,
             board=board_name,
             boards=boards,
+            image_uri=image_uri.format(board_name=board_name),
+            thumb_uri=thumb_uri.format(board_name=board_name),
             title=title,
             skin=skin
         )
@@ -150,6 +169,8 @@ def posts_html(board_name:str, thread_id:int, skin="default"):
             posts=thread_dict['posts'],
             quotelinks=quotelinks,
             board=board_name,
+            image_uri=image_uri.format(board_name=board_name),
+            thumb_uri=thumb_uri.format(board_name=board_name),
             skin=skin
         )
     
@@ -172,6 +193,8 @@ def post_html(board_name:str, post_id:int, skin="default"):
             asagi=True,
             post=post,
             board=board_name,
+            image_uri=image_uri.format(board_name=board_name),
+            thumb_uri=thumb_uri.format(board_name=board_name),
             quotelink=True
         )
     return env.get_template('404.html').render()

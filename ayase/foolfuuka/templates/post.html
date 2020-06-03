@@ -16,25 +16,29 @@
                            class="btnr parent">iqdb</a>
                         <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
                            class="btnr parent">SauceNAO</a>
-                        <a href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" download="{{ post.filename }}"
+                        <a href="{{ image_uri }}/{{ post.tim }}{{ post.ext }}" download="{{ post.filename }}"
                            class="btnr parent"><i class="icon-download-alt"></i></a>
                     </span>
-                                <a href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" target="_blank" class="post_file_filename" rel="noreferrer">{{ post.filename }}{{ post.ext }}</a>,
+                            {% if asagi %}
+                                    <a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" target="_blank" class="post_file_filename" rel="noreferrer">{{ post.filename }}{{ post.ext }}</a>,
+                            {% else %}
+                                    <a href="{{ image_uri }}/{{ post.tim }}{{ post.ext }}" target="_blank" class="post_file_filename" rel="noreferrer">{{ post.filename }}{{ post.ext }}</a>,
+                            {% endif %}
                                 <span class="post_file_metadata">{{ post.fsize }}, {{ post.w }}x{{ post.h }}, {{ post.tim }}</span>
                             </div>
                             {% endif %}
                             <div class="thread_image_box">
                             {% if asagi %}
-                            <a href="/img/{{ board }}/{{ post.asagi_filename }}" target="_blank" rel="noreferrer" class="thread_image_link">
+                            <a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" target="_blank" rel="noreferrer" class="thread_image_link">
                                 {% if post.asagi_preview_filename %}
-                                    <img src="/img/{{ board }}/thumb/{{ (post.asagi_preview_filename|string)[0:4] }}/{{ (post.asagi_preview_filename|string)[4:6] }}/{{ post.asagi_preview_filename}}" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
+                                    <img src="{{ thumb_uri }}/{{ (post.asagi_preview_filename|string)[0:4] }}/{{ (post.asagi_preview_filename|string)[4:6] }}/{{ post.asagi_preview_filename}}" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
                                 {% else %}
-                                    <img src="/img/{{ board }}/thumb/{{ (post.tim|string)[0:4] }}/{{ (post.tim|string)[4:6] }}/{{ post.tim }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
+                                    <img src="{{ thumb_uri }}/{{ (post.tim|string)[0:4] }}/{{ (post.tim|string)[4:6] }}/{{ post.tim }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
                                 {% endif %}
                                 </a>
                                 {% if post.resto == 0 %}
                                 <div class="post_file" style="padding-left: 2px;{% if post.tn_w > 149 %} max-width: {{ post.tn_w }}px;{% endif %}">
-                                    {{ post.fsize }}, {{ post.w }}x{{ post.h }}, <a class="post_file_filename" href="/img/{{ board }}/{{ post.asagi_filename }}" target="_blank">{{ post.filename }}{{ post.ext }}</a>
+                                    {{ post.fsize }}, {{ post.w }}x{{ post.h }}, <a class="post_file_filename" href="{{ image_uri }}/{{ post.asagi_filename }}" target="_blank">{{ post.filename }}{{ post.ext }}</a>
                                 </div>
 
                                 <div class="post_file_controls">
@@ -48,7 +52,7 @@
                                        class="btnr parent">iqdb</a>
                                     <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.filename.split(".")[0] }}s.jpg" target="_blank"
                                        class="btnr parent">SauceNAO</a>
-                                    <a href="/img/{{ board }}/{{ post.asagi_filename }}" download="{{ post.filename }}"
+                                    <a href="{{ image_uri }}/{{ post.asagi_filename }}" download="{{ post.filename }}"
                                        class="btnr parent"><i class="icon-download-alt"></i></a>
                                 </div>
                                 {% endif %}
