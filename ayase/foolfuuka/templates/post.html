@@ -1,4 +1,4 @@
-<article class="{% if post.resto == 0 %}clearfix thread post_is_op{% else %}post{% endif %} {% if post.md5 %}has_image{% endif %}" id="p{{ post.no }}" data-board="{{ board }}" data-thread-num="{{ post.resto }}">
+<article class="{% if post.resto == 0 %}clearfix thread post_is_op{% else %}post{% endif %} {% if post.md5 %}has_image{% endif %}" id="p{{ post.no }}" data-board="{{ board }}" data-thread-num="{% if post.resto == 0 %}{{ post.no }}{% else %}{{ post.resto }}{% endif %}">
                         {% if post.resto != 0 %}
                         <div id="{{ post.no }}" class="post_wrapper">
                         {% endif %}
@@ -136,15 +136,25 @@
                         </span>
                                     <span class="mobile_view"><a href="./{{ post.no }}" class="btnr parent">View</a></span>
                                     <span class="mobile_bulk"></span>
+                                    {% if post.resto == 0 and board_index %}
+                                    <span class="post_controls">
+                                        <a href="/{{ board }}/thread/{{ post.no }}" class="btnr parent">View</a>
+                                        <a href="/{{ board }}/thread/{{ post.no }}" class="btnr parent">Reply</a>
+                                        <a href="//boards.4chan.org/{{ board }}/thread/{{ post.no }}" class="btnr parent">Original</a>
+                                        <!--<a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a>
+                                        <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a>-->
+                                    {% endif %}
+
+                    </span>
                                     <!--<span class="post_controls">
                                         <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a>
                                         <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a>
                                     </span>-->
                                 </div>
                             </header>
-                            {% if post.no|string in quotelinks %}
-                            <div class="backlink_list" style="display: block;">
-																Quoted By:
+                            {% if post.no|string in quotelinks or post.resto == 0 %}
+                            <div class="backlink_list {% if post.resto == 0 %}is_op{% endif %}" style="display: block;">
+																{% if not post.resto == 0 %}Quoted By:{% endif %}
 																{% for quotelink in quotelinks[post.no|string] %}
 																<span class="post_backlink" data-post="{{ quotelink }}">
 																		<a href="#p{{ quotelink }}" class="quotelink" data-function="highlight" data-backlink="true" data-board="{{ board }}" data-post="{{ quotelink }}">&gt;&gt;{{ quotelink }}</a>
@@ -158,7 +168,8 @@
                         {% if post.resto != 0 %}
                         </div>
                         {% endif %}
-                        {% if post.resto == 0 %}
+                        {% if board_index and post.resto == 0 %}
+                        {% elif post.resto == 0 %}
                         <aside class="posts">
                         {% else %}
                     </article>

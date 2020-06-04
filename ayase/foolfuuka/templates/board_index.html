@@ -1,4 +1,5 @@
-{% include 'header.html' %}
+{% extends "base.html" %}
+{% block body %}
     <div role="main" id="main">
         <!--<div class="search_box">
             <div class="advanced_search clearfix">
@@ -162,245 +163,25 @@
         <div class="board">
             {% for i in threads %}
             {% set thread = i['posts'] %}
-            {% set op = thread[0] %}
-            <article class="clearfix thread post_is_op {% if op.md5 %}has_image{% endif %}" id="p{{ op.no }}" data-board="{{ board }}" data-thread-num="{{ op.no }}">
-                {% if op.md5 %}
-            <div class="thread_image_box">
-            {% if op.asagi_filename %}
-                <a href="{{ image_uri }}/{{ (op.asagi_filename|string)[0:4] }}/{{ (op.asagi_filename|string)[4:6] }}/{{ op.asagi_filename}}" target="_blank" rel="noreferrer" class="thread_image_link">
-            {% else %}
-                <a href="{{ image_uri }}/{{ op.tim }}{{ op.ext }}" target="_blank" rel="noreferrer" class="thread_image_link">
-            {% endif %}
-                    {% if op.asagi_preview_filename %}
-                        <img src="{{ thumb_uri }}/{{ (op.asagi_preview_filename|string)[0:4] }}/{{ (op.asagi_preview_filename|string)[4:6] }}/{{ op.asagi_preview_filename}}" width="{{ op.tn_w }}" height="{{ op.tn_h }}" class="post_image{% if op.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ op.md5 }}" />
-                    {% else %}
-                        <img src="{{ thumb_uri }}/{{ (op.tim|string)[0:4] }}/{{ (op.tim|string)[4:6] }}/{{ op.tim }}s.jpg" width="{{ op.tn_w }}" height="{{ op.tn_h }}" class="post_image{% if op.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ op.md5 }}" />
-                    {% endif %}
-                </a>
-
-                <div class="post_file" style="padding-left: 2px;{% if op.tn_w > 149 %} max-width: {{ op.tn_w }}px;{% endif %}">
-                    {{ op.fsize }}, {{ op.w }}x{{ op.h }}, {% if op.asagi_filename %}<a class="post_file_filename" href="{{ image_uri }}/{{ (op.asagi_filename|string)[0:4] }}/{{ (op.asagi_filename|string)[4:6] }}/{{ op.asagi_filename}}" target="_blank">{{ op.filename }}{{ op.ext }}</a>{% else %}<a class="post_file_filename" href="{{ image_uri }}/{{ op.tim }}{{ op.ext }}" target="_blank">{{ op.filename }}{{ op.ext }}</a>{% endif %}
-                </div>
-
-                <div class="post_file_controls">
-                    <!--<a href="/{{ board }}/search/image/{{ op.md5 }}"
-                       class="btnr parent">View Same</a>-->
-                    <a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ op.tim }}s.jpg" target="_blank"
-                        class="btnr parent">Google</a>
-                    <a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ op.tim }}s.jpg" target="_blank"
-                        class="btnr parent">ImgOps</a>
-                    <a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ op.tim }}s.jpg" target="_blank"
-                        class="btnr parent">iqdb</a>
-                    <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ op.tim }}s.jpg" target="_blank"
-                        class="btnr parent">SauceNAO</a>
-                {% if op.asagi_filename %}
-                    <a href="{{ image_uri }}/{{ (op.asagi_filename|string)[0:4] }}/{{ (op.asagi_filename|string)[4:6] }}/{{ op.asagi_filename}}" download="{{ op.filename }}"
-                        class="btnr parent"><i class="icon-download-alt"></i></a>
-                {% else %}
-                    <a href="{{ image_uri }}/{{ op.tim }}{{ op.ext }}" download="{{ op.filename }}"
-                        class="btnr parent"><i class="icon-download-alt"></i></a>
-                {% endif %}
-                </div>
-            </div>
-            {% endif %}
-            <header>
-                <div class="post_data">
-                    <div class="post_mobile_controls_collapse dropdown">
-                        <button data-toggle="dropdown" class="btnr parent"><i class="icon-th-list"></i></button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li class="nav-header">Thread</li>
-                            <li><a href="/{{ board }}/thread/{{ op.no }}">Reply</a></li>
-                            <li><a href="//boards.4chan.org/{{ board }}/thread/{{ op.no }}">Original</a></li>
-                            <!--<li><a href="#" data-post-id="{{ op.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a></li>
-                            <li><a href="#" data-post-id="{{ op.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a></li>-->
-                            {% if op.md5 %}
-                            <li class="divider"></li>
-                            <li class="nav-header">Media</li>
-                            <!--<li><a href="/{{ board }}/search/image/{{ op.md5 }}">View Same</a></li>-->
-                            <li><a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ op.tim }}s.jpg" target="_blank">Google</a></li>
-                            <li><a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ op.tim }}s.jpg" target="_blank">ImgOps</a></li>
-                            <li><a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ op.tim }}s.jpg" target="_blank">iqdb</a></li>
-                            <li><a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ op.tim }}s.jpg" target="_blank">SauceNAO</a></li>
-                            <li><a href="{{ image_uri }}/{{ op.tim }}{{ op.ext }}" download="{{ op.filename }}">
-                                <i class="icon-download-alt"></i> Download</a></li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                    <!--<span class="post_show_board">/{{ board }}/</span>-->
-
-                    <h2 class="post_title">{{ op.sub|safe }}</h2>
-                    <span class="post_poster_data">
-                        {% if op.email and op.email != 'noko' %}<a href="mailto:{{ op.email }}">{% endif %}<span class="post_author">{{ op.name }}</span><span class="post_tripcode">{{ op.tripcode }}</span>{% if op.email and op.email != 'noko' %}</a>{% endif %}
-
-                        {% if op.id %}<span class="poster_hash">ID:{{ op.id }}</span>{% endif %}
-                        {% if op.capcode == 'mod' %}<span class="post_level post_level_moderator">## Mod</span>{% endif %}
-                        {% if op.capcode == 'admin' %}<span class="post_level post_level_administrator">## Admin</span>{% endif %}
-                        {% if op.capcode == 'developer' %}<span class="post_level post_level_developer">## Developer</span>{% endif %}
-                        {% if op.capcode == 'verified' %}<span class="post_level post_level_verified">## Verified</span>{% endif %}
-                        {% if op.capcode == 'founder' %}<span class="post_level post_level_founder">## Founder</span>{% endif %}
-                        {% if op.capcode == 'manager' %}<span class="post_level post_level_manager">## Manager</span>{% endif %}
-                        </span>
-                    <span class="time_wrap">
-                        <time datetime="{{ op.time }}" title="4chan Time: {{ op.now }}">{{ op.now }}</time>
-                    </span>
-                    <a href="/{{ board }}/thread/{{ op.no }}" data-post="{{ op.no }}" data-function="highlight" title="Link to this post">No.</a><a href="/{{ board }}/thread/{{ op.no }}" data-post="{{ op.no }}" data-function="quote" title="Reply to this post" class="isOp">{{ op.no }}</a>
-
-                    <span class="post_type">
-                        {% if op.since4pass %}<i class="icon-tag" title="Pass user since {{ op.since4pass }}."></i>{% endif %}
-                        {% if op.country %}<span title="{{ op.country_name }}" class="flag flag-{{ op.country|lower }}"></span>{% endif %}
-                        {% if op.troll_country %}<span title="{{ op.country_name }}" class="flag-pol2 flag-{{ op.troll_country|lower }}"></span>{% endif %}
-                        {% if op.spoiler %}<i class="icon-eye-close" title="The image in this post has been marked spoiler."></i>{% endif %}
-                        {% if op.deleted and not op.timestamp_expired %}<i class="icon-trash" title="This post was prematurely deleted."></i>{% endif %}
-                        {% if op.deleted and op.timestamp_expired %}<i class="icon-trash" title="This post was deleted on {{ op.timestamp_expired }}."></i>{% endif %}
-                        {% if op.sticky %}<i class="icon-pushpin" title="This thread has been stickied."></i>{% endif %}
-                        {% if op.locked %}<i class="icon-lock" title="This thread has been locked."></i>{% endif %}
-                        </span>
-                    <span class="mobile_view"><a href="/{{ board }}/thread/{{ op.no }}" class="btnr parent">View</a></span>
-                    <span class="mobile_bulk"></span>
-                    <span class="post_controls">
-                        <a href="/{{ board }}/thread/{{ op.no }}" class="btnr parent">View</a>
-                        <a href="/{{ board }}/thread/{{ op.no }}" class="btnr parent">Reply</a>
-                        <a href="//boards.4chan.org/{{ board }}/thread/{{ op.no }}" class="btnr parent">Original</a>
-                        <!--<a href="#" class="btnr parent" data-post-id="{{ op.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a>
-                        <a href="#" class="btnr parent" data-post-id="{{ op.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a>-->
-                    </span>
-                </div>
-            </header>
-            <div class="backlink_list is_op" style="display: block;">
-            </div>
-            <div class="text">
-                {{ op.com|safe }}
-            </div>
+            {% set post = thread[0] %}
+            {% set board_index = True %}
+							{% include 'post.html' %}
             <div class="thread_tools_bottom">
-            {% if op.omitted_posts %}
+            {% if post.omitted_posts %}
             <span class="omitted">
-            <a style="display:inline-block" href="/{{ board }}/thread/{{ op.no }}" data-function="expandThread" data-thread-num="{{ op.no }}">
+            <a style="display:inline-block" href="/{{ board }}/thread/{{ post.no }}" data-function="expandThread" data-thread-num="{{ post.no }}">
                 <i class="icon icon-resize-full"></i></a>
             <span class="omitted_text">
-                <span class="omitted_posts">{{ op.omitted_posts }}</span> post{% if op.omitted_posts > 1 %}s{% endif %} omitted
-                {% if op.omitted_images %}and <span class="omitted_images">{{ op.omitted_images }}</span> image{% if op.omitted_images > 1 %}s{% endif %} omitted{% endif %}
+                <span class="omitted_posts">{{ post.omitted_posts }}</span> post{% if post.omitted_posts > 1 %}s{% endif %} omitted
+                {% if post.omitted_images %}and <span class="omitted_images">{{ post.omitted_images }}</span> image{% if post.omitted_images > 1 %}s{% endif %} omitted{% endif %}
             </span>
             </span>
             {% endif %}
             </div>
             <aside class="posts">
-            {% for reply in thread[1:] %}
-            <article class="post {% if reply.md5 %}has_image{% endif %}" id="p{{ reply.no }}" data-board="{{ board }}" data-thread-num="{{ reply.resto }}">
-                <div class="post_wrapper">
-                {% if reply.md5 %}
-                    <div class="post_file">
-                    <span class="post_file_controls">
-                        <!--<a href="/{{ board }}/search/image/{{ reply.md5 }}"
-                       class="btnr parent">View Same</a>-->
-                        <a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank"
-                           class="btnr parent">Google</a>
-                        <a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank"
-                           class="btnr parent">ImgOps</a>
-                        <a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank"
-                           class="btnr parent">iqdb</a>
-                        <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank"
-                           class="btnr parent">SauceNAO</a>
-                    {% if reply.asagi_filename %}
-                        <a href="{{ image_uri }}/{{ (reply.asagi_filename|string)[0:4] }}/{{ (reply.asagi_filename|string)[4:6] }}/{{ reply.asagi_filename }}" download="{{ reply.filename }}"
-                           class="btnr parent"><i class="icon-download-alt"></i></a>
-                    {% else %}
-                        <a href="{{ image_uri }}/{{ reply.tim }}{{ reply.ext }}" download="{{ reply.filename }}"
-                           class="btnr parent"><i class="icon-download-alt"></i></a>
-                    {% endif %}
-                    </span>
-                    {% if reply.asagi_filename %}
-                        <a href="{{ image_uri }}/{{ (reply.asagi_filename|string)[0:4] }}/{{ (reply.asagi_filename|string)[4:6] }}/{{ reply.asagi_filename }}" target="_blank" class="post_file_filename" rel="noreferrer">{{ reply.filename }}{{ reply.ext }}</a>,
-                    {% else %}
-                        <a href="{{ image_uri }}/{{ reply.tim }}{{ reply.ext }}" target="_blank" class="post_file_filename" rel="noreferrer">{{ reply.filename }}{{ reply.ext }}</a>,
-                    {% endif %}
-                        <span class="post_file_metadata">{{ reply.fsize }}, {{ reply.w }}x{{ reply.h }}</span>
-                    </div>
-                <div class="thread_image_box">
-                {% if reply.asagi_filename %}
-                    <a href="{{ image_uri }}/{{ (reply.asagi_filename|string)[0:4] }}/{{ (reply.asagi_filename|string)[4:6] }}/{{ reply.asagi_filename }}" target="_blank" rel="noreferrer" class="thread_image_link">
-                {% else %}
-                    <a href="{{ image_uri }}/{{ reply.tim }}{{ reply.ext }}" target="_blank" rel="noreferrer" class="thread_image_link">
-                {% endif %}
-                    {% if reply.asagi_preview_filename %}
-                        <img src="{{ thumb_uri }}/{{ (reply.asagi_preview_filename|string)[0:4] }}/{{ (reply.asagi_preview_filename|string)[4:6] }}/{{ reply.asagi_preview_filename}}" width="{{ reply.tn_w }}" height="{{ reply.tn_h }}" class="post_image{% if reply.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ reply.md5 }}" />
-                    {% else %}
-                        <img src="{{ thumb_uri }}/{{ (reply.tim|string)[0:4] }}/{{ (reply.tim|string)[4:6] }}/{{ reply.tim }}s.jpg" width="{{ reply.tn_w }}" height="{{ reply.tn_h }}" class="post_image{% if reply.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ reply.md5 }}" />
-                    {% endif %}
-                    </a>
-                </div>
-                {% endif %}
-                <header>
-                    <div class="post_data">
-                        <div class="post_mobile_controls_collapse dropdown">
-                            <button data-toggle="dropdown" class="btnr parent"><i class="icon-th-list"></i></button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li class="nav-header">Post</li>
-                                <!--<li><a href="#" data-post-id="{{ reply.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a></li>
-                                <li><a href="#" data-post-id="{{ reply.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a></li>-->
-                                {% if reply.md5 %}
-                                <li class="divider"></li>
-                                <li class="nav-header">Media</li>
-                                <!--<li><a href="/{{ board }}/search/image/{{ reply.md5 }}">View Same</a></li>-->
-                                <li><a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank">Google</a></li>
-                                <li><a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank">ImgOps</a></li>
-                                <li><a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank">iqdb</a></li>
-                                <li><a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ reply.tim }}s.jpg" target="_blank">SauceNAO</a></li>
-                                <li><a href="{{ image_uri }}/{{ reply.tim }}{{ reply.ext }}" download="{{ reply.filename }}">
-                                    <i class="icon-download-alt"></i> Download</a></li>
-                                {% endif %}
-                            </ul>
-                        </div>
-                        <!--<span class="post_show_board">/{{ board }}/</span>-->
-
-                        <h2 class="post_title">{{ reply.sub|safe }}</h2>
-                        <span class="post_poster_data">
-                        {% if reply.email and reply.email != 'noko' %}<a href="mailto:{{ reply.email }}">{% endif %}<span class="post_author">{{ reply.name }}</span><span class="post_tripcode">{% if reply.trip %}{{ reply.trip }}{% endif %}</span>{% if reply.email and reply.email != 'noko' %}</a>{% endif %}
-
-                        {% if reply.id %}<span class="poster_hash">ID:{{ reply.id }}</span>{% endif %}
-                        {% if reply.capcode == 'mod' %}<span class="post_level post_level_moderator">## Mod</span>{% endif %}
-                        {% if reply.capcode == 'admin' %}<span class="post_level post_level_administrator">## Admin</span>{% endif %}
-                        {% if reply.capcode == 'developer' %}<span class="post_level post_level_developer">## Developer</span>{% endif %}
-                        {% if reply.capcode == 'verified' %}<span class="post_level post_level_verified">## Verified</span>{% endif %}
-                        {% if reply.capcode == 'founder' %}<span class="post_level post_level_founder">## Founder</span>{% endif %}
-                        {% if reply.capcode == 'manager' %}<span class="post_level post_level_manager">## Manager</span>{% endif %}
-                        </span>
-                        <span class="time_wrap">
-                            <time datetime="{{ reply.time }}" title="4chan Time: {{ reply.now }}">{{ reply.now }}</time>
-                        </span>
-                        <a href="/{{ board }}/thread/{{ reply.resto }}" data-post="{{ reply.no }}" data-function="highlight" title="Link to this post">No.</a><a href="/{{ board }}/thread/{{ reply.resto }}" data-post="{{ reply.no }}" data-function="quote" title="Reply to this post">{{ reply.no }}</a>
-
-                        <span class="post_type">
-                        {% if reply.since4pass %}<i class="icon-tag" title="Pass user since {{ reply.since4pass }}."></i>{% endif %}
-                        {% if reply.country %}<span title="{{ reply.country_name }}" class="flag flag-{{ reply.country|lower }}"></span>{% endif %}
-                        {% if reply.troll_country %}<span title="{{ reply.country_name }}" class="flag-pol2 flag-{{ reply.troll_country|lower }}"></span>{% endif %}
-                        {% if reply.spoiler %}<i class="icon-eye-close" title="The image in this post has been marked spoiler."></i>{% endif %}
-                        {% if reply.deleted and not reply.timestamp_expired %}<i class="icon-trash" title="This post was prematurely deleted."></i>{% endif %}
-                        {% if reply.deleted and reply.timestamp_expired %}<i class="icon-trash" title="This post was deleted on {{ reply.timestamp_expired }}."></i>{% endif %}
-                        </span>
-                        <span class="mobile_view"><a href="/{{ board }}/thread/{{ reply.resto }}" class="btnr parent">View</a></span>
-                        <span class="mobile_bulk"></span>
-                        <!--<span class="post_controls">
-                            <a href="#" class="btnr parent" data-post-id="{{ reply.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a>
-                            <a href="#" class="btnr parent" data-post-id="{{ reply.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a>
-                        </span>-->
-                    </div>
-                </header>
-                {% if reply.no|string in reply.quotelinks %}
-                <div class="backlink_list" style="display: block;">
-                    Quoted By:
-                    {% for quotelink in reply.quotelinks[reply.no|string] %}
-                    <span class="post_backlink" data-post="{{ quotelink }}">
-                        <a href="#p{{ quotelink }}" class="quotelink" data-function="highlight" data-backlink="true" data-board="{{ board }}" data-post="{{ quotelink }}">&gt;&gt;{{ quotelink }}</a>
-                    </span>
-                    {% endfor %}
-                </div>
-                {% endif %}
-                <div class="text">
-                    {{ reply.com|safe }}
-                </div>
-                </div>
-            </article>
-                {% endfor %}
+            {% for post in thread[1:] %}
+									{% include 'post.html' %}
+						{% endfor %}
             </aside>
             </article>
             {% endfor %}
@@ -437,4 +218,4 @@
     </div> <!-- end of #main -->
     <div id="push"></div>
 </div>
-{% include 'footer.html' %}
+{% endblock %}
