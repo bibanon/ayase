@@ -25,6 +25,10 @@
     <link rel="search" type="application/opensearchdescription+xml" title="FoolFuuka" href="/_/opensearch/">
 </head>
 <body class="theme_default {{ skin }}">
+<div class="letters">
+{% if archives %}Archives: [ {% for archive in archives %}<a href="/{{ archive.shortname }}/">{{ archive.shortname }}</a> {% endfor %} ]{% endif %}
+{% if boards %}Boards: [ {% for internal_board in boards %}<a href="/{{ internal_board.shortname }}/">{{ internal_board.shortname }}</a> {% endfor %} ]{% endif %}
+</div>
 <div class="container-fluid">
     <div class="navbar navbar-fixed-top navbar-inverse">
         <div class="navbar-inner">
@@ -35,16 +39,25 @@
                            data-toggle="dropdown">{{ title|safe }} <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="/">Index</a></li><li class="divider"></li>
+
+                            <li><a href="/">Index</a></li>
+                            <li class="divider"></li>
+                            {% if archives %}
+                          
                             <li class="nav-header">Archives</li>
                             {% for archive in archives %}
                             <li><a href="/{{ archive.shortname }}/">/{{ archive.shortname }}/ - {{ archive.name }}</a></li>
                             {% endfor %}
                             <li class="divider"></li>
+                          
+                            {% endif %}
+                            {% if boards %}
                             <li class="nav-header">Boards</li>
                             {% for board in boards %}
-                            <li><a href="/{{ board.shortname }}/">/{{ board.shortname }}/ - {{ board.name }}</a></li>
+                            <li><a href="/{{ internal_board.shortname }}/">/{{ internal_board.shortname }}/ - {{ internal_board.name }}</a></li>
                             {% endfor %}
+                            {% endif %}
+
                         </ul>
                     </li>
                 </ul>
@@ -121,4 +134,6 @@
 <![endif]-->
 
 </body>
+
 </html>
+
