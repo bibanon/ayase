@@ -159,18 +159,62 @@
                 </form>
             </div>
         </div>-->
-        <div class="board">
-            {% for post in posts %}
-                    {% include 'post.html' %}
 
-            {% endfor %}
+        <div class="board">
+            {% for i in threads %}
+            {% set thread = i['posts'] %}
+            {% set post = thread[0] %}
+            {% set board_index = True %}
+							{% include 'post.html' %}
+            <div class="thread_tools_bottom">
+            {% if post.omitted_posts %}
+            <span class="omitted">
+            <a style="display:inline-block" href="/{{ board }}/thread/{{ post.no }}" data-function="expandThread" data-thread-num="{{ post.no }}">
+                <i class="icon icon-resize-full"></i></a>
+            <span class="omitted_text">
+                <span class="omitted_posts">{{ post.omitted_posts }}</span> post{% if post.omitted_posts > 1 %}s{% endif %} omitted
+                {% if post.omitted_images %}and <span class="omitted_images">{{ post.omitted_images }}</span> image{% if post.omitted_images > 1 %}s{% endif %} omitted{% endif %}
+            </span>
+            </span>
+            {% endif %}
+            </div>
+            <aside class="posts">
+            {% for post in thread[1:] %}
+									{% include 'post.html' %}
+						{% endfor %}
             </aside>
             </article>
-            <article class="clearfix thread backlink_container">
-                <div id="quotelink" style="position: absolute; top: 0; left: 0; z-index: 5;"></div>
-            </article>
+            {% endfor %}
         </div>
+			<div class="paginate">
+					<ul>
+							<li class="prev"><a href="/{{ board }}/page/{{ page_num - 1 }}/">← Previous</a></li>
+							<li {% if page_num == 1 %} class="active"{% endif %}><a href="/{{ board }}/page/1/">1</a></li>
+							{% for i in range(2,10) %}
+							<li {% if page_num == i %} class="active"{% endif %}><a href="/{{ board }}/page/{{ i }}/">{{ i }}</a></li>
+							{% endfor %}
+							
+							{% if page_num < 13 %}
+								{% for i in range(10,15) %}
+									<li {% if page_num == i %} class="active"{% endif %}><a href="/{{ board }}/page/{{ i }}/">{{ i }}</a></li>
+								{% endfor %}
+							{% elif page_num >= 13 %}
+							<li><a href="/{{ board }}/page/10/">10</a></li>
+							<li class="disabled"><span>...</span></li>
+							
+							
+								{% for i in range(-2,3) %}
+									<li {% if i==0 %} class="active"{% endif %}><a href="/{{ board }}/page/{{ page_num + i }}/">{{ page_num + i }}</a></li>
+								{% endfor %}
+							{% endif %}
+							<li class="disabled"><span>...</span></li>
+							<li class="next"><a href="/{{ board }}/page/{{ page_num + 1 }}/">Next →</a></li>
+					</ul>
 
+			</div>
+			<article class="clearfix thread backlink_container">
+				<div id="quotelink" style="position: absolute; top: 0; left: 0; z-index: 5;"></div>
+			</article>
     </div> <!-- end of #main -->
     <div id="push"></div>
 </div>

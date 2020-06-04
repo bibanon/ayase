@@ -1,3 +1,29 @@
+var labelOp = function()
+{
+	opPostNum = $('.isOp').map(function(){
+										return $.trim($(this).text());
+							}).get();
+	for(i=0; i<$('.quotelink').length; i++ ) {  
+			if(opPostNum.includes($('.quotelink')[i].getAttribute("href").substring(2)) && !$('.quotelink')[i].text.includes("(OP)") ){
+							$('.quotelink')[i].text += " (OP)";
+					}
+	}
+}
+
+var labelQuotelinks = function()
+{
+	board_name = $('.post_is_op').attr('data-board');
+	for (i=0; i<$('.quotelink').length; i++){
+		//TODO: awful way to find the quotelink postnum
+		post_num = $('.quotelink')[i].attributes.href.value.substring(2)
+		quotelink = $('.quotelink')[i]
+		quotelink.setAttribute('data-function', 'highlight')
+		quotelink.setAttribute('data-backlink', 'true')
+		quotelink.setAttribute('data-board', board_name)
+		quotelink.setAttribute('data-post', post_num)
+	}
+}
+
 var bindFunctions = function()
 {
 	// the following block of code deals with drag and drop of images for MD5 hashing
@@ -305,21 +331,46 @@ var bindFunctions = function()
 			{
 				el.spin('small');
 				jQuery.ajax({
-					url: backend_vars.api_url + '_/api/chan/thread/',
+					url: backend_vars.api_url + `${$('.post_is_op').attr('data-board')}/thread/${thread_num}.json`,
 					dataType: 'json',
 					type: 'GET',
-					data: {
-						num : thread_num,
-						board: backend_vars.board_shortname,
-						theme: backend_vars.selected_theme
-					},
 					success: function(data, textStatus, jqXHR){
-						insertPost(data, textStatus, jqXHR);
+						insertPosts(data, textStatus, jqXHR);
+						
+						var op_bl = $(`#p${thread_num}`).find('.backlink_list.is_op');
+						if(!op_bl.attr('expanded')){
+							var op_quotelinks = []
+							//insert quotedby into quotelinks
+							$(`#p${thread_num}`).find('.quotelink').each(function(index, value){
+								var redir = value.attributes['data-post'].value;
+								if(thread_num == redir){
+									op_quotelinks.push($(value).closest('div.post_wrapper').attr('id'));
+								}
+							});
+							
+							
+								
+								op_bl.append("Quoted By:");
+								//quotelink list should consist of post no
+								for(i=0; i<op_quotelinks.length; i++){
+									var post_num = op_quotelinks[i];
+									var ql_content = `<span class="post_backlink" data-post="${post_num}">
+										<a href="#p${post_num}" class="quotelink" data-function="highlight" data-backlink="true" data-board="a" data-post="${post_num}">&gt;&gt;${post_num}</a>
+								</span>`;
+								op_bl.append(ql_content);
+								}
+								op_bl.attr('expanded', 1);
+							}
+						
+						
 						var post_count = 0;
 						var media_count = 0;
-						jQuery.each(data[thread_num].posts, function(id, val){
+						jQuery.each(data[0].posts, function(id, val){
+							if(val.resto == 0){
+								return;
+							}
 							post_count++;
-							if (val.media !== null)
+							if (val.md5 !== null)
 							{
 								media_count++;
 							}
@@ -1012,7 +1063,7 @@ var bindFunctions = function()
 		if (event.type == "mouseover")
 		{
 
-			var backlink = jQuery("#backlink");
+			var backlink = jQuery("#quotelink");
 			var el = jQuery(this);
 
 			var pos = el.offset();
@@ -1027,10 +1078,10 @@ var bindFunctions = function()
 				backlink.css('display', 'block');
 				backlink.html(quote.formatted);
 			}
-			else if (jQuery('#' + el.data('post')).hasClass('post'))
+			else if (jQuery('#p' + el.data('post')).hasClass('post'))
 			{
 				// normal posts
-				var toClone = jQuery('#' + el.data('post'));
+				var toClone = jQuery('#p' + el.data('post'));
 				if (toClone.length == 0)
 					return false;
 				backlink.css('display', 'block');
@@ -1045,7 +1096,7 @@ var bindFunctions = function()
 					return false;
 				}
 				var data = backend_vars.loaded_posts[el.data('board') + ':' + el.data('post')];
-				backlink.html(data.formatted);
+				backlink.html(data);
 				backlink.css('display', 'block');
 			}
 			else
@@ -1062,15 +1113,10 @@ var bindFunctions = function()
 					var backlink_spin = el;
 					backlink_spin.spin('small');
 					backlink_jqxhr = jQuery.ajax({
-						url: backend_vars.api_url + '_/api/chan/post/' ,
-						dataType: 'json',
+						url: backend_vars.api_url + `${el.data('board')}/post/${el.data('post')}` ,
+						dataType: 'html',
 						type: 'GET',
 						cache: false,
-						data: {
-							board: el.data('board'),
-							num: el.data('post'),
-							theme: backend_vars.selected_theme
-						},
 						success: function(data){
 							backlink_spin.spin(false);
 							if (typeof data.error !== "undefined")
@@ -1084,8 +1130,8 @@ var bindFunctions = function()
 							// avoid showing the post if the mouse is not there anymore
 							if (show_post_board === el.data('board') && show_post_num === el.data('post'))
 							{
-								backlink.html(data.formatted);
-								backlink.find("time").localize('ddd dd mmm yyyy HH:MM:ss');
+								backlink.html(data);
+								//backlink.find("time").localize('ddd dd mmm yyyy HH:MM:ss');
 								backlink.css('display', 'block');
 								showBacklink(backlink, pos, height, width);
 							}
@@ -1101,7 +1147,7 @@ var bindFunctions = function()
 				}, 50);
 			}
 
-			backlink.find("time").localize('ddd dd mmm yyyy HH:MM:ss');
+			//backlink.find("time").localize('ddd dd mmm yyyy HH:MM:ss');
 			showBacklink(backlink, pos, height, width);
 		}
 		else
@@ -1109,7 +1155,7 @@ var bindFunctions = function()
 			show_post_board = false;
 			show_post_num = false;
 			clearTimeout(timeout);
-			jQuery("#backlink").css('display', 'none').html('');
+			jQuery("#quotelink").css('display', 'none').html('');
 		}
 	});
 };
@@ -1291,6 +1337,29 @@ var realtimethread = function(){
 };
 
 var ghost = false;
+
+var insertPosts = function(data, textStatus, jqXHR)
+{
+	var w_height = jQuery(document).height();
+	var found_posts = false;
+	jQuery.each(data, function(id, val)
+	{
+		if (typeof val.posts !== "undefined"){
+			var aside = jQuery('article.thread[data-thread-num=' + val.posts[0].no + '] aside.posts');
+			$.ajax({
+				url: backend_vars.api_url + `${$('.post_is_op').attr('data-board')}/posts/${val.posts[0].no }`,
+				type: 'GET',
+				async: false,
+				success: function(data){
+					aside.html(data);
+					labelOp();
+					labelQuotelinks();
+				}
+			});
+		}
+	});
+}
+
 var insertPost = function(data, textStatus, jqXHR)
 {
 	var w_height = jQuery(document).height();
@@ -1302,13 +1371,27 @@ var insertPost = function(data, textStatus, jqXHR)
 		{
 			if (typeof val.posts !== "undefined")
 			{
-				var aside = jQuery('article.thread[data-thread-num=' + id + '] aside.posts');
+				var aside = jQuery('article.thread[data-thread-num=' + val.posts[0].no + '] aside.posts');
 				jQuery.each(val.posts, function(idx, value)
 				{
+					//process all posts except OP
+					if(value.resto == 0){
+						return;
+					}
 					found_posts = true;
-					var post = jQuery(value.formatted);
+					var obtained_post;
+					$.ajax({
+						url: backend_vars.api_url + `${$('.post_is_op').attr('data-board')}/post/${value.no}`,
+						type: 'GET',
+						async: false,
+						success: function(data){
+							obtained_post = data;
+							
+						}
+					});
+					var post = jQuery(obtained_post);
 
-					post.find("time").localize('ddd dd mmm yyyy HH:MM:ss');
+					//post.find("time").localize('ddd dd mmm yyyy HH:MM:ss');
 					post.find('[rel=tooltip]').tooltip({
 						placement: 'top',
 						delay: 200
@@ -1320,13 +1403,13 @@ var insertPost = function(data, textStatus, jqXHR)
 					});
 
 					// avoid inserting twice
-					if (jQuery('.doc_id_' + value.doc_id).length != 0)
+					if (jQuery('#p' + value.no).length != 0)
 					{
-						jQuery('.doc_id_' + value.doc_id).remove();
+						jQuery('#p' + value.no).remove();
 					}
 
 					aside.append(post);
-					backlinkify(post, value.num, value.subnum);
+					backlinkify(post, value.no, value.subnum);
 
 					$('pre,code').each(function(i, block) {
 						hljs.highlightBlock(block);
@@ -1470,7 +1553,7 @@ jQuery(document).ready(function() {
 	}
 
 	// firefox sucks at styling input, so we need to add size="", that guess what? It's not w3 compliant!
-	jQuery('#file_image').attr({size: '16'});
+	//jQuery('#file_image').attr({size: '16'});
 
 	var post = location.href.split(/#/);
 	if (post[1]) {
@@ -1482,7 +1565,7 @@ jQuery(document).ready(function() {
 		}
 
 		toggleHighlight(post[1]);
-		jQuery('#'+post[1].replace('q', ''))[0].scrollIntoView( true );
+		//jQuery('#'+post[1].replace('q', ''))[0].scrollIntoView( true );
 	}
 
 	if (typeof backend_vars.thread_id !== "undefined" && (Math.round(new Date().getTime() / 1000) - backend_vars.latest_timestamp < 6 * 60 * 60))
@@ -1493,6 +1576,8 @@ jQuery(document).ready(function() {
 	bindFunctions();
 	hideThreads();
 	hidePosts();
+	labelOp();
+	labelQuotelinks();
 
 	// localize and add 4chan tooltip where title
 	jQuery("article time").localize('ddd dd mmm yyyy HH:MM:ss').filter('[title]').tooltip({
