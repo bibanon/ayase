@@ -322,9 +322,9 @@
                     <a href="{{ image_uri }}/{{ reply.tim }}{{ reply.ext }}" target="_blank" rel="noreferrer" class="thread_image_link">
                 {% endif %}
                     {% if reply.asagi_preview_filename %}
-                        <img src="{{ thumb_uri }}/thumb/{{ (reply.asagi_preview_filename|string)[0:4] }}/{{ (reply.asagi_preview_filename|string)[4:6] }}/{{ reply.asagi_preview_filename}}" width="{{ reply.tn_w }}" height="{{ reply.tn_h }}" class="post_image{% if reply.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ reply.md5 }}" />
+                        <img src="{{ thumb_uri }}/{{ (reply.asagi_preview_filename|string)[0:4] }}/{{ (reply.asagi_preview_filename|string)[4:6] }}/{{ reply.asagi_preview_filename}}" width="{{ reply.tn_w }}" height="{{ reply.tn_h }}" class="post_image{% if reply.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ reply.md5 }}" />
                     {% else %}
-                        <img src="{{ thumb_uri }}/thumb/{{ (reply.tim|string)[0:4] }}/{{ (reply.tim|string)[4:6] }}/{{ reply.tim }}s.jpg" width="{{ reply.tn_w }}" height="{{ reply.tn_h }}" class="post_image{% if reply.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ reply.md5 }}" />
+                        <img src="{{ thumb_uri }}/{{ (reply.tim|string)[0:4] }}/{{ (reply.tim|string)[4:6] }}/{{ reply.tim }}s.jpg" width="{{ reply.tn_w }}" height="{{ reply.tn_h }}" class="post_image{% if reply.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ reply.md5 }}" />
                     {% endif %}
                     </a>
                 </div>

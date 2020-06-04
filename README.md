@@ -1,4 +1,4 @@
-> **Note:** Currently Ayase is only a proof of concept that essentially just proxies the 4chan API for API testing and HTML Templating. Future versions will set up a connection to the Asagi and Ayase Schemas.
+> **Note:** Currently Ayase is only a proof of concept that essentially just proxies the 4chan API for API testing and HTML Templating. Future versions will set up a connection to the both the Asagi and Ayase Schemas.
 
 **Ayase** is a 4chan Archiver API middleware and HTML frontend based on Python, Falcon, Hug, and Jinja2.
 
@@ -13,12 +13,53 @@ pip install -r requirements.txt
 ```
 
 ## Usage
+The following commands will run a server at <http://localhost:8000> . Check the automatically generated API documentation for HTML and REST API endpoint usage information.
 
-The following command will run a server at <http://localhost:8000> . Check the automatically generated API documentation for HTML and REST API endpoint usage information.
+### Progrider 4chan Template
+This template currently only supports 4chan replication.
 
 ```
 cd ayase
 hug -f fourchan.py
+```
+
+### Foolfuuka (w/ Asagi schema) Template 
+To use this template, you will need to have an accessible MySQL DB with an Asagi schema as well as a web server to host static content. We will be using NGINX here.
+
+#### Configuring ayase
+This template expects a YAML config file located at `ayase/config.yml`. An example is located in `ayase/config.example.yml`. Here, you can specifiy the database location, enabled archives/boards, and the expected image URL (useful if you plan to grab full images from another archive).
+
+#### Configuring the NGINX Web Server
+This template does not serve static content (such as the js, css, and any image files) and they will need to be hosted using an extra webserver, such as Nginx.
+
+The following is an example Nginx config which will proxy_pass the hug api while also hosting images. 
+
+```
+server {
+        listen 80;
+        location / {
+                proxy_pass http://localhost:8000;
+        }
+
+        location /img/ {
+                alias "/srv/boards/";
+                try_files $uri $uri/ = 404;
+        }
+
+        location /static/ {
+                root "/var/www/ayase/ayase/foolfuuka/";
+                try_files $uri $uri/ = 404;
+
+        }
+}
+```
+
+#### Starting the hug api
+Once everything else is configured, you can start hug with these commands. 
+
+```
+cd ayase
+hug -f view/asagi.py
 ```
 
 ## HTML Templates
@@ -27,7 +68,15 @@ Ayase provides only a few HTML Templates as default, and they are not part of th
 
 Our criteria for default HTML Templates is historical significance that match archived data with the period appropriate theming for the original boards they came from, and most of all an avoidance of anything but HTML5, basic CSS, and ECMAScript unless absolutely necessary.
 
-Only the progrider template is currently built.
+Only the progrider and foolfuuka template is currently built.
+
+### Foolfuuka Template
+
+Pulled directly from Foolfuuka, this jinja2 template seeks to replicate all Foolfuuka funtionality with a lighter and more efficient code base. 
+
+![Index](foolfuuka-index.png)
+
+![Board Index](foolfuuka-board-index.png)
 
 ### Progrider Template
 
