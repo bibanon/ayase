@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block body %}
+        <div class="board">
+        {% for page in pages %}
+            {% for thread in page.threads %}
+                {% set post = thread %}
+                {% include "post.html" %}
+                {% for reply in thread.last_replies %}
+                    {% set post = reply %}
+                    {% include "post.html" %}
+                {% endfor %}
+            </aside>
+            </article>
+            {% endfor %}
+        {% endfor %}
+        </div>
+{% endblock %}

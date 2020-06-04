@@ -1,0 +1,215 @@
+.mobile_view {
+    display: none !important;
+}
+.post_mobile_controls_collapse {
+    display: none !important;
+}
+.post_mobile_controls {
+    display: none !important;
+}
+.post_controls {
+    display: inline !important;
+}
+.post_file_controls {
+    display: inline !important;
+}
+textarea#reply_chennodiscursus {
+    width:320px;
+}
+@media only screen and (max-width: 833px) {
+    .letters a {
+        margin:8px !important;
+    }
+    .post_wrapper {
+        width: 97% !important;
+        clear: both;
+        display: inline-block !important;
+        margin: 0 !important;
+    }
+    .btnr {
+        font-size: 13px !important;
+        margin:3px !important;
+    }
+    .paginate {
+        height: 105px !important;
+    }
+    footer#footer {
+        height: 100px !important;
+    }
+    article.thread > header {
+        margin: 5px !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+    article.thread > .text {
+        padding: 5px 5px 5px 10px !important;
+    }
+    article.thread article.post {
+        margin: 0 2px 3px 5px !important;
+    }
+    .post_wrapper > .text {
+        padding: 3px 5px 0 8px !important;
+    }
+    html {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+    .modal.fade.in {
+        top: 30% !important;
+    }
+    #backlink {
+        box-shadow: 0 0 0 #333 !important;
+    }
+    .btn-group {
+        white-space: normal !important;
+    }
+    .thread_form input[type="file"] {
+        width: 50% !important;
+        height: 26px !important;
+        padding-right: 12px !important;
+        -ms-box-sizing: content-box !important;
+        -moz-box-sizing: content-box !important;
+        -webkit-box-sizing: content-box !important;
+        box-sizing: content-box !important;
+    }
+    .thread_form input[type="text"], .thread_form input[type="password"], .thread_form.uneditable-input, .thread_form select {
+        width: 50% !important;
+        height: 18px !important;
+        -ms-box-sizing: content-box !important;
+        -moz-box-sizing: content-box !important;
+        -webkit-box-sizing: content-box !important;
+        box-sizing: content-box !important;
+    }
+}
+@media only screen and (max-width: 600px) {
+    .dropdown-menu > li {
+        width:100% !important;
+    }
+    .navbar .nav {
+        width:100% !important;
+    }
+    .thread_image_box {
+        float: none !important;
+    }
+    .input-prepend {
+        width: 100% !important;
+    }
+    fieldset > .pull-left {
+        float: none !important;
+    }
+    footer#footer > a {
+        width: 100% !important;
+    }
+    footer#footer > .pull-right,
+    footer#footer > .pull-right > .btn-group {
+        float: none !important;
+        margin: 1% !important
+    }
+    .pull-right > .dropdown-menu {
+        right: 0 !important;
+        left: 0 !important;
+    }
+    .navbar-search .search-query {
+        width: 100% !important;
+    }
+    .search_box .advanced_search #search_form_comment {
+        width: 90% !important;
+    }
+    .search_box .advanced_search {
+        width: 100% !important;
+    }
+    .advanced_search .column {
+        width: 50% !important;
+        float: left !important;
+    }
+    .search_box .advanced_search .add-on {
+        font-size: 9px !important;
+        width: 30% !important;
+    }
+    .search_box .advanced_search input[type="text"] {
+        width: 50% !important;
+    }
+    .advanced_search .latest_searches ul {
+        width: 90% !important;
+    }
+    .search_box .advanced_search .radixes {
+        width: 100% !important;
+    }
+    .advanced_search .radixes label {
+        width: 50% !important;
+    }
+    article.thread {
+        padding: 10px 0 !important;
+        margin: 0 5px !important;
+        overflow: visible !important;
+        display: block !important;
+    }
+    article.thread > div.pull-right {
+        text-align: center !important;
+        float: none !important;
+        padding-bottom: 2%;
+    }
+    .post header {
+        overflow: visible !important;
+        display: block !important;
+    }
+    .post_controls {
+        display: none !important;
+    }
+    .post_file_controls {
+        display: none !important;
+    }
+    .mobile_view {
+        float: right !important;
+        display: block !important;
+    }
+    .post_mobile_controls_collapse {
+        float: left !important;
+        display: block !important;
+    }
+    .post_mobile_controls {
+        display: block !important;
+    }
+    .btnr {
+        padding: 4px 14px !important;
+    }
+    .modal.fade.in {
+        top: 10px !important;
+    }
+    .modal-body {
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+    #thread_o_matic > article.thread {
+        width: 100% !important;
+        clear: both !important;
+    }
+    .table th, .table td {
+        padding: 1px !important;
+    }
+    .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top {
+        margin-right: 0 !important;
+    }
+    .thread_form label {
+        min-width: 20% !important;
+    }
+    #thread_o_matic > article.thread > header .post_controls {
+        display: block !important;
+        margin-top: 10px !important;
+        margin-bottom: 10px !important;
+    }
+    textarea#reply_chennodiscursus {
+        width:95% !important;
+    }
+    article.thread .thread_form_wrap {
+        margin: 0 !important;
+        padding: 5% !important;
+        width: 90% !important;
+    }
+    .modal-comment {
+        min-width: 90% !important;
+    }
+    .modal-password {
+        min-width: 60% !important;
+    }
+}
