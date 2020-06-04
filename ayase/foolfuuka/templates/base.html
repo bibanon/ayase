@@ -26,8 +26,8 @@
 </head>
 <body class="theme_default {{ skin }}">
 <div class="letters">
-{% if archives %}Archives: [ {% for archive in archives %}<a href="/{{ archive.shortname }}/">{{ archive.shortname }}</a> {% endfor %} ]{% endif %}
-{% if boards %}Boards: [ {% for internal_board in boards %}<a href="/{{ internal_board.shortname }}/">{{ internal_board.shortname }}</a> {% endfor %} ]{% endif %}
+{% if archives %}Archives: [ {% for archive in archives %}<a href="/{{ archive.shortname }}/">{{ archive.shortname }} {{ '/' if not loop.last }}</a> {% endfor %} ]{% endif %}
+{% if boards %}Boards: [ {% for internal_board in boards %}<a href="/{{ internal_board.shortname }}/">{{ internal_board.shortname }} {{ '/' if not loop.last }}</a> {% endfor %} ]{% endif %}
 </div>
 <div class="container-fluid">
     <div class="navbar navbar-fixed-top navbar-inverse">
@@ -53,7 +53,7 @@
                             {% endif %}
                             {% if boards %}
                             <li class="nav-header">Boards</li>
-                            {% for board in boards %}
+                            {% for internal_board in boards %}
                             <li><a href="/{{ internal_board.shortname }}/">/{{ internal_board.shortname }}/ - {{ internal_board.name }}</a></li>
                             {% endfor %}
                             {% endif %}
