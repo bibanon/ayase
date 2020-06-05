@@ -16,7 +16,7 @@
                            class="btnr parent">iqdb</a>
                         <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
                            class="btnr parent">SauceNAO</a>
-                        <a href="{{ image_uri }}/{{ post.tim }}{{ post.ext }}" download="{{ post.filename }}"
+                        <a href="{{ image_uri }}/{{ post.tim }}{{ post.ext }}" download="{{ post.filename }}{{ post.ext }}"
                            class="btnr parent"><i class="icon-download-alt"></i></a>
                     </span>
                             {% if asagi %}
@@ -38,7 +38,7 @@
                                 </a>
                                 {% if post.resto == 0 %}
                                 <div class="post_file" style="padding-left: 2px;{% if post.tn_w > 149 %} max-width: {{ post.tn_w }}px;{% endif %}">
-                                    {{ post.fsize }}, {{ post.w }}x{{ post.h }}, <a class="post_file_filename" href="{{ image_uri }}/{{ post.asagi_filename }}" target="_blank">{{ post.filename }}{{ post.ext }}</a>
+                                    {{ post.fsize }}, {{ post.w }}x{{ post.h }}, <a class="post_file_filename" href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" target="_blank">{{ post.filename }}{{ post.ext }}</a>
                                 </div>
 
                                 <div class="post_file_controls">
@@ -52,7 +52,7 @@
                                        class="btnr parent">iqdb</a>
                                     <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.filename.split(".")[0] }}s.jpg" target="_blank"
                                        class="btnr parent">SauceNAO</a>
-                                    <a href="{{ image_uri }}/{{ post.asagi_filename }}" download="{{ post.filename }}"
+                                    <a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" download="{{ post.filename }}{{ post.ext }}"
                                        class="btnr parent"><i class="icon-download-alt"></i></a>
                                 </div>
                                 {% endif %}
@@ -78,7 +78,7 @@
                                        class="btnr parent">iqdb</a>
                                     <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
                                        class="btnr parent">SauceNAO</a>
-                                    <a href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" download="{{ post.filename }}"
+                                    <a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" download="{{ post.filename }}{{ post.ext }}"
                                        class="btnr parent"><i class="icon-download-alt"></i></a>
                                 </div>
                                 {% endif %}
@@ -102,7 +102,7 @@
                                             <li><a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">ImgOps</a></li>
                                             <li><a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">iqdb</a></li>
                                             <li><a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">SauceNAO</a></li>
-                                            <li><a href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" download="{{ post.filename }}">
+                                            <li><a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" download="{{ post.filename }}{{ post.ext }}">
                                                 <i class="icon-download-alt"></i> Download</a></li>
                                             {% endif %}
                                         </ul>

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 import timeit
-import yaml
+import json
 import hug
 import sys
 from model.asagi import convert_thread, generate_index, convert_post
@@ -15,8 +15,8 @@ env = Environment(
 )
 
 # load the boards list
-with open("config.yml", 'r') as yaml_conf:
-    CONF = yaml.safe_load(yaml_conf)
+with open("config.json", 'r') as json_conf:
+    CONF = json.load(json_conf)
 
 archives = CONF['archives']
 archive_list = []
@@ -33,11 +33,16 @@ for i in boards:
 for i in archives:
     archive_list.append(i['shortname'])
     
-    
+#404
+@hug.not_found(output=hug.output_format.html)
+def not_found_handler():
+    return env.get_template('404.html').render(archives=archives, boards=boards, title=CONF['site_name'])
+
 @hug.get('/', output=hug.output_format.html)
 def index_html():
     template = env.get_template('index.html')
     return template.render(
+        title=CONF['site_name'],
         archives=archives,
         boards=boards,
         skin='default'
@@ -49,7 +54,7 @@ def board_index(board_name:str, page_num:int):
         return generate_index(board_name, page_num, html=False)
     return {'error': 404}
 
-@hug.get('/{board_name}', output=hug.output_format.html)
+@hug.get('/{board_name}/', output=hug.output_format.html)
 def board_index_html(board_name:str):
     if(board_name in archive_list or board_name in board_list):
         start = timeit.default_timer()
@@ -79,7 +84,7 @@ def board_index_html(board_name:str):
         print('Time to generate index: ', end-start, file=sys.stderr)
 
         return result
-    return env.get_template('404.html').render(archives=archives, boards=boards, title='Not Found')
+    return not_found_handler()
 
 @hug.get('/{board_name}/page/{page_num}', output=hug.output_format.html)
 def board_index_html(board_name:str, page_num:int):
@@ -105,7 +110,7 @@ def board_index_html(board_name:str, page_num:int):
             title=title,
             skin='default'
         )
-    return env.get_template('404.html').render(archives=archives, boards=boards, title='Not Found')
+    return not_found_handler()
 
 @hug.get('/{board_name}/thread/{thread_id}.json')
 def thread(board_name:str, thread_id:int):
@@ -151,7 +156,7 @@ def thread_html(board_name:str, thread_id:int, skin="default"):
         print('Time to generate thread: ', end-start, file=sys.stderr)
         
         return result
-    return env.get_template('404.html').render()
+    return not_found_handler()
 
 @hug.get('/{board_name}/posts/{thread_id}', output=hug.output_format.html)
 def posts_html(board_name:str, thread_id:int, skin="default"):
@@ -176,7 +181,7 @@ def posts_html(board_name:str, thread_id:int, skin="default"):
             skin=skin
         )
     
-    return env.get_template('404.html').render()
+    return not_found_handler()
 
 @hug.get('/{board_name}/post/{post_id}', output=hug.output_format.html)
 def post_html(board_name:str, post_id:int, skin="default"):
@@ -199,4 +204,4 @@ def post_html(board_name:str, post_id:int, skin="default"):
             thumb_uri=thumb_uri.format(board_name=board_name),
             quotelink=True
         )
-    return env.get_template('404.html').render()
+    return not_found_handler()
