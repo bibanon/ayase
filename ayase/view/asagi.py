@@ -131,15 +131,12 @@ def thread_html(board_name:str, thread_id:int, skin="default"):
         
         try:
             # title comes from op's subject, use post id instead if not found
-            title = thread_dict['posts'][0]['sub']
-        except KeyError:
-            title = thread_dict['posts'][0]['no']
-            
+            temp = thread_dict['posts'][0]['sub']
         except IndexError:
             # no thread was returned
-            title = "Not found"
-            template = env.get_template('404.html')
-            
+            not_found_handler()
+        
+        title = board_name
         result = template.render(
             asagi=True,
             posts=thread_dict['posts'],

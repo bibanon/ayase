@@ -47,118 +47,58 @@ def check_connection():
 
 
 def get_post(board:str, post_num:int):
-    try:
-        check_connection()
-        with connection.cursor() as cursor:
-            sql = SELECT_POST.format(board, post_num)
-            cursor.execute(sql)
-            return cursor.fetchone()
-    except:
-        print("Failed to get post!")
-        return ''
+    sql = SELECT_POST.format(board, post_num)
+    return db_handler(sql, fetchall=False)
 
 def get_post_images(board:str, post_num:int):
-    try:
-        check_connection()
-        with connection.cursor() as cursor:
-            sql = SELECT_POST_IMAGES.format(board, board, post_num)
-            cursor.execute(sql)
-            return cursor.fetchone()
-    except:
-        print("Failed to get post!")
-        return ''
+    sql = SELECT_POST_IMAGES.format(board, board, post_num)
+    return db_handler(sql, fetchall=False)
 
 def get_thread(board:str, thread_num:int):
-    try:
-        check_connection()
-        with connection.cursor() as cursor:
-            sql = SELECT_THREAD.format(board, thread_num)
-            cursor.execute(sql)
-            return cursor.fetchall()
-    except:
-        print("Failed to get thread!")
-        return ''
+    sql = SELECT_THREAD.format(board, thread_num)
+    return db_handler(sql, fetchall=True)
 
 def get_thread_images(board:str, thread_num:int):
-    try:
-        check_connection()
-        with connection.cursor() as cursor:
-            sql = SELECT_THREAD_IMAGES.format(board, board, thread_num)
-            cursor.execute(sql)
-            return cursor.fetchall()
-    except:
-        print("Failed to get thread!")
-        return ''
-
+    sql = SELECT_THREAD_IMAGES.format(board, board, thread_num)
+    return db_handler(sql, fetchall=True)
 
 def get_thread_details(board:str, thread_num:int):
-    try:
-        check_connection()
-        with connection.cursor() as cursor:
-            sql = SELECT_THREAD_DETAILS.format(board, thread_num)
-            cursor.execute(sql)
-            return cursor.fetchone()
-    except:
-        print("Failed to get thread details!")
-        return ''
+    sql = SELECT_THREAD_DETAILS.format(board, thread_num)
+    return db_handler(sql, fetchall=False)
 
 def get_thread_op(board:str, thread_num:int):
-    try:
-        check_connection()
-        with connection.cursor() as cursor:
-            sql = SELECT_THREAD_OP.format(board, thread_num)
-            cursor.execute(sql)
-            return cursor.fetchone()
-    except:
-        print("Failed to get OP post!")
-        return ''
-    
+    sql = SELECT_THREAD_OP.format(board, thread_num)
+    return db_handler(sql, fetchall=False)
+
 def get_thread_op_images(board:str, thread_num:int):
-    try:
-        check_connection()
-        with connection.cursor() as cursor:
-            sql = SELECT_THREAD_OP_IMAGES.format(board, board, thread_num)
-            cursor.execute(sql)
-            return cursor.fetchone()
-    except:
-        print("Failed to get OP post image!")
-        return ''
+    sql = SELECT_THREAD_OP_IMAGES.format(board, board, thread_num)
+    return db_handler(sql, fetchall=False)
 
 def get_thread_preview(board:str, thread_num:int):
-    try:
-        check_connection()
-        with connection.cursor() as cursor:
-            sql = SELECT_THREAD_PREVIEW.format(board, thread_num)
-            cursor.execute(sql)
-            return cursor.fetchall()
-    except Exception as e:
-        print(sql)
-        print(e)
-        print("Failed to get thread!")
-        return ''
+    sql = SELECT_THREAD_PREVIEW.format(board, thread_num)
+    return db_handler(sql, fetchall=True)
     
 def get_thread_preview_images(board:str, thread_num:int):
-    try:
-        check_connection()
-        with connection.cursor() as cursor:
-            sql = SELECT_THREAD_PREVIEW_IMAGES.format(board, board, thread_num)
-            cursor.execute(sql)
-            return cursor.fetchall()
-    except:
-        print("Failed to get thread images!")
-        return ''
+    sql = SELECT_THREAD_PREVIEW_IMAGES.format(board, board, thread_num)
+    return db_handler(sql, fetchall=True)
 
 def get_thread_list(board:str, page_num:int):
-    try:
-        check_connection()
-        with connection.cursor() as cursor:
-            sql = SELECT_THREAD_LIST_BY_OFFSET.format(board, page_num * 10)
-            cursor.execute(sql)
-            return cursor.fetchall()
-    except:
-        print("Failed to get thread list!")
-        return ''
+    sql = SELECT_THREAD_LIST_BY_OFFSET.format(board, page_num * 10)
+    return db_handler(sql, fetchall=True)
+
     
+def db_handler(sql:str, fetchall:bool):
+    try:
+        connection.ping(reconnect=True)
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            if(fetchall):
+                return cursor.fetchall()
+            else:
+                return cursor.fetchone()
+    except:
+        print("Query failed!")
+        return ''
 #
 # Re-convert asagi stripped comment into clean html
 # Also create a dictionary with keys containing the post.no, which maps to a tuple containing the posts it links to. 
@@ -208,6 +148,9 @@ def restore_comment(com:str, post_no:int):
                 split_by_line[i] = """<pre>""".join(split_by_line[i].split("[code]"))
         elif "[/code]" in curr_line:
             split_by_line[i] = """</pre>""".join(split_by_line[i].split("[/code]"))
+        if "[banned]" in curr_line:
+            split_by_line[i] = """<span class="banned">""".join(split_by_line[i].split("[banned]"))
+            split_by_line[i] = "</span>".join(split_by_line[i].split("[/banned]"))
     return quotelink_list, "</br>".join(split_by_line)
 
 #
