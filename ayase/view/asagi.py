@@ -22,6 +22,8 @@ archives = CONF['archives']
 archive_list = []
 
 boards = CONF['boards']
+skins = CONF['skins']
+site_name = CONF['site_name']
 board_list = []
 
 image_uri = CONF['image_location']['image']
@@ -33,14 +35,20 @@ for i in boards:
 for i in archives:
     archive_list.append(i['shortname'])
     
-    
 @hug.get('/', output=hug.output_format.html)
-def index_html():
+def index_html(request):
+    if request.get_cookie_values('ayase_skin'):
+        skin = request.get_cookie_values('ayase_skin')[0]
+    else:
+        skin = CONF['default_skin']
     template = env.get_template('index.html')
     return template.render(
         archives=archives,
         boards=boards,
-        skin='default'
+        skin=skin,
+        skins=skins,
+        site_name=site_name,
+        index='yes'
     )
 
 @hug.get('/{board_name}/{page_num}.json')
@@ -50,7 +58,11 @@ def board_index(board_name:str, page_num:int):
     return {'error': 404}
 
 @hug.get('/{board_name}', output=hug.output_format.html)
-def board_index_html(board_name:str):
+def board_index_html(request, board_name:str):
+    if request.get_cookie_values('ayase_skin'):
+        skin = request.get_cookie_values('ayase_skin')[0]
+    else:
+        skin = CONF['default_skin']
     if(board_name in archive_list or board_name in board_list):
         start = timeit.default_timer()
 
@@ -73,7 +85,9 @@ def board_index_html(board_name:str):
             image_uri=image_uri.format(board_name=board_name),
             thumb_uri=thumb_uri.format(board_name=board_name),
             title=title,
-            skin='default'
+            skin=skin,
+            skins=skins,
+            site_name=site_name,
         )
         end = timeit.default_timer()
         print('Time to generate index: ', end-start, file=sys.stderr)
@@ -82,7 +96,11 @@ def board_index_html(board_name:str):
     return env.get_template('404.html').render(archives=archives, boards=boards, title='Not Found')
 
 @hug.get('/{board_name}/page/{page_num}', output=hug.output_format.html)
-def board_index_html(board_name:str, page_num:int):
+def board_index_html(request, board_name:str, page_num:int):
+    if request.get_cookie_values('ayase_skin'):
+        skin = request.get_cookie_values('ayase_skin')[0]
+    else:
+        skin = CONF['default_skin']
     if(board_name in archive_list or board_name in board_list):
         template = env.get_template('board_index.html')
         
@@ -103,7 +121,9 @@ def board_index_html(board_name:str, page_num:int):
             image_uri=image_uri.format(board_name=board_name),
             thumb_uri=thumb_uri.format(board_name=board_name),
             title=title,
-            skin='default'
+            skin=skin,
+            skins=skins,
+            site_name=site_name,
         )
     return env.get_template('404.html').render(archives=archives, boards=boards, title='Not Found')
 
@@ -115,7 +135,11 @@ def thread(board_name:str, thread_id:int):
     
 
 @hug.get('/{board_name}/thread/{thread_id}', output=hug.output_format.html)
-def thread_html(board_name:str, thread_id:int, skin="default"):
+def thread_html(request, board_name:str, thread_id:int):
+    if request.get_cookie_values('ayase_skin'):
+        skin = request.get_cookie_values('ayase_skin')[0]
+    else:
+        skin = CONF['default_skin']
     if(board_name in archive_list or board_name in board_list):
         start = timeit.default_timer()
         
@@ -145,7 +169,9 @@ def thread_html(board_name:str, thread_id:int, skin="default"):
             image_uri=image_uri.format(board_name=board_name),
             thumb_uri=thumb_uri.format(board_name=board_name),
             title=title,
-            skin=skin
+            skin=skin,
+            skins=skins,
+            site_name=site_name,
         )
         end = timeit.default_timer()
         print('Time to generate thread: ', end-start, file=sys.stderr)
@@ -154,7 +180,11 @@ def thread_html(board_name:str, thread_id:int, skin="default"):
     return env.get_template('404.html').render()
 
 @hug.get('/{board_name}/posts/{thread_id}', output=hug.output_format.html)
-def posts_html(board_name:str, thread_id:int, skin="default"):
+def posts_html(request, board_name:str, thread_id:int):
+    if request.get_cookie_values('ayase_skin'):
+        skin = request.get_cookie_values('ayase_skin')[0]
+    else:
+        skin = CONF['default_skin']
     if(board_name in archive_list or board_name in board_list):
         template = env.get_template('posts.html')
         thread_dict, quotelinks = convert_thread(board_name, thread_id)
@@ -173,13 +203,15 @@ def posts_html(board_name:str, thread_id:int, skin="default"):
             board=board_name,
             image_uri=image_uri.format(board_name=board_name),
             thumb_uri=thumb_uri.format(board_name=board_name),
-            skin=skin
+            skin=skin,
+            skins=skins,
+            site_name=site_name,
         )
     
     return env.get_template('404.html').render()
 
 @hug.get('/{board_name}/post/{post_id}', output=hug.output_format.html)
-def post_html(board_name:str, post_id:int, skin="default"):
+def post_html(board_name:str, post_id:int):
     if(board_name in archive_list or board_name in board_list):
         template = env.get_template('post.html')
         

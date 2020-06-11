@@ -6,6 +6,8 @@ mysql:
   user: asagi
   password: asagi
 
+site_name: FoolFuuka
+
 archives:
   - {shortname: g, name: Technology}
   - {shortname: a, name: Anime & Manga}
@@ -18,6 +20,15 @@ archives:
 
 boards:
   - {shortname: p, name: Photography}
+
+skins:
+  - {slug: default, name: FoolFuuka - Default}
+  - {slug: midnight, name: FoolFuuka - Midnight}
+  - {slug: kurimasu, name: FoolFuuka - Christmas}
+  - {slug: barentain, name: FoolFuuka - Valentine's Day}
+  - {slug: halloween, name: FoolFuuka - Halloween}
+
+default_skin: default
 
 schema:
   name: asagi
