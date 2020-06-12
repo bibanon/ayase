@@ -105,5 +105,10 @@
     {"slug": "barentain", "name": "FoolFuuka - Valentine's Day"},
     {"slug": "halloween", "name": "FoolFuuka - Halloween"}
   ],
-  "default_skin": "default"
+  "default_skin": "default",
+  "options": {
+    "post_selector": true,
+    "stats": false,
+    "ghost": false
+  }
 }

@@ -5,7 +5,8 @@ import timeit
 import json
 import hug
 import sys
-from model.asagi import convert_thread, generate_index, convert_post
+from falcon import HTTP_404
+from model.asagi import convert_thread, generate_index, convert_post, generate_gallery
 
 from jinja2 import Environment, FileSystemLoader, PackageLoader, select_autoescape
 env = Environment(
@@ -39,15 +40,14 @@ for i in archives:
 #404
 @hug.not_found(output=hug.output_format.html)
 def not_found_handler():
-    return env.get_template('404.html').render(archives=archives, boards=boards, title=CONF['site_name'])
+    return env.get_template('404.html').render(archives=archives, boards=boards, title=CONF['site_name'], options=CONF['options'])
 
 @hug.get('/', output=hug.output_format.html)
 def index_html(request):
-    print(request)
     try:
-        request.get_cookie_values('ayase_skin'):
+        request.get_cookie_values('ayase_skin')
         skin = request.get_cookie_values('ayase_skin')[0]
-    except AttributeError:
+    except TypeError:
         skin = CONF['default_skin']
     template = env.get_template('index.html')
     return template.render(
@@ -57,20 +57,21 @@ def index_html(request):
         skin=skin,
         skins=skins,
         site_name=site_name,
-        index='yes'
+        index='yes',
+        options=CONF['options']
     )
 
 @hug.get('/{board_name}/{page_num}.json')
 def board_index(board_name:str, page_num:int):
     if(board_name in archive_list or board_name in board_list):
         return generate_index(board_name, page_num, html=False)
-    return {'error': 404}
+    response.status = HTTP_404
 
 @hug.get('/{board_name}', output=hug.output_format.html)
 def board_index_html(request, board_name:str):
     if request.get_cookie_values('ayase_skin'):
         skin = request.get_cookie_values('ayase_skin')[0]
-    except AttributeError:
+    else:
         skin = CONF['default_skin']
     if(board_name in archive_list or board_name in board_list):
         start = timeit.default_timer()
@@ -93,13 +94,14 @@ def board_index_html(request, board_name:str):
             boards=boards,
             image_uri=image_uri.format(board_name=board_name),
             thumb_uri=thumb_uri.format(board_name=board_name),
+            options=CONF['options'],
             title=title,
             skin=skin,
             skins=skins,
             site_name=site_name,
         )
         end = timeit.default_timer()
-        print('Time to generate index: ', end-start, file=sys.stderr)
+        print('Time to generate index: ', end-start)
 
         return result
     return not_found_handler()
@@ -108,7 +110,7 @@ def board_index_html(request, board_name:str):
 def board_index_html(request, board_name:str, page_num:int):
     if request.get_cookie_values('ayase_skin'):
         skin = request.get_cookie_values('ayase_skin')[0]
-    except AttributeError:
+    else:
         skin = CONF['default_skin']
     if(board_name in archive_list or board_name in board_list):
         template = env.get_template('board_index.html')
@@ -129,6 +131,7 @@ def board_index_html(request, board_name:str, page_num:int):
             boards=boards,
             image_uri=image_uri.format(board_name=board_name),
             thumb_uri=thumb_uri.format(board_name=board_name),
+            options=CONF['options'],
             title=title,
             skin=skin,
             skins=skins,
@@ -140,14 +143,14 @@ def board_index_html(request, board_name:str, page_num:int):
 def thread(board_name:str, thread_id:int):
     if(board_name in archive_list or board_name in board_list):
         return convert_thread(board_name, thread_id)
-    return {'error': 404}
+    response.status = HTTP_404
     
 
 @hug.get('/{board_name}/thread/{thread_id}', output=hug.output_format.html)
 def thread_html(request, board_name:str, thread_id:int):
     if request.get_cookie_values('ayase_skin'):
         skin = request.get_cookie_values('ayase_skin')[0]
-    except AttributeError:
+    else:
         skin = CONF['default_skin']
     if(board_name in archive_list or board_name in board_list):
         start = timeit.default_timer()
@@ -178,9 +181,10 @@ def thread_html(request, board_name:str, thread_id:int):
             skin=skin,
             skins=skins,
             site_name=site_name,
+            options=CONF['options']
         )
         end = timeit.default_timer()
-        print('Time to generate thread: ', end-start, file=sys.stderr)
+        print('Time to generate thread: ', end-start)
         
         return result
     return not_found_handler()
@@ -189,9 +193,11 @@ def thread_html(request, board_name:str, thread_id:int):
 def posts_html(request, board_name:str, thread_id:int):
     if request.get_cookie_values('ayase_skin'):
         skin = request.get_cookie_values('ayase_skin')[0]
-    except AttributeError:
+    else:
         skin = CONF['default_skin']
     if(board_name in archive_list or board_name in board_list):
+        start = timeit.default_timer()
+        
         template = env.get_template('posts.html')
         thread_dict, quotelinks = convert_thread(board_name, thread_id)
         
@@ -202,7 +208,7 @@ def posts_html(request, board_name:str, thread_id:int):
         #remove OP post     
         del thread_dict['posts'][0]
         
-        return template.render(
+        result = template.render(
             asagi=True,
             posts=thread_dict['posts'],
             quotelinks=quotelinks,
@@ -213,11 +219,18 @@ def posts_html(request, board_name:str, thread_id:int):
             skins=skins,
             site_name=site_name,
         )
-    
+        end = timeit.default_timer()
+        print('Time to generate posts: ', end-start)
+        
+        return result
     return not_found_handler()
 
 @hug.get('/{board_name}/post/{post_id}', output=hug.output_format.html)
-def post_html(board_name:str, post_id:int):
+def post_html(request, board_name:str, post_id:int):
+    if request.get_cookie_values('ayase_skin'):
+        skin = request.get_cookie_values('ayase_skin')[0]
+    else:
+        skin = CONF['default_skin']
     if(board_name in archive_list or board_name in board_list):
         template = env.get_template('post.html')
         
@@ -237,4 +250,70 @@ def post_html(board_name:str, post_id:int):
             thumb_uri=thumb_uri.format(board_name=board_name),
             quotelink=True
         )
+    return not_found_handler()
+
+@hug.get('/{board_name}/catalog.json')
+def gallery(board_name:str, response):
+    if(board_name in archive_list or board_name in board_list):
+        return generate_gallery(board_name, 1)
+    response.status = HTTP_404
+
+@hug.get('/{board_name}/gallery', output=hug.output_format.html)
+def gallery_html(request, board_name:str):
+    if request.get_cookie_values('ayase_skin'):
+        skin = request.get_cookie_values('ayase_skin')[0]
+    else:
+        skin = CONF['default_skin']
+    if(board_name in archive_list or board_name in board_list):
+        start = timeit.default_timer()
+        gallery = generate_gallery(board_name, 1)
+        
+        template = env.get_template('gallery.html')
+        result = template.render(
+            asagi=True,
+            gallery=gallery,
+            page_num=1,
+            archives=archives,
+            board=board_name,
+            boards=boards,
+            image_uri=image_uri.format(board_name=board_name),
+            thumb_uri=thumb_uri.format(board_name=board_name),
+            title=board_name,
+            options=CONF['options'],
+            skin=skin,
+            skins=skins
+        )
+        end = timeit.default_timer()
+        print('Time to generate gallery: ', end-start)
+        return result
+    return not_found_handler()
+
+@hug.get('/{board_name}/gallery/{page_num}', output=hug.output_format.html)
+def gallery_html(request, board_name:str, page_num:int):
+    if request.get_cookie_values('ayase_skin'):
+        skin = request.get_cookie_values('ayase_skin')[0]
+    else:
+        skin = CONF['default_skin']
+    if(board_name in archive_list or board_name in board_list):
+        start = timeit.default_timer()
+        gallery = generate_gallery(board_name, page_num)
+        
+        template = env.get_template('gallery.html')
+        result = template.render(
+            asagi=True,
+            gallery=gallery,
+            page_num=page_num,
+            archives=archives,
+            board=board_name,
+            boards=boards,
+            image_uri=image_uri.format(board_name=board_name),
+            thumb_uri=thumb_uri.format(board_name=board_name),
+            title=board_name,
+            options=CONF['options'],
+            skin=skin,
+            skins=skins
+        )
+        end = timeit.default_timer()
+        print('Time to generate gallery: ', end-start)
+        return result
     return not_found_handler()

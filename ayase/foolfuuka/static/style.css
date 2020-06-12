@@ -790,7 +790,8 @@
 }
 .theme_default #thread_o_matic > article.thread {
   border: none;
-  width: 24%;
+  width: 15%;
+  width: calc(95%/5);
   margin: 5px 0.5%;
   float: left;
   font-size: 11px;
@@ -824,9 +825,9 @@
   text-align: center;
   margin: 0;
 }
-.theme_default #thread_o_matic > article.thread:nth-of-type(n + 5) {
+/*.theme_default #thread_o_matic > article.thread:nth-of-type(n + 6) {
   border-top: 2px solid #6a836f;
-}
+}*/
 .theme_default .modal-label {
   float: left;
   margin-left: 10px;

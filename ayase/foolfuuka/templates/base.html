@@ -86,9 +86,13 @@
                             </li>
                         </ul>
                     </li>
+                    {% if options.ghost %}
                     <li><a href="/{{ board }}/ghost/">Ghost</a></li>
+                    {% endif %}
                     <li><a href="/{{ board }}/gallery/">Gallery</a></li>
+                    {% if options.stats %}
                     <li><a href="/{{ board }}/statistics/">Stats</a></li>
+                    {% endif %}
                     {% endif %}
                 </ul>
                 <ul class="nav pull-right">
@@ -124,7 +128,7 @@
     </div>
 </footer>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script>
     window.jQuery || document.write('<script src="/static/jquery.js"><\/script>');
 

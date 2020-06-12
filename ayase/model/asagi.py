@@ -3,29 +3,31 @@
 
 import sys
 import html
-import yaml
+import json
 import time
 import pymysql.cursors
 
-SELECT_POST = "SELECT * FROM `{}` WHERE `num`={}"
+SELECT_POST = "SELECT `num`,`sticky`,`timestamp`,`name`,`title`,`media_hash`,`preview_orig`,`media_orig`,`media_filename`,`media_w`,`media_h`,`preview_w`,`preview_h`,`media_size`,`op`,`thread_num`,`capcode`,`trip`,`spoiler`,`poster_country`,`locked`,`deleted`,`exif`,`comment` FROM `{}` WHERE `num`={}"
 SELECT_POST_IMAGES = "SELECT `media_hash`,`media`,`preview_reply` FROM `{}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{}` WHERE `num`={})"
-SELECT_THREAD = "SELECT * FROM `{}` WHERE `thread_num`={} ORDER BY `num`"
+SELECT_THREAD = "SELECT `num`,`sticky`,`timestamp`,`name`,`title`,`media_hash`,`preview_orig`,`media_orig`,`media_filename`,`media_w`,`media_h`,`preview_w`,`preview_h`,`media_size`,`op`,`thread_num`,`capcode`,`trip`,`spoiler`,`poster_country`,`locked`,`deleted`,`exif`,`comment` FROM `{}` WHERE `thread_num`={} ORDER BY `num`"
 SELECT_THREAD_IMAGES = "SELECT `media_hash`,`media`,`preview_reply` FROM `{}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{}` WHERE `thread_num`={})"
 SELECT_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{}_threads` WHERE `thread_num`={}"
-SELECT_THREAD_OP = "SELECT * FROM `{}` WHERE `thread_num`={} AND op=1"
+SELECT_THREAD_OP = "SELECT `num`,`sticky`,`timestamp`,`name`,`title`,`media_hash`,`preview_orig`,`media_orig`,`media_filename`,`media_w`,`media_h`,`preview_w`,`preview_h`,`media_size`,`op`,`thread_num`,`capcode`,`trip`,`spoiler`,`poster_country`,`locked`,`deleted`,`exif`,`comment` FROM `{}` WHERE `thread_num`={} AND op=1"
 SELECT_THREAD_OP_IMAGES = "SELECT `media_hash`,`media`,`preview_reply` FROM `{}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{}` WHERE `thread_num`={} AND op=1)"
-SELECT_THREAD_PREVIEW = "SELECT * FROM `{}` WHERE `thread_num`={} ORDER BY `num` DESC LIMIT 5"
+SELECT_THREAD_PREVIEW = "SELECT `num`,`sticky`,`timestamp`,`name`,`title`,`media_hash`,`preview_orig`,`media_orig`,`media_filename`,`media_w`,`media_h`,`preview_w`,`preview_h`,`media_size`,`op`,`thread_num`,`capcode`,`trip`,`spoiler`,`poster_country`,`locked`,`deleted`,`exif`,`comment` FROM `{}` WHERE `thread_num`={} ORDER BY `num` DESC LIMIT 5"
 SELECT_THREAD_PREVIEW_IMAGES = "SELECT `media_hash`,`media`,`preview_reply` FROM `{}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{}` WHERE `thread_num`={} ORDER BY `num`)" #ERROR 1235 (42000): This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery'
 SELECT_THREAD_LIST_BY_OFFSET = "SELECT `thread_num` FROM `{}_threads` ORDER BY `time_last` DESC LIMIT 10 OFFSET {}"
-
+SELECT_GALLERY_THREADS_BY_OFFSET = "SELECT {board}.* FROM {board} INNER JOIN {board}_threads ON {board}.thread_num = {board}_threads.thread_num WHERE OP=1 ORDER BY {board}_threads.time_last DESC LIMIT 150 OFFSET {page_num};"
+SELECT_GALLERY_THREAD_IMAGES = "SELECT {board}.media_hash, {board}_images.media, {board}_images.preview_reply FROM (({board} INNER JOIN {board}_threads ON {board}.thread_num = {board}_threads.thread_num) INNER JOIN {board}_images ON {board}_images.media_hash = {board}.media_hash) WHERE OP=1 ORDER BY {board}_threads.time_last DESC LIMIT 150 OFFSET {page_num};"
+SELECT_GALLERY_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{}_threads` ORDER BY `time_last` DESC LIMIT 150 OFFSET {}"
 
 CONF = {}
 connection = ''
 
 def load_config():
-    with open("config.yml", 'r') as yaml_conf:
+    with open("config.json", 'r') as json_conf:
         global CONF 
-        CONF = yaml.safe_load(yaml_conf)
+        CONF = json.load(json_conf)
 
 def create_connection():
     load_config()
@@ -86,6 +88,17 @@ def get_thread_list(board:str, page_num:int):
     sql = SELECT_THREAD_LIST_BY_OFFSET.format(board, page_num * 10)
     return db_handler(sql, fetchall=True)
 
+def get_gallery_threads(board:str, page_num:int):
+    sql = SELECT_GALLERY_THREADS_BY_OFFSET.format(board=board, page_num=page_num * 150)
+    return db_handler(sql, fetchall=True)
+
+def get_gallery_images(board:str, page_num:int):
+    sql = SELECT_GALLERY_THREAD_IMAGES.format(board=board, page_num=page_num)
+    return db_handler(sql, fetchall=True)
+
+def get_gallery_details(board:str, page_num:int):
+    sql = SELECT_GALLERY_THREAD_DETAILS.format(board, page_num)
+    return db_handler(sql,fetchall=True)
     
 def db_handler(sql:str, fetchall:bool):
     try:
@@ -213,6 +226,69 @@ def generate_index(board_name:str, page_num:int, html=True):
     return result
 
 #
+# Generate gallery structure
+#
+def generate_gallery(board_name:str, page_num:int):
+    page_num -= 1 #start page number at 1
+    thread_list = get_gallery_threads(board_name, page_num)
+    details = get_gallery_details(board_name, page_num)
+    images = get_gallery_images(board_name, page_num)
+    
+    gallery_list = convert(thread_list, details, images, isGallery=True)
+    
+    result = []
+    page_threads = {'page': 0, 'threads': []}
+    for i in range(len(thread_list)):
+        #new page every 15 threads
+        if(i % 15 == 0 and i != 0):
+            result.append(page_threads)
+            page_threads = {'page': (i//14)+1, 'threads': []}
+        
+        page_threads['threads'].append(gallery_list[i])
+    #add the last page threads
+    result.append(page_threads)
+    return result
+
+#def generate_gallery(board_name:str, page_num:int):
+    #page_num -= 1 #start page number at 1
+    #thread_list = get_gallery_threads(board_name, page_num)
+    
+    ##gallery_list = convert(thread_list, details, images, isGallery=True)
+    #result = []
+    #page_threads = {'page': 0, 'threads': []}
+    #for i in range(len(thread_list)):
+        #thread_id = thread_list[i]['thread_num']
+        #details = get_thread_details(board_name, thread_id)
+
+        #try:
+            #thread_op, op_quotelinks = convert_thread_op(board_name, thread_id)
+        #except TypeError as e:
+            #print(e)
+            #print("Thread", thread_id, "is empty! Skipping it.", file=sys.stderr)
+            #raise(e)
+            #continue
+        
+        #determine number of omitted posts
+        #omitted_posts = details['nreplies'] - 1 #subtract OP 
+        #thread_op['posts'][0]['omitted_posts'] = omitted_posts
+        
+        #determine number of omitted images
+        #if(thread_op['posts'][0]['md5']):
+            #omitted_images = details['nimages'] - 1
+            #thread_op['posts'][0]['omitted_images'] = omitted_images
+        
+        #new page every 15 threads
+        #if(i % 15 == 0 and i != 0):
+            #result.append(page_threads)
+            #page_threads = {'page': (i//14)+1, 'threads': []}
+        
+        #page_threads['threads'].append(thread_op['posts'][0])
+    #add the last page threads
+    #result.append(page_threads)
+    #return result
+
+
+#
 # Generate a single post
 #
 def convert_post(board_name:str, post_id:int):
@@ -226,7 +302,7 @@ def convert_post(board_name:str, post_id:int):
 def convert_thread_op(board_name:str, thread_id:int):
     op_post = [get_thread_op(board_name, thread_id)]
     images = [get_thread_op_images(board_name, thread_id)]
-    details = get_thread_details(board_name, thread_id)
+    details = [get_thread_details(board_name, thread_id)] #details needs to be an array
     return convert(op_post, details, images)
 
 #
@@ -248,13 +324,13 @@ def convert_thread_preview(board_name:str, thread_id:int):
 def convert_thread(board_name:str, thread_id:int):
     thread = get_thread(board_name, thread_id)
     images = get_thread_images(board_name, thread_id)
-    details = get_thread_details(board_name, thread_id)
+    details = [get_thread_details(board_name, thread_id)]
     return convert(thread, details, images)
     
 #
 # Converts asagi API data to 4chan API format. 
 #
-def convert(thread, details=None, images=None, isPost=False):
+def convert(thread, details=None, images=None, isPost=False, isGallery=False):
     result = {}
     quotelink_map = {}
     posts = []
@@ -278,6 +354,7 @@ def convert(thread, details=None, images=None, isPost=False):
                     posts[i]['asagi_filename'] = media['media']
             except TypeError:
                 pass
+
         else:
             posts[i]['asagi_preview_filename'] = thread[i]['preview_orig']
             posts[i]['asagi_filename'] = thread[i]['media_orig']
@@ -309,9 +386,9 @@ def convert(thread, details=None, images=None, isPost=False):
         else:
             posts[i]['capcode'] = thread[i]['capcode']
         # leaving semantic_url empty for now
-        if(details):
-            posts[i]['replies'] = details['nreplies']
-            posts[i]['images'] = details['nimages']
+        if(details and thread[i]['op'] == 1):
+            posts[i]['replies'] = details[i]['nreplies']
+            posts[i]['images'] = details[i]['nimages']
         posts[i]['trip'] = thread[i]['trip']
         posts[i]['spoiler'] = thread[i]['spoiler']
         posts[i]['country'] = thread[i]['poster_country']
@@ -320,13 +397,20 @@ def convert(thread, details=None, images=None, isPost=False):
         posts[i]['exif'] = thread[i]['exif']
         
         # generate comment content
-        post_quotelinks, posts[i]['com'] = restore_comment(thread[i]['comment'], thread[i]['num'])
-        for quotelink in post_quotelinks: # for each quotelink in the post, 
-            if(quotelink not in quotelink_map):
-                quotelink_map[quotelink] = []
-            quotelink_map[quotelink].append(posts[i]['no']) # add the current post.no to the quotelink's post.no key
+        if(isGallery):
+            posts[i]['com'] = thread[i]['comment']
+        else:
+            post_quotelinks, posts[i]['com'] = restore_comment(thread[i]['comment'], thread[i]['num'])
+            for quotelink in post_quotelinks: # for each quotelink in the post, 
+                if(quotelink not in quotelink_map):
+                    quotelink_map[quotelink] = []
+                quotelink_map[quotelink].append(posts[i]['no']) # add the current post.no to the quotelink's post.no key
+            
     if(isPost):
         return posts[0]
+    
+    if(isGallery):
+        return posts
     
     #print(quotelink_map, file=sys.stderr)
     result['posts'] = posts
