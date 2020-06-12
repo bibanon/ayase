@@ -1046,7 +1046,15 @@ var bindFunctions = function()
 				setCookie("searchhilight_enabled", false, 90, '/', backend_vars.cookie_domain);
 				$("span[data-markjs='true']").removeClass("highlight");
 			}
-		}
+		},
+
+        change_skin: function(el, post, event)
+        {
+            event.preventDefault();
+            event.stopPropagation();
+            setCookie('skin', el.data('skin'), 90, '/', backend_vars.cookie_domain);
+            window.location = window.location.href;
+        }
 	};
 
 

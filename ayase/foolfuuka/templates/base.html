@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="generator" content="FoolFuuka 2.2.0">
     <title>{{ title|safe }}</title>
-    <link href="/" rel="index" title="FoolFuuka">
+    <link href="/" rel="index" title="{{ site_name }}">
 
     <link rel="stylesheet" type="text/css" href="/static/bootstrap.legacy.css">
     <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.css">
@@ -22,13 +22,15 @@
     {% if skin != 'default' and skin != 'midnight' %}
     <link href="/static/{{ skin }}.css" rel="stylesheet" type="text/css">
     {% endif %}
-    <link rel="search" type="application/opensearchdescription+xml" title="FoolFuuka" href="/_/opensearch/">
+    <link rel="search" type="application/opensearchdescription+xml" title="{{ site_name }}" href="/_/opensearch/">
 </head>
 <body class="theme_default {{ skin }}">
+{% if not index %}
 <div class="letters">
 {% if archives %}Archives: [ {% for archive in archives %}<a href="/{{ archive.shortname }}/">{{ archive.shortname }} {{ '/' if not loop.last }}</a> {% endfor %} ]{% endif %}
 {% if boards %}Boards: [ {% for internal_board in boards %}<a href="/{{ internal_board.shortname }}/">{{ internal_board.shortname }} {{ '/' if not loop.last }}</a> {% endfor %} ]{% endif %}
 </div>
+{% endif %}
 <div class="container-fluid">
     <div class="navbar navbar-fixed-top navbar-inverse">
         <div class="navbar-inner">
@@ -36,7 +38,7 @@
                 <ul class="nav">
                     <li class="dropdown">
                         <a href="/" id="brand" class="brand dropdown-toggle"
-                           data-toggle="dropdown">{{ title|safe }} <b class="caret"></b>
+                           data-toggle="dropdown">{% if index %}{{ site_name }}{% else %}{{ title|safe }}{% endif %} <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu">
 
@@ -63,6 +65,7 @@
                 </ul>
 
                 <ul class="nav">
+                    {% if board %}
                     <li>
                         <a href="https://boards.4chan.org/{{ board }}/" style="padding-right:4px;">4chan <i class="icon-share icon-white text-small"></i></a>
                     </li>
@@ -86,6 +89,7 @@
                     <li><a href="/{{ board }}/ghost/">Ghost</a></li>
                     <li><a href="/{{ board }}/gallery/">Gallery</a></li>
                     <li><a href="/{{ board }}/statistics/">Stats</a></li>
+                    {% endif %}
                 </ul>
                 <ul class="nav pull-right">
                     <!--<form class="navbar-search" method="GET" action="/{{ board }}/search/">
@@ -106,9 +110,13 @@
                 Change Theme <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-                {% for skin in skins %}
+                {% for list in skins %}
                 <li>
-                    <a href="/_/change_skin/{{ skin.slug }}/">{{ skin.name }}</a>
+                    <a href="#" data-function="change_skin" data-skin="{{ list.slug }}">{{ list.name }}
+                    {% if skin == list.slug %}
+                    <i class="icon-ok"></i>
+                    {% endif %}
+                    </a>
                 </li>
                 {% endfor %}
             </ul>
