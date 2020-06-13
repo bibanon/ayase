@@ -58,8 +58,8 @@ server {
 }
 ```
 
-#### Starting the hug api
-Once everything else is configured, you can start hug with these commands. 
+#### Starting FastAPI
+Once everything else is configured, you can start FastAPI with these commands. 
 
 ```
 cd ayase
