@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
+*__pycache__*
 *.py[cod]
 *$py.class
 
@@ -137,3 +137,12 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# local nginx
+*/conf
+*/logs
+*/temp
+
+# local enviroment
+config.yml
+config.json
