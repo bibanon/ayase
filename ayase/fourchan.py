@@ -32,6 +32,8 @@ import urllib.request
 import shutil
 import tempfile # solely used for caching image files temporarily out of /tmp, not to be used in production
 
+from model.asagi import *
+
 # later use SQL, psycopg2cffi is needed for cython/pypy support
 #import psycopg2cffi
 

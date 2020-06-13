@@ -1,0 +1,114 @@
+{
+  "archives": [
+    {
+      "name": "Anime & Manga",
+      "shortname": "a"
+    },
+    {
+      "name": "Adult Cartoons",
+      "shortname": "aco"
+    },
+    {
+      "name": "Animals & Nature",
+      "shortname": "an"
+    },
+    {
+      "name": "Cute",
+      "shortname": "c"
+    },
+    {
+      "name": "Comics & Cartoons",
+      "shortname": "co"
+    },
+    {
+      "name": "Hentai/Alternative",
+      "shortname": "d"
+    },
+    {
+      "name": "Fitness",
+      "shortname": "fit"
+    },
+    {
+      "name": "History & Humanities",
+      "shortname": "his"
+    },
+    {
+      "name": "International",
+      "shortname": "int"
+    },
+    {
+      "name": "Weapons",
+      "shortname": "k"
+    },
+    {
+      "name": "Mecha",
+      "shortname": "m"
+    },
+    {
+      "name": "Pony",
+      "shortname": "mlp"
+    },
+    {
+      "name": "4chan Feedback",
+      "shortname": "q"
+    },
+    {
+      "name": "Question & Answer",
+      "shortname": "qa"
+    },
+    {
+      "name": "ROBOT9001",
+      "shortname": "r9k"
+    },
+    {
+      "name": "Traditional Games",
+      "shortname": "tg"
+    },
+    {
+      "name": "Off-Topic",
+      "shortname": "trash"
+    },
+    {
+      "name": "Retro Games",
+      "shortname": "vr"
+    },
+    {
+      "name": "Worksafe GIF",
+      "shortname": "wsg"
+    }
+  ],
+  "boards": [
+    {
+      "name": "Photography",
+      "shortname": "p"
+    }
+  ],
+  "image_location": {
+    "image": "/img/{board_name}/image",
+    "thumb": "/img/{board_name}/thumb"
+  },
+  "mysql": {
+    "db": "asagi",
+    "host": "127.0.0.1",
+    "password": "password",
+    "port": 3306,
+    "user": "root"
+  },
+  "schema": {
+    "name": "asagi"
+  },
+  "site_name": "testarchive",
+  "skins": [
+    {"slug": "default", "name": "FoolFuuka - Default"},
+    {"slug": "midnight", "name": "FoolFuuka - Midnight"},
+    {"slug": "kurimasu", "name": "FoolFuuka - Christmas"},
+    {"slug": "barentain", "name": "FoolFuuka - Valentine's Day"},
+    {"slug": "halloween", "name": "FoolFuuka - Halloween"}
+  ],
+  "default_skin": "default",
+  "options": {
+    "post_selector": true,
+    "stats": false,
+    "ghost": false
+  }
+}

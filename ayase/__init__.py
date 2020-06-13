@@ -2,9 +2,14 @@
 # -*- coding: utf-8 -*-
  
 #import fourchan
-from model.asagi import *
-from view.asagi import thread_html
+#from model.asagi import *
+import json
+from view.asagi import thread_html, index_html
+from model.asagi import generate_gallery
  
-html = thread_html('g', 50959866)
+#html = thread_html('g', 50959866)
 #html = thread_html('a', 132646961)
-print(html)
+#html = index_html('a', 1)
+#print(html)
+
+print(json.dumps(generate_gallery('a',1)))

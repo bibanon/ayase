@@ -186,32 +186,32 @@
             </article>
             {% endfor %}
         </div>
-			<div class="paginate">
-					<ul>
-							<li class="prev"><a href="/{{ board }}/page/{{ page_num - 1 }}/">← Previous</a></li>
-							<li {% if page_num == 1 %} class="active"{% endif %}><a href="/{{ board }}/page/1/">1</a></li>
-							{% for i in range(2,10) %}
-							<li {% if page_num == i %} class="active"{% endif %}><a href="/{{ board }}/page/{{ i }}/">{{ i }}</a></li>
-							{% endfor %}
-							
-							{% if page_num < 13 %}
-								{% for i in range(10,15) %}
-									<li {% if page_num == i %} class="active"{% endif %}><a href="/{{ board }}/page/{{ i }}/">{{ i }}</a></li>
-								{% endfor %}
-							{% elif page_num >= 13 %}
-							<li><a href="/{{ board }}/page/10/">10</a></li>
-							<li class="disabled"><span>...</span></li>
-							
-							
-								{% for i in range(-2,3) %}
-									<li {% if i==0 %} class="active"{% endif %}><a href="/{{ board }}/page/{{ page_num + i }}/">{{ page_num + i }}</a></li>
-								{% endfor %}
-							{% endif %}
-							<li class="disabled"><span>...</span></li>
-							<li class="next"><a href="/{{ board }}/page/{{ page_num + 1 }}/">Next →</a></li>
-					</ul>
+        <div class="paginate">
+            <ul>
+                <li class="prev"><a href="/{{ board }}/page/{{ page_num - 1 }}/">← Previous</a></li>
+                <li {% if page_num == 1 %} class="active"{% endif %}><a href="/{{ board }}/page/1/">1</a></li>
+                {% for i in range(2,10) %}
+                <li {% if page_num == i %} class="active"{% endif %}><a href="/{{ board }}/page/{{ i }}/">{{ i }}</a></li>
+                {% endfor %}
+                
+                {% if page_num < 13 %}
+                {% for i in range(10,15) %}
+                    <li {% if page_num == i %} class="active"{% endif %}><a href="/{{ board }}/page/{{ i }}/">{{ i }}</a></li>
+                {% endfor %}
+                {% elif page_num >= 13 %}
+                <li><a href="/{{ board }}/page/10/">10</a></li>
+                <li class="disabled"><span>...</span></li>
+                
+                
+                {% for i in range(-2,3) %}
+                    <li {% if i==0 %} class="active"{% endif %}><a href="/{{ board }}/page/{{ page_num + i }}/">{{ page_num + i }}</a></li>
+                {% endfor %}
+                {% endif %}
+                <li class="disabled"><span>...</span></li>
+                <li class="next"><a href="/{{ board }}/page/{{ page_num + 1 }}/">Next →</a></li>
+            </ul>
 
-			</div>
+        </div>
 			<article class="clearfix thread backlink_container">
 				<div id="quotelink" style="position: absolute; top: 0; left: 0; z-index: 5;"></div>
 			</article>

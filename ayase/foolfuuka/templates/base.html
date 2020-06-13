@@ -86,9 +86,13 @@
                             </li>
                         </ul>
                     </li>
+                    {% if options.ghost %}
                     <li><a href="/{{ board }}/ghost/">Ghost</a></li>
+                    {% endif %}
                     <li><a href="/{{ board }}/gallery/">Gallery</a></li>
+                    {% if options.stats %}
                     <li><a href="/{{ board }}/statistics/">Stats</a></li>
+                    {% endif %}
                     {% endif %}
                 </ul>
                 <ul class="nav pull-right">
@@ -124,7 +128,7 @@
     </div>
 </footer>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script>
     window.jQuery || document.write('<script src="/static/jquery.js"><\/script>');
 
@@ -140,6 +144,22 @@
 <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
 <script>window.attachEvent('onload', function () { CFInstall.check({mode:'overlay'}) })</script>
 <![endif]-->
+
+<div id="post_tools_modal" class="modal hide fade">
+    <div class="modal-header">
+        <a href="#" class="close">&times;</a>
+        <h3 class="title"></h3>
+    </div>
+    <div class="modal-body" style="text-align: center;">
+        <div class="modal-error"></div>
+        <div class="modal-loading loading"><img src="https://desuarchive.org/foolfuuka/foolz/foolfuuka-theme-foolfuuka/assets-1.2.28/images/loader-18.gif" /></div>
+        <div class="modal-information"></div>
+    </div>
+    <div class="modal-footer">
+        <input type="button" value="Submit" href="#" class="btn btn-primary submitModal" data-function="submitModal" data-report="0" data-delete="0" />
+        <input type="button" value="Cancel" href="#" class="btn secondary closeModal" data-function="closeModal" />
+    </div>
+</div>
 
 </body>
 

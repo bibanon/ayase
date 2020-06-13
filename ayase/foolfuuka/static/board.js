@@ -27,7 +27,7 @@ var labelQuotelinks = function()
 var bindFunctions = function()
 {
 	// the following block of code deals with drag and drop of images for MD5 hashing
-	var search_dropdown = jQuery('#search_form_image');
+	var search_dropdown = $('#search_form_image');
 
 	if (isEventSupported('dragstart') && isEventSupported('drop') && !!window.FileReader)
 	{
@@ -62,7 +62,7 @@ var bindFunctions = function()
 		{
 			var checkboxes = el.parent().parent().find('input[type=checkbox]');
 			checkboxes.each(function(id, element) {
-				jQuery(element).attr('checked', 'checked');
+				$(element).attr('checked', 'checked');
 			});
 			el.parent().find('.uncheck').show();
 			el.hide();
@@ -72,7 +72,7 @@ var bindFunctions = function()
 		{
 			var checkboxes = el.parent().parent().find('input[type=checkbox]');
 			checkboxes.each(function(id, element) {
-				jQuery(element).attr('checked', false);
+				$(element).attr('checked', false);
 			});
 			el.parent().find('.check').show();
 			el.hide();
@@ -86,8 +86,8 @@ var bindFunctions = function()
 			hiddenBoardThreads[num] = true;
 			localStorage.setItem("hiddenBoardThreads/" + el.data("board"), JSON.stringify(hiddenBoardThreads));
 
-			jQuery(".doc_id_" + num).hide();
-			jQuery(".stub_doc_id_" + num).show();
+			$(".doc_id_" + num).hide();
+			$(".stub_doc_id_" + num).show();
 		},
 
 		showThread: function(el, post, event)
@@ -98,8 +98,8 @@ var bindFunctions = function()
 			delete hiddenBoardThreads[num];
 			localStorage.setItem("hiddenBoardThreads/" + el.data("board"), JSON.stringify(hiddenBoardThreads));
 
-			jQuery(".doc_id_" + num).show();
-			jQuery(".stub_doc_id_" + num).hide();
+			$(".doc_id_" + num).show();
+			$(".stub_doc_id_" + num).hide();
 		},
 
 		hidePost: function(el, post, event)
@@ -110,8 +110,8 @@ var bindFunctions = function()
 			hiddenBoardPosts[num] = true;
 			localStorage.setItem("hiddenBoardPosts/" + el.data("board"), JSON.stringify(hiddenBoardPosts));
 
-			jQuery(".doc_id_" + num).hide();
-			jQuery(".stub_doc_id_" + num).show();
+			$(".doc_id_" + num).hide();
+			$(".stub_doc_id_" + num).show();
 		},
 
 		showPost: function(el, post, event)
@@ -122,8 +122,8 @@ var bindFunctions = function()
 			delete hiddenBoardPosts[num];
 			localStorage.setItem("hiddenBoardPosts/" + el.data("board"), JSON.stringify(hiddenBoardPosts));
 
-			jQuery(".doc_id_" + num).show();
-			jQuery(".stub_doc_id_" + num).hide();
+			$(".doc_id_" + num).show();
+			$(".stub_doc_id_" + num).hide();
 		},
 
 		highlight: function(el, post, event)
@@ -136,14 +136,14 @@ var bindFunctions = function()
 
 		quote: function(el, post, event)
 		{
-			jQuery("#reply_chennodiscursus").insertAtCaret(">>" + post + "\n");
+			$("#reply_chennodiscursus").insertAtCaret(">>" + post + "\n");
 		},
 
 		comment: function(el, post, event)
 		{
-			var file_el = jQuery("#file_image");
+			var file_el = $("#file_image");
 			var progress_pos = 0;
-			var progress_el = jQuery("#reply .progress .bar");
+			var progress_el = $("#reply .progress .bar");
 
 			// if there's an image and the browser doesn't support FormData, use a normal upload process
 			if (file_el.val() && window.FormData === undefined)
@@ -171,28 +171,28 @@ var bindFunctions = function()
 				el.removeAttr('disabled');
 			}, 10000);
 
-			var reply_alert = jQuery('#reply_ajax_notices');
+			var reply_alert = $('#reply_ajax_notices');
 			reply_alert.removeClass('error').removeClass('success');
 
 			var data_obj = {
-				reply_numero: jQuery("#reply_numero").val(),
-				reply_bokunonome: jQuery("#reply_bokunonome").val(),
-				reply_elitterae: jQuery("#reply_elitterae").val(),
-				reply_talkingde: jQuery("#reply_talkingde").val(),
-				reply_chennodiscursus: jQuery("#reply_chennodiscursus").val(),
-				reply_nymphassword: jQuery("#reply_nymphassword").val(),
-				reply_postas: jQuery("#reply_postas").val() === undefined ? 'N' : jQuery("#reply_postas").val(),
+				reply_numero: $("#reply_numero").val(),
+				reply_bokunonome: $("#reply_bokunonome").val(),
+				reply_elitterae: $("#reply_elitterae").val(),
+				reply_talkingde: $("#reply_talkingde").val(),
+				reply_chennodiscursus: $("#reply_chennodiscursus").val(),
+				reply_nymphassword: $("#reply_nymphassword").val(),
+				reply_postas: $("#reply_postas").val() === undefined ? 'N' : $("#reply_postas").val(),
 				reply_gattai: 'Submit',
 				reply_last_limit: typeof backend_vars.last_limit === "undefined" ? null : backend_vars.last_limit,
 				latest_doc_id: backend_vars.latest_doc_id,
 				theme: backend_vars.selected_theme
 			};
 
-			if(typeof jQuery("#recaptcha_challenge_field").val() !== 'undefined' && typeof jQuery("#recaptcha_response_field").val() !== 'undefined') {
-				data_obj['recaptcha_challenge_field'] = jQuery("#recaptcha_challenge_field").val();
-				data_obj['recaptcha_response_field'] = jQuery("#recaptcha_response_field").val();
-			} else if(typeof jQuery("#g-recaptcha-response").val() !== 'undefined') {
-				data_obj['recaptcha2_response_field'] = jQuery("#g-recaptcha-response").val();
+			if(typeof $("#recaptcha_challenge_field").val() !== 'undefined' && typeof $("#recaptcha_response_field").val() !== 'undefined') {
+				data_obj['recaptcha_challenge_field'] = $("#recaptcha_challenge_field").val();
+				data_obj['recaptcha_response_field'] = $("#recaptcha_response_field").val();
+			} else if(typeof $("#g-recaptcha-response").val() !== 'undefined') {
+				data_obj['recaptcha2_response_field'] = $("#g-recaptcha-response").val();
 			}
 
 			// sets the type of submit (reply_gattai, reply_gattai_spoilered)
@@ -237,16 +237,16 @@ var bindFunctions = function()
 						grecaptcha.reset();
 					}
 
-					jQuery("#recaptcha_response_field").val('');
+					$("#recaptcha_response_field").val('');
 					if (typeof data.captcha !== "undefined")
 					{
 						if(recaptcha2.enabled && typeof window.grecaptcha === "undefined") {
-							jQuery('.recaptcha_widget').html('<div><p>You might be a bot! Enter a reCAPTCHA to continue.</p></div> \
+							$('.recaptcha_widget').html('<div><p>You might be a bot! Enter a reCAPTCHA to continue.</p></div> \
 							<div class="g-recaptcha" data-sitekey="'+ recaptcha2.pubkey +'"></div> \
 							<script type="text/javascript" src="//www.google.com/recaptcha/api.js" async defer></script>')
 						}
-						jQuery('.recaptcha_widget').show();
-						jQuery('.rules_box').hide();
+						$('.recaptcha_widget').show();
+						$('.rules_box').hide();
 						return false;
 					}
 
@@ -257,13 +257,13 @@ var bindFunctions = function()
 						return false;
 					}
 
-					jQuery('.rules_box').show();
-					jQuery('.recaptcha_widget').hide();
+					$('.rules_box').show();
+					$('.recaptcha_widget').hide();
 
 					reply_alert.html(data.success);
 					reply_alert.addClass('success'); // deals with showing the alert
-					jQuery("#reply_chennodiscursus").val("");
-					jQuery("#reply_nymphassword").val(getCookie('reply_password'));
+					$("#reply_chennodiscursus").val("");
+					$("#reply_nymphassword").val(getCookie('reply_password'));
 					file_el.replaceWith('<input type="file" name="file_image" id="file_image" size="16">');
 
 
@@ -375,7 +375,7 @@ var bindFunctions = function()
 								media_count++;
 							}
 						});
-						var thread = jQuery('article.thread[data-thread-num=' + thread_num + '] ');
+						var thread = $('article.thread[data-thread-num=' + thread_num + '] ');
 						var displayed_string = post_count + ' posts ' +
 							(media_count > 0 ? 'and ' + media_count + ' ' + (media_count == 1 ? 'image' : 'images') : '') + ' displayed';
 						thread.find('.omitted_text').text(displayed_string);
@@ -386,7 +386,7 @@ var bindFunctions = function()
 			}
 			else
 			{
-				var thread = jQuery('article.thread[data-thread-num=' + thread_num + ']');
+				var thread = $('article.thread[data-thread-num=' + thread_num + ']');
 				var articles =  thread.find('aside.posts article');
 				articles.slice(0, articles.length - 5).hide();
 				var post_count = articles.filter(':hidden').length;
@@ -402,16 +402,16 @@ var bindFunctions = function()
 
 		clearSearch: function(el, post, event)
 		{
-			var form = jQuery('.advanced_search').find('form');
+			var form = $('.advanced_search').find('form');
 			form.find(':input').not(':input[type=submit]').not(':input[type=reset]').val('');
 
 			// keep the first radio set
 			var done_names = [];
 			form.find('[type=radio]').each(function (idx) {
-				if (!jQuery.inArray(jQuery(this).attr('name'), done_names))
+				if (!jQuery.inArray($(this).attr('name'), done_names))
 				{
-					jQuery(this).attr('checked', true);
-					done_names.push(jQuery(this).attr('name'));
+					$(this).attr('checked', true);
+					done_names.push($(this).attr('name'));
 				}
 			});
 		},
@@ -446,10 +446,10 @@ var bindFunctions = function()
 					switch(el.data('action'))
 					{
 						case 'remove_post':
-							jQuery('.doc_id_' + el.data('id')).remove();
+							$('.doc_id_' + el.data('id')).remove();
 							break;
 						case 'delete_image':
-							jQuery('.doc_id_' + el.data('doc-id')).find('.thread_image_box:eq(0) img')
+							$('.doc_id_' + el.data('doc-id')).find('.thread_image_box:eq(0) img')
 								.attr('src', backend_vars.images['missing_image'])
 								.css({
 									width: backend_vars.images['missing_image_width'],
@@ -460,10 +460,10 @@ var bindFunctions = function()
 							el.closest('.report_reason').remove();
 							break;
 						case 'ban_user':
-							jQuery('.doc_id_' + el.data('id')).find('[data-action=ban_user]').text('Banned');
+							$('.doc_id_' + el.data('id')).find('[data-action=ban_user]').text('Banned');
 							break;
 						case 'ban_image':
-							jQuery('.doc_id_' + el.data('doc-id')).find('.thread_image_box:eq(0) img')
+							$('.doc_id_' + el.data('doc-id')).find('.thread_image_box:eq(0) img')
 								.attr('src', backend_vars.images['banned_image'])
 								.css({
 									width: backend_vars.images['banned_image_width'],
@@ -491,22 +491,22 @@ var bindFunctions = function()
 
 		activateModeration: function(el, post, event)
 		{
-			jQuery('.post_mod_controls button[data-function]').attr({'disabled': 'disabled'});
+			$('.post_mod_controls button[data-function]').attr({'disabled': 'disabled'});
 			setTimeout(function(){
-				jQuery('.post_mod_controls button[data-function]').removeAttr('disabled');
+				$('.post_mod_controls button[data-function]').removeAttr('disabled');
 			}, 700);
-			jQuery('.post_mod_controls').show();
-			jQuery('button[data-function=activateModeration]').parent().hide();
+			$('.post_mod_controls').show();
+			$('button[data-function=activateModeration]').parent().hide();
 		},
 
 		activateExtraMod: function(el, post, event)
 		{
-			jQuery('.post_extra_mod button[data-function]').attr({'disabled': 'disabled'});
+			$('.post_extra_mod button[data-function]').attr({'disabled': 'disabled'});
 			setTimeout(function(){
-				jQuery('.post_extra_mod button[data-function]').removeAttr('disabled');
+				$('.post_extra_mod button[data-function]').removeAttr('disabled');
 			}, 700);
-			jQuery('.post_extra_mod').show();
-			jQuery('button[data-function=activateExtraMod]').parent().hide();
+			$('.post_extra_mod').show();
+			$('button[data-function=activateExtraMod]').parent().hide();
 		},
 
 		closeModal: function(el, post)
@@ -517,7 +517,7 @@ var bindFunctions = function()
 
 		'delete': function(el, post, event)
 		{
-			var modal = jQuery("#post_tools_modal");
+			var modal = $("#post_tools_modal");
 			var foolfuuka_reply_password = getCookie('foolfuuka_reply_password');
 			modal.find(".title").html('Delete &raquo; Post No. ' + el.data("post-id"));
 			modal.find(".modal-error").html('');
@@ -530,10 +530,47 @@ var bindFunctions = function()
 			modal.find(".submitModal").data("action", 'delete');
 			modal.find(".modal-password").val(backend_vars.user_pass);
 		},
+		
+		selectPosts: function(el, post, event)
+		{
+			$('article.thread').each(function () {
+				if (typeof $(this).attr('data-board') != 'undefined') {
+					var post_type = ($(this).attr('data-thread-num') == $(this).attr('id').substring(1)) ? "thread" : "post";
+					$(this).find('a[data-function=selectPosts]:eq(0)').replaceWith('<input class="bulkselect" type="checkbox" ' +
+						'data-board="' + $(this).attr('data-board') + '" ' + 'data-type="' + post_type + '" ' +
+						'data-num="' + $(this).attr('id').substring(1) + '" data-doc-id="' + $(this).attr('data-doc-id') + '">' +
+						'<a href="#" class="btnr parent" data-controls-modal="post_tools_modal" data-backdrop="true" ' +
+						'data-keyboard="true" data-function="bulkSelect">View Selected</a>');
+				}
+			});
+			$('article.post').each(function () {
+				if (typeof $(this).attr('data-board') != 'undefined') {
+					var post_type = ($(this).attr('data-thread-num') == $(this).attr('id').substring(1)) ? "thread" : "post";
+					$(this).find('a[data-function=report]:eq(0)').replaceWith('<input class="bulkselect" type="checkbox" ' +
+						'data-board="' + $(this).attr('data-board') + '" ' + 'data-type="' + post_type + '" ' +
+						'data-num="' + $(this).attr('id').substring(1) + '" data-doc-id="' + $(this).attr('data-doc-id') + '">' +
+						'<a href="#" class="btnr parent" data-controls-modal="post_tools_modal" data-backdrop="true" ' +
+						'data-keyboard="true" data-function="bulkSelect">View Selected</a>');
+				}
+			});
+		},
+		
+		bulkSelect: function(el, post, event)
+		{
+			var modal = $("#post_tools_modal");
+			modal.find(".title").html('Selected Posts');
+			modal.find(".modal-error").html('');
+			modal.find(".modal-loading").hide();
+			modal.find(".modal-information").html('Selected posts: <br>');
+			$('.bulkselect:checked').each(function () {
+				modal.find(".modal-information").append('/' + $(this).attr('data-board') + '/' + $(this).attr('data-type') + '/' + $(this).attr('data-num') + '<br>');
+			});
+			modal.find(".submitModal").data("action", 'bulk-mod');
+		},
 
 		report: function(el, post, event)
 		{
-			var modal = jQuery("#post_tools_modal");
+			var modal = $("#post_tools_modal");
 			modal.find(".title").html('Report &raquo; Post No.' + el.data("post-id"));
 			modal.find(".modal-error").html('');
 			modal.find(".modal-loading").hide();
@@ -547,11 +584,11 @@ var bindFunctions = function()
 		},
 
 		addBulkReport: function(el, post, event) {
-			jQuery('article.thread, article.post').each(function () {
-				if (typeof jQuery(this).attr('data-board') != 'undefined') {
-					jQuery(this).find('a[data-function=report]:eq(0)').replaceWith('<input class="bulkreportselect" type="checkbox" ' +
-						'data-board="' + jQuery(this).attr('data-board') + '" ' +
-						'data-num="' + jQuery(this).attr('id') + '" data-doc-id="' + jQuery(this).attr('data-doc-id') + '">' +
+			$('article.thread, article.post').each(function () {
+				if (typeof $(this).attr('data-board') != 'undefined') {
+					$(this).find('a[data-function=report]:eq(0)').replaceWith('<input class="bulkreportselect" type="checkbox" ' +
+						'data-board="' + $(this).attr('data-board') + '" ' +
+						'data-num="' + $(this).attr('id') + '" data-doc-id="' + $(this).attr('data-doc-id') + '">' +
 						'<a href="#" class="btnr parent" data-controls-modal="post_tools_modal" data-backdrop="true" ' +
 						'data-keyboard="true" data-function="bulkReport">Report Selected</a>');
 				}
@@ -560,13 +597,13 @@ var bindFunctions = function()
 		},
 
 		bulkReport: function(el, post, event) {
-			var modal = jQuery("#post_tools_modal");
+			var modal = $("#post_tools_modal");
 			modal.find(".title").html('Report Posts');
 			modal.find(".modal-error").html('');
 			modal.find(".modal-loading").hide();
 			modal.find(".modal-information").html('Selected posts: <br>');
-			jQuery('.bulkreportselect:checked').each(function () {
-				modal.find(".modal-information").append('>>>/' + $(this).attr('data-board') + '/' + $(this).attr('data-num') + '<br>');
+			$('.bulkreportselect:checked').each(function () {
+				modal.find(".modal-information").append('>>>/' + $(this).attr('data-board') + '/' + $(this).attr('data-num').substring(1) + '<br>');
 			});
 			modal.find(".modal-information").append('<br><span class="modal-field">Comment</span>\n\
 			<textarea class="modal-comment"></textarea>\n\
@@ -576,7 +613,7 @@ var bindFunctions = function()
 
 		ban: function(el, post, event)
 		{
-			var modal = jQuery("#post_tools_modal");
+			var modal = $("#post_tools_modal");
 			modal.find(".title").html('Ban user with IP ' + el.data("ip"));
 			modal.find(".modal-error").html('');
 			modal.find(".modal-loading").hide();
@@ -600,7 +637,7 @@ var bindFunctions = function()
 
 		editPost: function(el, post, event)
 		{
-			var modal = jQuery("#post_tools_modal");
+			var modal = $("#post_tools_modal");
 			modal.find(".title").html('Edit Post No. ' + el.data("post-id"));
 			modal.find(".modal-error").html('');
 			modal.find(".modal-loading").show();
@@ -642,14 +679,14 @@ var bindFunctions = function()
 					num: el.data('post-id')
 				},
 				success: function(data){
-					jQuery("input[name='edit-subject']").val(data.title);
-					jQuery("input[name='edit-name']").val(data.name);
-					jQuery("input[name='edit-trip']").val(data.trip);
-					jQuery("input[name='edit-email']").val(data.email);
-					jQuery("input[name='edit-country']").val(data.poster_country);
-					jQuery("input[name='edit-poster_hash']").val(data.poster_hash);
-					jQuery("select[name='edit-capcode']").val(data.capcode);
-					jQuery("textarea[name='edit-comment']").val(data.comment);
+					$("input[name='edit-subject']").val(data.title);
+					$("input[name='edit-name']").val(data.name);
+					$("input[name='edit-trip']").val(data.trip);
+					$("input[name='edit-email']").val(data.email);
+					$("input[name='edit-country']").val(data.poster_country);
+					$("input[name='edit-poster_hash']").val(data.poster_hash);
+					$("select[name='edit-capcode']").val(data.capcode);
+					$("textarea[name='edit-comment']").val(data.comment);
 					if(data.media != null) {
 						modal.find(".modal-information").append('<hr><p>Media</p><input type="hidden" name="media_id" value="" />\
 						<div class="input-prepend">\
@@ -663,15 +700,15 @@ var bindFunctions = function()
 						<div class="input-prepend">\
 						<label class="add-on" for="preview_h">Preview Height</label><input name="edit-preview_h" id="preview_h" type="text"></div>\
 						<label for="spoiler"><input type="checkbox" id="spoiler" value="true" name="edit-spoiler"> Spoiler Image</label>');
-						jQuery("input[name='media_id']").val(data.media.media_id);
-						jQuery("input[name='edit-filename']").val(data.media.media_filename);
+						$("input[name='media_id']").val(data.media.media_id);
+						$("input[name='edit-filename']").val(data.media.media_filename);
 						if(data.media.spoiler == 1) {
-							jQuery("input[name='edit-spoiler']").click();
+							$("input[name='edit-spoiler']").click();
 						}
-						jQuery("input[name='edit-media_w']").val(data.media.media_w);
-						jQuery("input[name='edit-media_h']").val(data.media.media_h);
-						jQuery("input[name='edit-preview_w']").val(data.media.preview_w);
-						jQuery("input[name='edit-preview_h']").val(data.media.preview_h);
+						$("input[name='edit-media_w']").val(data.media.media_w);
+						$("input[name='edit-media_h']").val(data.media.media_h);
+						$("input[name='edit-preview_w']").val(data.media.preview_w);
+						$("input[name='edit-preview_h']").val(data.media.preview_h);
 					}
 				},
 				error: function() {
@@ -686,10 +723,10 @@ var bindFunctions = function()
 		},
 
 		addBulkEdit: function(el, post, event) {
-			jQuery('article.thread, article.post').each(function () {
-				if (typeof jQuery(this).attr('data-board') != 'undefined') {
-					jQuery('<input class="bulkselect" type="checkbox" data-board="' + jQuery(this).attr('data-board') + '" ' +
-						'data-num="' + jQuery(this).attr('id') + '" data-doc-id="' + jQuery(this).attr('data-doc-id') + '">' +
+			$('article.thread, article.post').each(function () {
+				if (typeof $(this).attr('data-board') != 'undefined') {
+					$('<input class="bulkselect" type="checkbox" data-board="' + $(this).attr('data-board') + '" ' +
+						'data-num="' + $(this).attr('id') + '" data-doc-id="' + $(this).attr('data-doc-id') + '">' +
 						'<a href="#" class="btnr parent" data-controls-modal="post_tools_modal" data-backdrop="true" ' +
 						'data-keyboard="true" data-function="bulkEdit">Edit Selected</a>')
 						.prependTo($(this).find('.post_data:first'));
@@ -699,13 +736,13 @@ var bindFunctions = function()
 		},
 
 		bulkEdit: function(el, post, event) {
-			var modal = jQuery("#post_tools_modal");
+			var modal = $("#post_tools_modal");
 			modal.find(".title").html('Edit Posts');
 			modal.find(".modal-error").html('');
 			modal.find(".modal-loading").hide();
 			modal.find(".modal-information").html('This will only modify specified fields. Leave blank to not modify that field.<br><br>' +
 				'Selected posts: <br>');
-			jQuery('.bulkselect:checked').each(function () {
+			$('.bulkselect:checked').each(function () {
 				modal.find(".modal-information").append('>>>/' + $(this).attr('data-board') + '/' + $(this).attr('data-num') + '<br>');
 			});
 			modal.find(".modal-information").append('<br><fieldset>\
@@ -747,11 +784,12 @@ var bindFunctions = function()
 		},
 
 		addBulkMod: function(el, post, event) {
-			jQuery('article.thread, article.post').each(function () {
-				if (typeof jQuery(this).attr('data-board') != 'undefined') {
-					jQuery(this).find('a[data-function=delete]:eq(0)').replaceWith('<input class="bulkmodselect" type="checkbox" ' +
-						'data-board="' + jQuery(this).attr('data-board') + '" ' +
-						'data-num="' + jQuery(this).attr('id') + '" data-doc-id="' + jQuery(this).attr('data-doc-id') + '">' +
+			$('article.thread, article.post').each(function () {
+				if (typeof $(this).attr('data-board') != 'undefined') {
+					var post_type = ($(this).attr('data-thread-num') == $(this).attr('id').substring(1)) ? "thread" : "post";
+					$(this).find('a[data-function=delete]:eq(0)').replaceWith('<input class="bulkmodselect" type="checkbox" ' +
+						'data-board="' + $(this).attr('data-board') + '" ' + 'data-type="' + post_type + '" ' +
+						'data-num="' + $(this).attr('id').substring(1) + '" data-doc-id="' + $(this).attr('data-doc-id') + '">' +
 						'<a href="#" class="btnr parent" data-controls-modal="post_tools_modal" data-backdrop="true" ' +
 						'data-keyboard="true" data-function="bulkMod">Mod Selected</a>');
 				}
@@ -759,13 +797,13 @@ var bindFunctions = function()
 		},
 
 		bulkMod: function(el, post, event) {
-			var modal = jQuery("#post_tools_modal");
+			var modal = $("#post_tools_modal");
 			modal.find(".title").html('Mod Posts');
 			modal.find(".modal-error").html('');
 			modal.find(".modal-loading").hide();
 			modal.find(".modal-information").html('Selected posts: <br>');
-			jQuery('.bulkmodselect:checked').each(function () {
-				modal.find(".modal-information").append('>>>/' + $(this).attr('data-board') + '/' + $(this).attr('data-num') + '<br>');
+			$('.bulkmodselect:checked').each(function () {
+				modal.find(".modal-information").append('/' + $(this).attr('data-board') + '/' + $(this).attr('data-type') + '/' + $(this).attr('data-num') + '<br>');
 			});
 			modal.find(".modal-information").append('<br>Select action<br>' +
 				'<form>\
@@ -779,7 +817,7 @@ var bindFunctions = function()
 
 		submitModal: function(el, post, event)
 		{
-			var modal = jQuery("#post_tools_modal");
+			var modal = $("#post_tools_modal");
 			var loading = modal.find(".modal-loading");
 			var action = el.data("action");
 			var _board = modal.find(".modal-board").val();
@@ -893,7 +931,7 @@ var bindFunctions = function()
 				} else {
 					_data.spoiler = 0;
 				}
-				jQuery('.bulkselect:checked').each(function () {
+				$('.bulkselect:checked').each(function () {
 					_data.posts.push({
 							radix: $(this).attr('data-board'),
 							doc_id: $(this).attr('data-doc-id')
@@ -908,7 +946,7 @@ var bindFunctions = function()
 					csrf_fool: backend_vars.csrf_hash,
 					posts: []
 				};
-				jQuery('.bulkreportselect:checked').each(function () {
+				$('.bulkreportselect:checked').each(function () {
 					_data.posts.push({
 							radix: $(this).attr('data-board'),
 							doc_id: $(this).attr('data-doc-id'),
@@ -925,7 +963,7 @@ var bindFunctions = function()
 					csrf_fool: backend_vars.csrf_hash,
 					posts: []
 				};
-				jQuery('.bulkmodselect:checked').each(function () {
+				$('.bulkmodselect:checked').each(function () {
 					_data.posts.push({
 							radix: $(this).attr('data-board'),
 							doc_id: $(this).attr('data-doc-id'),
@@ -950,22 +988,22 @@ var bindFunctions = function()
 				modal.modal('hide');
 
 				if (action == 'delete') {
-					jQuery('.doc_id_' + _doc_id).hide();
+					$('.doc_id_' + _doc_id).hide();
 				}
 				if (action == 'report') {
-					jQuery('.doc_id_' + _doc_id).find('.text:eq(0)').after('<div class="report_reason">' + result.success + '</div>');
+					$('.doc_id_' + _doc_id).find('.text:eq(0)').after('<div class="report_reason">' + result.success + '</div>');
 				}
 				if (action == 'edit-post') {
-					jQuery('.doc_id_' + _doc_id).find('.text:eq(0)').after('<div class="report_reason">' + result.success + '</div>');
+					$('.doc_id_' + _doc_id).find('.text:eq(0)').after('<div class="report_reason">' + result.success + '</div>');
 				}
 				if (action == 'bulk-edit') {
-					jQuery('div.container').after('<div style="text-align:center;" class="alert alert-success">' + result.success + '</div>');
+					$('div.container').after('<div style="text-align:center;" class="alert alert-success">' + result.success + '</div>');
 				}
 				if (action == 'bulk-report') {
-					jQuery('div.container').after('<div style="text-align:center;" class="alert alert-success">' + result.success + '</div>');
+					$('div.container').after('<div style="text-align:center;" class="alert alert-success">' + result.success + '</div>');
 				}
 				if (action == 'bulk-mod') {
-					jQuery('div.container').after('<div style="text-align:center;" class="alert alert-success">' + result.success + '</div>');
+					$('div.container').after('<div style="text-align:center;" class="alert alert-success">' + result.success + '</div>');
 				}
 			}, 'json');
 			return false;
@@ -974,8 +1012,8 @@ var bindFunctions = function()
 		clearLatestSearches: function(el, post, event)
 		{
 			setCookie('search_latest_5', '', 0, '/', backend_vars.cookie_domain);
-			jQuery('li.latest_search').each(function(idx){
-				jQuery(this).remove();
+			$('li.latest_search').each(function(idx){
+				$(this).remove();
 			});
 		},
 
@@ -992,21 +1030,21 @@ var bindFunctions = function()
 
 		toggleExif: function(el, post, event)
 		{
-			jQuery(".exiftable."+post).toggle();
+			$(".exiftable."+post).toggle();
 		},
 
 		searchhilight: function(el, post, event)
 		{
 			if (el.is(':checked')) {
 				setCookie("searchhilight_enabled", true, 90, '/', backend_vars.cookie_domain);
-				if (jQuery("span[data-markjs='true']").length) {
-					jQuery("span[data-markjs='true']").addClass("highlight");
+				if ($("span[data-markjs='true']").length) {
+					$("span[data-markjs='true']").addClass("highlight");
 				} else if (typeof backend_vars.search_args !== "undefined") {
 					highlightSearchResults();
 				}
 			} else {
 				setCookie("searchhilight_enabled", false, 90, '/', backend_vars.cookie_domain);
-				jQuery("span[data-markjs='true']").removeClass("highlight");
+				$("span[data-markjs='true']").removeClass("highlight");
 			}
 		},
 
@@ -1021,30 +1059,30 @@ var bindFunctions = function()
 
 
 	// unite all the onclick functions in here
-	jQuery(document.body).on("click", "a[data-function], button[data-function], input[data-function]", function(event) {
-		var el = jQuery(this);
+	$(document.body).on("click", "a[data-function], button[data-function], input[data-function]", function(event) {
+		var el = $(this);
 		var post = el.data("post");
 		return clickCallbacks[el.data("function")](el, post, event);
 	});
 
-	jQuery(document.body).on("mousedown touchstart", ".search_box, .search-query", function(event) {
+	$(document.body).on("mousedown touchstart", ".search_box, .search-query", function(event) {
 		event.stopPropagation();
 	});
 
-	jQuery(document.body).on("mousedown touchstart", function(event) {
-		var search_input = jQuery('#search_form_comment');
-		jQuery('.search-query').val(search_input.val());
-		jQuery('.search_box').hide();
+	$(document.body).on("mousedown touchstart", function(event) {
+		var search_input = $('#search_form_comment');
+		$('.search-query').val(search_input.val());
+		$('.search_box').hide();
 	});
 
-	jQuery(document.body).on("mousedown touchstart", ".search-query", function() {
-		var el = jQuery(this);
+	$(document.body).on("mousedown touchstart", ".search-query", function() {
+		var el = $(this);
 		var offset = el.offset();
 		var width = el.outerWidth();
-		var search_box = jQuery('.search_box');
+		var search_box = $('.search_box');
 		var comment_wrap = search_box.find('.comment_wrap');
 		var comment_wrap_pos = comment_wrap.position();
-		search_box.css({top: (offset.top - 11) + 'px', right: (jQuery(window).width() - (offset.left + width) - 16) + 'px'}).show();
+		search_box.css({top: (offset.top - 11) + 'px', right: ($(window).width() - (offset.left + width) - 16) + 'px'}).show();
 		el.parents('.open').removeClass('open');
 		search_box.find('input[name=text]').focus();
 		return false;
@@ -1065,14 +1103,14 @@ var bindFunctions = function()
 	var show_post_num; // the number of the post that has to show in the xhr callback, when 0 don't run popups
 
 	// hover functions go here
-	jQuery("#main").on("mouseover mouseout", "article a[data-backlink]", function(event)
+	$("#main").on("mouseover mouseout", "article a[data-backlink]", function(event)
 	{
 
 		if (event.type == "mouseover")
 		{
 
-			var backlink = jQuery("#quotelink");
-			var el = jQuery(this);
+			var backlink = $("#quotelink");
+			var el = $(this);
 
 			var pos = el.offset();
 			var height = el.height();
@@ -1086,10 +1124,10 @@ var bindFunctions = function()
 				backlink.css('display', 'block');
 				backlink.html(quote.formatted);
 			}
-			else if (jQuery('#p' + el.data('post')).hasClass('post'))
+			else if ($('#p' + el.data('post')).hasClass('post'))
 			{
 				// normal posts
-				var toClone = jQuery('#p' + el.data('post'));
+				var toClone = $('#p' + el.data('post'));
 				if (toClone.length == 0)
 					return false;
 				backlink.css('display', 'block');
@@ -1163,7 +1201,7 @@ var bindFunctions = function()
 			show_post_board = false;
 			show_post_num = false;
 			clearTimeout(timeout);
-			jQuery("#quotelink").css('display', 'none').html('');
+			$("#quotelink").css('display', 'none').html('');
 		}
 	});
 };
@@ -1176,8 +1214,8 @@ var hideThreads = function()
 
 		for (var num in hiddenBoardThreads)
 		{
-			jQuery(".doc_id_" + num).hide();
-			jQuery(".stub_doc_id_" + num).show();
+			$(".doc_id_" + num).hide();
+			$(".stub_doc_id_" + num).show();
 		}
 	}
 };
@@ -1190,8 +1228,8 @@ var hidePosts = function()
 
 		for (var num in hiddenBoardPosts)
 		{
-			jQuery(".doc_id_" + num).hide();
-			jQuery(".stub_doc_id_" + num).show();
+			$(".doc_id_" + num).hide();
+			$(".stub_doc_id_" + num).show();
 		}
 	}
 };
@@ -1211,10 +1249,10 @@ var shakeBacklink = function(el)
 
 var showBacklink = function(backlink, pos, height, width)
 {
-	if (jQuery(window).width()/2 < pos.left + width/2)
+	if ($(window).width()/2 < pos.left + width/2)
 	{
 		backlink.css({
-			right: (jQuery(window).width() - pos.left - width) + 'px',
+			right: ($(window).width() - pos.left - width) + 'px',
 			top: (pos.top + height + 3) + 'px',
 			left: 'auto'
 		});
@@ -1240,13 +1278,13 @@ var backlinkify = function(elem, post_id, subnum)
 	}
 
 	elem.find("a[data-backlink=true]").each(function(idx, post) {
-		if (jQuery(post).text().indexOf('/') >= 0)
+		if ($(post).text().indexOf('/') >= 0)
 		{
 			return true;
 		}
 
-		var p_id = jQuery(post).attr('data-post');
-		var board_shortname = jQuery(post).attr('data-board');
+		var p_id = $(post).attr('data-post');
+		var board_shortname = $(post).attr('data-board');
 
 		if (typeof backlinks[p_id] === "undefined")
 		{
@@ -1260,9 +1298,9 @@ var backlinkify = function(elem, post_id, subnum)
 				backlinks[p_id].push('<a href="' + backend_vars.site_url + board_shortname + '/post/' + post_id + '" data-function="highlight" data-backlink="true" data-post="' + post_id + '">&gt;&gt;' + post_id.replace('_', ',') + '</a>');
 
 				// convert /post/ links to real urls
-				if (jQuery('#' + p_id).length)
+				if ($('#' + p_id).length)
 				{
-					jQuery(post).attr('href', backend_vars.site_url + board_shortname + '/post/' + p_id);
+					$(post).attr('href', backend_vars.site_url + board_shortname + '/post/' + p_id);
 				}
 			}
 			else
@@ -1270,14 +1308,14 @@ var backlinkify = function(elem, post_id, subnum)
 				backlinks[p_id].push('<a href="' + backend_vars.site_url + board_shortname + '/thread/' + backend_vars.thread_id + '/#' + post_id + '" data-function="highlight" data-backlink="true" data-post="' + post_id + '">&gt;&gt;' + post_id.replace('_', ',') + '</a>');
 
 				// convert /post/ links to real urls
-				if (jQuery('#' + p_id).length)
+				if ($('#' + p_id).length)
 				{
 					if (backend_vars.thread_id == p_id)
 					{
-						jQuery(post).addClass('op');
+						$(post).addClass('op');
 					}
 
-					jQuery(post).attr('href', backend_vars.site_url + board_shortname + '/thread/' + backend_vars.thread_id + '/#' + p_id);
+					$(post).attr('href', backend_vars.site_url + board_shortname + '/thread/' + backend_vars.thread_id + '/#' + p_id);
 				}
 			}
 		}
@@ -1286,9 +1324,9 @@ var backlinkify = function(elem, post_id, subnum)
 			backlinks[p_id].push('<a href="' + backend_vars.site_url + board_shortname + '/last/' + backend_vars.last_limit + '/' + backend_vars.thread_id + '/#' + post_id + '" data-function="highlight" data-backlink="true" data-post="' + post_id + '">&gt;&gt;' + post_id.replace('_', ',') + '</a>');
 
 			// convert /post/ links to real urls
-			if (jQuery('#' + p_id).length)
+			if ($('#' + p_id).length)
 			{
-				jQuery(post).attr('href', backend_vars.site_url + board_shortname + '/last/' + backend_vars.last_limit + '/' + backend_vars.thread_id + '/#' + p_id);
+				$(post).attr('href', backend_vars.site_url + board_shortname + '/last/' + backend_vars.last_limit + '/' + backend_vars.thread_id + '/#' + p_id);
 			}
 		}
 
@@ -1296,7 +1334,7 @@ var backlinkify = function(elem, post_id, subnum)
 	});
 
 	jQuery.each(backlinks, function(key, val){
-		var post = jQuery("#" + key);
+		var post = $("#" + key);
 		if (post.length == 0)
 			return false;
 
@@ -1348,12 +1386,12 @@ var ghost = false;
 
 var insertPosts = function(data, textStatus, jqXHR)
 {
-	var w_height = jQuery(document).height();
+	var w_height = $(document).height();
 	var found_posts = false;
 	jQuery.each(data, function(id, val)
 	{
 		if (typeof val.posts !== "undefined"){
-			var aside = jQuery('article.thread[data-thread-num=' + val.posts[0].no + '] aside.posts');
+			var aside = $('article.thread[data-thread-num=' + val.posts[0].no + '] aside.posts');
 			$.ajax({
 				url: backend_vars.api_url + `${$('.post_is_op').attr('data-board')}/posts/${val.posts[0].no }`,
 				type: 'GET',
@@ -1370,7 +1408,7 @@ var insertPosts = function(data, textStatus, jqXHR)
 
 var insertPost = function(data, textStatus, jqXHR)
 {
-	var w_height = jQuery(document).height();
+	var w_height = $(document).height();
 	var found_posts = false;
 
 	if (data !== null)
@@ -1379,7 +1417,7 @@ var insertPost = function(data, textStatus, jqXHR)
 		{
 			if (typeof val.posts !== "undefined")
 			{
-				var aside = jQuery('article.thread[data-thread-num=' + val.posts[0].no + '] aside.posts');
+				var aside = $('article.thread[data-thread-num=' + val.posts[0].no + '] aside.posts');
 				jQuery.each(val.posts, function(idx, value)
 				{
 					//process all posts except OP
@@ -1397,7 +1435,7 @@ var insertPost = function(data, textStatus, jqXHR)
 							
 						}
 					});
-					var post = jQuery(obtained_post);
+					var post = $(obtained_post);
 
 					//post.find("time").localize('ddd dd mmm yyyy HH:MM:ss');
 					post.find('[rel=tooltip]').tooltip({
@@ -1411,9 +1449,9 @@ var insertPost = function(data, textStatus, jqXHR)
 					});
 
 					// avoid inserting twice
-					if (jQuery('#p' + value.no).length != 0)
+					if ($('#p' + value.no).length != 0)
 					{
-						jQuery('#p' + value.no).remove();
+						$('#p' + value.no).remove();
 					}
 
 					aside.append(post);
@@ -1431,8 +1469,8 @@ var insertPost = function(data, textStatus, jqXHR)
 					// update comment box when encountering ghost posts
 					if (ghost === false && value.subnum > 0)
 					{
-						jQuery("#file_image").parent().remove();
-						jQuery("#reply_chennodiscursus").attr("placeholder", backend_vars.gettext['ghost_mode']);
+						$("#file_image").parent().remove();
+						$("#reply_chennodiscursus").attr("placeholder", backend_vars.gettext['ghost_mode']);
 
 						ghost = true;
 					}
@@ -1443,9 +1481,9 @@ var insertPost = function(data, textStatus, jqXHR)
 
 	if (found_posts)
 	{
-		if (jQuery('#reply :focus').length > 0)
+		if ($('#reply :focus').length > 0)
 		{
-			window.scrollBy(0, jQuery(document).height() - w_height);
+			window.scrollBy(0, $(document).height() - w_height);
 		}
 
 		enableRealtimeThread();
@@ -1472,7 +1510,7 @@ var findSameImageFromFile = function(obj)
 			});
 			var digestBase64 = Crypto.util.bytesToBase64(digestBytes);
 			var digestBase64URL = digestBase64.replace('==', '').replace(/\//g, '_').replace(/\+/g, '-');
-			jQuery('#search_form_image').val(digestBase64URL);
+			$('#search_form_image').val(digestBase64URL);
 		}
 	};
 
@@ -1482,8 +1520,8 @@ var findSameImageFromFile = function(obj)
 var toggleHighlight = function(id)
 {
 	var classn = 'highlight';
-	jQuery("article").each(function() {
-		var post = jQuery(this);
+	$("article").each(function() {
+		var post = $(this);
 
 		if (post.hasClass(classn))
 		{
@@ -1504,7 +1542,7 @@ var enableRealtimeThread = function()
 	{
 		realtime = true;
 
-		jQuery('.js_hook_realtimethread').html(backend_vars.gettext['thread_is_real_time'] + ' <a class="btnr" href="#" data-function="realtimeThread">' + backend_vars.gettext['update_now'] + '</a>');
+		$('.js_hook_realtimethread').html(backend_vars.gettext['thread_is_real_time'] + ' <a class="btnr" href="#" data-function="realtimeThread">' + backend_vars.gettext['update_now'] + '</a>');
 		setTimeout(realtimethread, 10000);
 	}
 };
@@ -1531,7 +1569,7 @@ var highlightSearchResults = function()
 		}
 		if (selector != "") {
 			val = val.replace(/[\.\*\^\|'"!]/g, " ");
-			jQuery( selector ).mark(val, {
+			$( selector ).mark(val, {
 				"element": "span",
 				"className": "highlight"
 			});
@@ -1539,7 +1577,7 @@ var highlightSearchResults = function()
 	});
 };
 
-jQuery(document).ready(function() {
+$(document).ready(function() {
 
 	// settings
 	jQuery.support.cors = true;
@@ -1550,8 +1588,8 @@ jQuery(document).ready(function() {
 	i.setAttribute("type", "date");
 	if (i.type !== "text")
 	{
-		jQuery('#date_end').replaceWith(jQuery('<input>').attr({id: 'date_end', name: 'end', type: 'date'}));
-		jQuery('#date_start').replaceWith(jQuery('<input>').attr({id: 'date_start', name: 'start', type: 'date'}));
+		$('#date_end').replaceWith($('<input>').attr({id: 'date_end', name: 'end', type: 'date'}));
+		$('#date_start').replaceWith($('<input>').attr({id: 'date_start', name: 'start', type: 'date'}));
 	}
 
 	// opera doesn't play well with the modal transition
@@ -1561,19 +1599,19 @@ jQuery(document).ready(function() {
 	}
 
 	// firefox sucks at styling input, so we need to add size="", that guess what? It's not w3 compliant!
-	//jQuery('#file_image').attr({size: '16'});
+	//$('#file_image').attr({size: '16'});
 
 	var post = location.href.split(/#/);
 	if (post[1]) {
 		if (post[1].match(/^q\d+(_\d+)?$/)) {
 			post[1] = post[1].replace('q', '').replace('_', ',');
-			jQuery("#reply_chennodiscursus").append(">>" + post[1] + "\n");
+			$("#reply_chennodiscursus").append(">>" + post[1] + "\n");
 			post[1] = post[1].replace(',', '_');
 
 		}
 
 		toggleHighlight(post[1]);
-		//jQuery('#'+post[1].replace('q', ''))[0].scrollIntoView( true );
+		//$('#'+post[1].replace('q', ''))[0].scrollIntoView( true );
 	}
 
 	if (typeof backend_vars.thread_id !== "undefined" && (Math.round(new Date().getTime() / 1000) - backend_vars.latest_timestamp < 6 * 60 * 60))
@@ -1588,24 +1626,24 @@ jQuery(document).ready(function() {
 	labelQuotelinks();
 
 	// localize and add 4chan tooltip where title
-	jQuery("article time").localize('ddd dd mmm yyyy HH:MM:ss').filter('[title]').tooltip({
+	$("article time").localize('ddd dd mmm yyyy HH:MM:ss').filter('[title]').tooltip({
 		placement: 'top',
 		delay: 300,
 		animation: false
 	});
 
-	jQuery('input[title]').tooltip({
+	$('input[title]').tooltip({
 		placement: 'right',
 		delay: 200,
 		animation: false
 	});
 
-	jQuery('li.latest_search').tooltip({
+	$('li.latest_search').tooltip({
 		placement: 'left',
 		animation: false
 	});
 
-	jQuery('#thread_o_matic .thread_image_box').tooltip({
+	$('#thread_o_matic .thread_image_box').tooltip({
 		placement: 'bottom',
 		animation: true
 	});

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block body %}
+
+<div id="thread_o_matic" class="clearfix">
+{% for i in range(gallery|length) %}
+{% for j in range(gallery[i]['threads']|length) %}
+{% set thread = gallery[i]['threads'][j] %} 
+<article id="{{ thread.no }}" class="thread doc_id_{{ thread.no }}">
+    <header>
+        <div class="post_data">
+            <h2 class="post_title">{{ thread.sub }}</h2>
+            <span class="post_author">{{ thread.name }}</span>
+            <span class="post_trip">{{ thread.trip }}</span>
+            <span class="poster_hash"></span>
+            <br />
+            <time datetime="{{ thread.time }}">{{ thread.now }}</time>
+            <span class="post_number">
+                <a href="/{{ board }}/thread/{{ thread.no }}/#p{{ thread.no }}" data-function="highlight" data-post="{{ thread.no }}">No.</a>
+                <a href="/{{ board }}/thread/{{ thread.no }}/#p{{ thread.no }}" data-function="quote" data-post="{{ thread.no }}">{{ thread.no }}</a>
+            </span>
+            <span class="post_controls">
+                <a href="/{{ board }}/thread/{{ thread.no }}/" class="btnr parent">View</a><a href="/{{ board }}/thread/{{ thread.no }}/#reply" class="btnr parent">Reply</a>
+                <a href="https://boards.4chan.org/a/thread/{{ thread.no }}" class="btnr parent">Original</a>
+                <a
+                    href="/{{ board }}/report/{{ thread.no }}/"
+                    class="btnr parent"
+                    data-function="report"
+                    data-post="{{ thread.no }}"
+                    data-post-id="{{ thread.no }}"
+                    data-board="{{ board }}"
+                    data-controls-modal="post_tools_modal"
+                    data-backdrop="true"
+                    data-keyboard="true"
+                >
+                    Report
+                </a>
+                {% if mod %}
+                <a
+                    href="/{{ board }}/delete/{{ thread.no }}/"
+                    class="btnr parent"
+                    data-function="delete"
+                    data-post="{{ thread.no }}"
+                    data-post-id="{{ thread.no }}"
+                    data-board="{{ board }}"
+                    data-controls-modal="post_tools_modal"
+                    data-backdrop="true"
+                    data-keyboard="true"
+                >
+                    Delete
+                </a>
+                {% endif %}
+            </span>
+        </div>
+    </header>
+    <div class="thread_image_box" data-original-title="{{ thread.com }}">
+        <a href="/{{ board }}/thread/{{ thread.no }}/" rel="noreferrer" target="_blank" class="thread_image_link" data-expand="true">
+            <img src="{% if thread.asagi_preview_filename %}
+            {{ thumb_uri }}/{{ (thread.asagi_preview_filename|string)[0:4] }}/{{ (thread.asagi_preview_filename|string)[4:6] }}/{{ thread.asagi_preview_filename}}{% else %}{{ thumb_uri }}/{{ (thread.tim|string)[0:4] }}/{{ (thread.tim|string)[4:6] }}/{{ thread.tim }}s.jpg{% endif %}" data-width="1280" data-height="720" data-md5="{{ thread.md5 }}" class="thread_image" width="{{ thread.tn_w }}" height="{{ thread.tn_h }}" />
+        </a>
+        <div class="post_file" style="padding-left: 2px;{% if thread.tn_w > 149 %} max-width: {{ thread.tn_w }}px;{% endif %}">
+            {{ thread.fsize }}, {{ thread.w }}x{{ thread.h }}, <a class="post_file_filename" href="/img/{{ board }}/{{ thread.tim }}{{ thread.ext }}" target="_blank">{{ thread.filename }}{{ thread.ext }}</a>
+        </div>
+        <div class="post_file_controls">
+            <a href="{{ image_uri }}/{{ (thread.asagi_filename|string)[0:4] }}/{{ (thread.asagi_filename|string)[4:6] }}/{{ thread.asagi_filename }}" class="btnr" target="_blank">Full</a><!--<a href="/{{ board }}/search/image/jPhzonsoMUmnu8Kig9Ttqg/" class="btnr parent">View Same</a>-->
+            <a target="_blank" href="https://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" class="btnr parent">ImgOps</a>
+            <a target="_blank" href="https://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" class="btnr parent">iqdb</a>
+            <a target="_blank" href="https://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" class="btnr parent">SauceNAO</a>
+            <a target="_blank" href="https://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" class="btnr parent">Google</a>
+            <a href="{{ image_uri }}/{{ (thread.asagi_filename|string)[0:4] }}/{{ (thread.asagi_filename|string)[4:6] }}/{{ thread.asagi_filename }}" download="{{ thread.filename }}{{ thread.ext }}">
+                <i class="icon-download-alt"></i>
+            </a>
+        </div>
+    </div>
+    <div class="thread_tools_bottom">Replies: {{ thread.replies }} | Images: {{ thread.images }} | Posters: {{ thread.replies + 1 }} <span class="post_type"> </span></div>
+</article>
+
+{% if (j+1) % 5 == 0 %}
+<div class="clearfix" data-j="{{ j+1 }}"></div>
+{% endif %}
+
+{% endfor %}
+{% endfor %}
+
+<div class="paginate">
+    <ul>
+        <li class="prev"><a href="/{{ board }}/gallery/{{ page_num - 1 }}/">← Previous</a></li>
+        <li {% if page_num == 1 %} class="active"{% endif %}><a href="/{{ board }}/gallery/1/">1</a></li>
+        {% for i in range(2,10) %}
+        <li {% if page_num == i %} class="active"{% endif %}><a href="/{{ board }}/gallery/{{ i }}/">{{ i }}</a></li>
+        {% endfor %}
+        
+        {% if page_num < 13 %}
+        {% for i in range(10,15) %}
+            <li {% if page_num == i %} class="active"{% endif %}><a href="/{{ board }}/gallery/{{ i }}/">{{ i }}</a></li>
+        {% endfor %}
+        {% elif page_num >= 13 %}
+        <li><a href="/{{ board }}/gallery/10/">10</a></li>
+        <li class="disabled"><span>...</span></li>
+        
+        
+        {% for i in range(-2,3) %}
+            <li {% if i==0 %} class="active"{% endif %}><a href="/{{ board }}/gallery/{{ page_num + i }}/">{{ page_num + i }}</a></li>
+        {% endfor %}
+        {% endif %}
+        <li class="disabled"><span>...</span></li>
+        <li class="next"><a href="/{{ board }}/gallery/{{ page_num + 1 }}/">Next →</a></li>
+    </ul>
+
+</div>
+
+{% endblock %}
