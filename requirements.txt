@@ -1,3 +1,8 @@
-hug
+fastapi
+uvicorn
 jinja2
-pymysql
+orjson
+databases[mysql]
+databases[postgresql]
+pyyaml
+aiofiles

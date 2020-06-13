@@ -9,25 +9,29 @@ It was produced by the Bibliotheca Anonoma as a replacement for FoolFuuka, to be
 Ensure that Python and Pip are installed. Python 2.7 or Python 3.3 and higher is recommended.
 
 ```
-pip install -r requirements.txt
+pip install -U -r requirements.txt
 ```
 
 ## Usage
 The following commands will run a server at <http://localhost:8000> . Check the automatically generated API documentation for HTML and REST API endpoint usage information.
+
+Documentation can be seen at
+* http://localhost:8000/docs
+* http://localhost:8000/redoc
 
 ### Progrider 4chan Template
 This template currently only supports 4chan replication.
 
 ```
 cd ayase
-hug -f fourchan.py
+uvicorn fourchan:app
 ```
 
 ### Foolfuuka (w/ Asagi schema) Template 
 To use this template, you will need to have an accessible MySQL DB with an Asagi schema as well as a web server to host static content. We will be using NGINX here.
 
 #### Configuring ayase
-This template expects a JSON config file located at `ayase/config.json`. An example is located in `ayase/config.example.json`. Here, you can specifiy the database location, enabled archives/boards, and the expected image URL (useful if you plan to grab full images from another archive).
+This template expects a YAML config file located at `ayase/config.yml`. An example is located in `ayase/config.example.yml`. Here, you can specifiy the database location, enabled archives/boards, and the expected image URL (useful if you plan to grab full images from another archive).
 
 #### Configuring the NGINX Web Server
 This template does not serve static content (such as the js, css, and any image files) and they will need to be hosted using an extra webserver, such as Nginx.
@@ -38,7 +42,7 @@ The following is an example Nginx config which will proxy_pass the hug api while
 server {
         listen 80;
         location / {
-                proxy_pass http://localhost:8000/v1/;
+                proxy_pass http://localhost:8000;
         }
 
         location /img/ {
@@ -59,7 +63,7 @@ Once everything else is configured, you can start hug with these commands.
 
 ```
 cd ayase
-hug -f view/asagi.py
+uvicorn view.asagi:app
 ```
 
 ## HTML Templates
