@@ -3,20 +3,16 @@
 
 import sys
 import html
-import json
-import yaml
-import time
 import databases
-import pymysql.cursors
 import timeit
-from fastapi.staticfiles import StaticFiles
+# from fastapi.staticfiles import StaticFiles
 
 from view.asagi import app, debug, CONF, DB_ENGINE
 
 SELECTOR = """SELECT
-    `num` AS `no`, 
-    (CASE WHEN 1=1 THEN 1 ELSE NULL END) AS `closed`, 
-    DATE_FORMAT(FROM_UNIXTIME(`timestamp`), "%m/%d/%y(%a)%H:%i:%S") AS `now`, 
+    `num` AS `no`,
+    (CASE WHEN 1=1 THEN 1 ELSE NULL END) AS `closed`,
+    DATE_FORMAT(FROM_UNIXTIME(`timestamp`), "%m/%d/%y(%a)%H:%i:%S") AS `now`,
     `name`,
     `{board}`.`sticky`,
     (CASE WHEN `title` IS NULL THEN '' ELSE `title` END) AS `sub`,
@@ -28,36 +24,21 @@ SELECTOR = """SELECT
     `preview_orig` AS `asagi_preview_filename`,
     `media_orig` AS `asagi_filename`,
     (CASE WHEN `media_orig` IS NULL THEN timestamp * 1000 ELSE SUBSTRING_INDEX(media_orig, '.', 1) END) AS `tim`,
-    `{board}`.`media_hash` AS `md5`, 
-    `media_size` AS `fsize`, 
+    `{board}`.`media_hash` AS `md5`,
+    `media_size` AS `fsize`,
     (CASE WHEN `media_filename` IS NULL THEN NULL ELSE SUBSTRING_INDEX(media_filename, '.', 1) END) AS `filename`,
     (CASE WHEN `media_filename` IS NULL THEN NULL ELSE SUBSTRING_INDEX(media_filename, '.', -1) END) AS `ext`,
-    (CASE WHEN op=1 THEN CAST(0 AS UNSIGNED) ELSE `{board}`.`thread_num` END) AS `resto`, 
+    (CASE WHEN op=1 THEN CAST(0 AS UNSIGNED) ELSE `{board}`.`thread_num` END) AS `resto`,
     (CASE WHEN capcode='N' THEN NULL ELSE `capcode` END) AS `capcode`,
     `trip`,
     `spoiler`,
     `poster_country` AS `country`,
-    `{board}`.`locked` AS `closed`, 
-    `deleted` AS `filedeleted`, 
-    `exif`, 
+    `{board}`.`locked` AS `closed`,
+    `deleted` AS `filedeleted`,
+    `exif`,
     `comment` AS `com` """
 # (SELECT `media` FROM {board}_images WHERE {board}.media_hash={board}_images.media_hash) AS asagi_filename,
 # (CASE WHEN (SELECT `preview_reply` FROM {board}_images WHERE {board}.media_hash={board}_images.media_hash) IS NULL THEN CONCAT(SUBSTRING_INDEX((SELECT `media` FROM {board}_images WHERE {board}.media_hash={board}_images.media_hash), '.', 1), 's.jpg') ELSE (SELECT `preview_reply` FROM {board}_images WHERE {board}.media_hash={board}_images.media_hash) END) AS asagi_preview_filename,
-
-# This is temporary
-if DB_ENGINE == "postgresql":
-    SELECTOR = (
-        SELECTOR.replace(
-            """DATE_FORMAT(FROM_UNIXTIME(`timestamp`), "%m/%d/%y(%a)%H:%i:%S")""",
-            """to_char(to_timestamp("timestamp"), 'MM/DD/YY(Dy)HH24:MI:SS')""",
-        )
-        .replace("`{board}`.", "`{board}_asagi`.")
-        .replace("op=1", "op=true")
-        .replace("SUBSTRING_INDEX", "SPLIT_PART")
-        .replace("media_orig, '.', 1)", "media_orig, '.', 1)::bigint")
-        .replace("-1)", "2)")
-        .replace(" THEN CAST(0 AS UNSIGNED)", " THEN 0")
-    )
 
 SELECT_POST = SELECTOR + "FROM `{board}` WHERE `num`={post_num}"
 SELECT_POST_IMAGES = "SELECT `media_hash`,`media`,`preview_reply` FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `num`={post_num})"
@@ -75,72 +56,60 @@ SELECT_GALLERY_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{board}_thre
 
 # This is temporary
 if DB_ENGINE == "postgresql":
-    SELECT_POST = (
-        SELECT_POST.replace("""`{board}` """, """`{board}_asagi` """)
+    import re
+
+    postfix = "_asagi" if CONF["scraper"]["default"] == "ena" else ""
+    # assign multiple variables
+    # tuple unpacking
+    queries = [
+        SELECT_POST,
+        SELECT_POST_IMAGES,
+        SELECT_THREAD,
+        SELECT_THREAD_IMAGES,
+        SELECT_THREAD_DETAILS,
+        SELECT_THREAD_OP,
+        SELECT_THREAD_OP_IMAGES,
+        SELECT_THREAD_PREVIEW,
+        SELECT_THREAD_PREVIEW_IMAGES,
+        SELECT_THREAD_LIST_BY_OFFSET,
+        SELECT_GALLERY_THREADS_BY_OFFSET,
+        SELECT_GALLERY_THREAD_IMAGES,
+        SELECT_GALLERY_THREAD_DETAILS,
+    ]
+    (
+        SELECT_POST,
+        SELECT_POST_IMAGES,
+        SELECT_THREAD,
+        SELECT_THREAD_IMAGES,
+        SELECT_THREAD_DETAILS,
+        SELECT_THREAD_OP,
+        SELECT_THREAD_OP_IMAGES,
+        SELECT_THREAD_PREVIEW,
+        SELECT_THREAD_PREVIEW_IMAGES,
+        SELECT_THREAD_LIST_BY_OFFSET,
+        SELECT_GALLERY_THREADS_BY_OFFSET,
+        SELECT_GALLERY_THREAD_IMAGES,
+        SELECT_GALLERY_THREAD_DETAILS,
+    ) = (
+        re.sub("op=1", "op=true", query, flags=re.IGNORECASE)
+        .replace(
+            """`{board}` """,
+            """`{board}{postfix}` """.format(board="{board}", postfix=postfix),
+        )
+        .replace(
+            "`{board}`.",
+            "`{board}{postfix}`.".format(board="{board}", postfix=postfix),
+        )
+        .replace("SUBSTRING_INDEX", "SPLIT_PART")
+        .replace(
+            """DATE_FORMAT(FROM_UNIXTIME(`timestamp`), "%m/%d/%y(%a)%H:%i:%S")""",
+            """to_char(to_timestamp("timestamp"), 'MM/DD/YY(Dy)HH24:MI:SS')""",
+        )
+        .replace("media_orig, '.', 1)", "media_orig, '.', 1)::bigint")
+        .replace("-1)", "2)")
+        .replace(" THEN CAST(0 AS UNSIGNED)", " THEN 0")
         .replace("`", '"')
-        .replace("op=1", "op=true")
-    )
-    SELECT_POST_IMAGES = (
-        SELECT_POST_IMAGES.replace("""`{board}` """, """`{board}_asagi` """)
-        .replace("`", '"')
-        .replace("op=1", "op=true")
-    )
-    SELECT_THREAD = (
-        SELECT_THREAD.replace("""`{board}` """, """`{board}_asagi` """)
-        .replace("`", '"')
-        .replace("op=1", "op=true")
-    )
-    SELECT_THREAD_IMAGES = (
-        SELECT_THREAD_IMAGES.replace("""`{board}` """, """`{board}_asagi` """)
-        .replace("`", '"')
-        .replace("op=1", "op=true")
-    )
-    SELECT_THREAD_DETAILS = (
-        SELECT_THREAD_DETAILS.replace("""`{board}` """, """`{board}_asagi` """)
-        .replace("`", '"')
-        .replace("op=1", "op=true")
-    )
-    SELECT_THREAD_OP = (
-        SELECT_THREAD_OP.replace("""`{board}` """, """`{board}_asagi` """)
-        .replace("`", '"')
-        .replace("op=1", "op=true")
-    )
-    SELECT_THREAD_OP_IMAGES = (
-        SELECT_THREAD_OP_IMAGES.replace("""`{board}` """, """`{board}_asagi` """)
-        .replace("`", '"')
-        .replace("op=1", "op=true")
-    )
-    SELECT_THREAD_PREVIEW = (
-        SELECT_THREAD_PREVIEW.replace("""`{board}` """, """`{board}_asagi` """)
-        .replace("`", '"')
-        .replace("op=1", "op=true")
-    )
-    SELECT_THREAD_PREVIEW_IMAGES = (
-        SELECT_THREAD_PREVIEW_IMAGES.replace("""`{board}` """, """`{board}_asagi` """)
-        .replace("`", '"')
-        .replace("op=1", "op=true")
-    )
-    SELECT_THREAD_LIST_BY_OFFSET = (
-        SELECT_THREAD_LIST_BY_OFFSET.replace("""`{board}` """, """`{board}_asagi` """)
-        .replace("`", '"')
-        .replace("op=1", "op=true")
-    )
-    SELECT_GALLERY_THREADS_BY_OFFSET = (
-        SELECT_GALLERY_THREADS_BY_OFFSET.replace("""`{board}` """, """`{board}_asagi` """)
-        .replace("`{board}`.", "`{board}_asagi`.")
-        .replace("`", '"')
-        .replace("OP=1", "op=true")
-    )
-    SELECT_GALLERY_THREAD_IMAGES = (
-        SELECT_GALLERY_THREAD_IMAGES.replace("""`{board}` """, """`{board}_asagi` """)
-        .replace("`{board}`.", "`{board}_asagi`.")
-        .replace("`", '"')
-        .replace("OP=1", "op=true")
-    )
-    SELECT_GALLERY_THREAD_DETAILS = (
-        SELECT_GALLERY_THREAD_DETAILS.replace("""`{board}` """, """`{board}_asagi` """)
-        .replace("`", '"')
-        .replace("OP=1", "op=true")
+        for query in queries
     )
 
 global debug
@@ -266,19 +235,24 @@ async def get_gallery_details(board: str, page_num: int):
 
 #
 # Re-convert asagi stripped comment into clean html
-# Also create a dictionary with keys containing the post.no, which maps to a tuple containing the posts it links to.
-# Returns a String (the processed comment) and a list (list of quotelinks in the post).
+# Also create a dictionary with keys containing the post.no, which maps to a
+# tuple containing the posts it links to.
+# Returns a String (the processed comment) and a list (list of quotelinks in
+# the post).
 #
 def restore_comment(com: str, post_no: int):
     try:
         split_by_line = html.escape(com).split("\n")
     except AttributeError:
-        if com != None:
+        if com is not None:
             raise ()
         return "", ""
     quotelink_list = []
-    # greentext definition: a line that begins with a single ">" and ends with a '\n'
-    # redirect definition: a line that begins with a single ">>", has a thread number afterward that exists in the current thread or another thread (may be inline)
+    # greentext definition: a line that begins with a single ">" and ends with
+    # a '\n'
+    # redirect definition: a line that begins with a single ">>", has a thread
+    # number afterward that exists in the current thread or another thread
+    # (may be inline)
     # >> (show OP)
     # >>>/g/ (board redirect)
     # >>>/g/<post_num> (board post redirect)
@@ -288,7 +262,8 @@ def restore_comment(com: str, post_no: int):
             split_by_line[i] = """<span class="quote">%s</span>""" % curr_line
         elif (
             "&gt;&gt;" in curr_line
-        ):  # TODO: handle situations where text is in front or after the redirect
+        ):  # TODO: handle situations where text is in front or after the
+            # redirect
             subsplit_by_space = curr_line.split(" ")
             for j in range(len(subsplit_by_space)):
                 curr_word = subsplit_by_space[j]
@@ -301,7 +276,7 @@ def restore_comment(com: str, post_no: int):
                     )
                 # handle >>>/<board-name>/
                 # elif(curr_word[:12] == "&gt;&gt;&gt;" and '/' in curr_word[14:]):
-                ##TODO: build functionality
+                # TODO: build functionality
                 # print("board redirect not yet implemented!: " + curr_word, file=sys.stderr)
             split_by_line[i] = " ".join(subsplit_by_space)
         if "[spoiler]" in curr_line:
@@ -339,7 +314,7 @@ async def generate_index(board_name: str, page_num: int, html=True):
         try:
             thread_op, op_quotelinks = await convert_thread_op(board_name, thread_id)
         except Exception as e:
-            print("Thread", thread_id, f"is empty! Skipping it.: {e}", file=sys.stderr)
+            print("Thread", thread_id, f"is empty! Skipping it.: {e}", file=sys.stderr,)
             continue
 
         asagi_thread, quotelinks = await convert_thread_preview(board_name, thread_id)
@@ -462,19 +437,22 @@ def convert(thread, details=None, images=None, isPost=False, isGallery=False):
     quotelink_map = {}
     posts = []
     for i in range(len(thread)):
-        if thread is None: continue
-        if thread[i] is None: continue
+        if not thread or not thread[i]: continue
 
-        # The record object doesn't support assignment so we convert it to a normal dict
+        # The record object doesn't support assignment so we convert it to a
+        # normal dict
         posts.append(dict(thread[i]))
 
-        if not posts: print('posts null')
-        # TODO: asagi records time using an incorrect timezone configuration which will need to be corrected
+        # TODO: asagi records time using an incorrect timezone configuration
+        # which will need to be corrected
         if images and len(images) > 0:
-            ##find dict where media_hash is equal
+            # find dict where media_hash is equal
             try:
                 for media in filter(
-                    lambda image: (image["media_hash"] == posts[i]["md5"]) if image else False, images
+                    lambda image: (image["media_hash"] == posts[i]["md5"])
+                    if image
+                    else False,
+                    images,
                 ):
                     if media["preview_reply"] is None and media["media"]:
                         posts[i]["asagi_preview_filename"] = (
