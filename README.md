@@ -6,7 +6,7 @@ It was produced by the Bibliotheca Anonoma as a replacement for FoolFuuka, to be
 
 ## Installation
 
-Ensure that Python and Pip are installed. Python 2.7 or Python 3.3 and higher is recommended.
+Ensure that Python and Pip are installed. Python/PyPy 3.6 or higher is recommended.
 
 ```
 pip install -U -r requirements.txt
