@@ -259,7 +259,8 @@ def restore_comment(com: str, post_no: int):
     for i in range(len(split_by_line)):
         curr_line = split_by_line[i]
         if "&gt;" == curr_line[:4] and "&gt;" != curr_line[4:8]:
-            split_by_line[i] = """<span class="quote">%s</span>""" % curr_line
+            split_by_line[i] = f"""<span class="quote">{curr_line}</span>"""
+            continue
         elif (
             "&gt;&gt;" in curr_line
         ):  # TODO: handle situations where text is in front or after the
@@ -271,34 +272,29 @@ def restore_comment(com: str, post_no: int):
                 if curr_word[:8] == "&gt;&gt;" and curr_word[8:].isdigit():
                     quotelink_list.append(curr_word[8:])
                     subsplit_by_space[j] = (
-                        """<a href="#p%s" class="quotelink">%s</a>"""
-                        % (curr_word[8:], curr_word)
+                        f"""<a href="#p{curr_word[8:]}" class="quotelink">{curr_word}</a>"""
                     )
                 # handle >>>/<board-name>/
                 # elif(curr_word[:12] == "&gt;&gt;&gt;" and '/' in curr_word[14:]):
                 # TODO: build functionality
                 # print("board redirect not yet implemented!: " + curr_word, file=sys.stderr)
             split_by_line[i] = " ".join(subsplit_by_space)
-        if "[spoiler]" in curr_line:
+        if "[" in curr_line and "]"  in curr_line:
             split_by_line[i] = """<span class="spoiler">""".join(
                 split_by_line[i].split("[spoiler]")
             )
             split_by_line[i] = "</span>".join(split_by_line[i].split("[/spoiler]"))
-        elif "[/spoiler]" in curr_line:
             split_by_line[i] = "</span>".join(split_by_line[i].split("[/spoiler]"))
-        # if "[code]" in curr_line:
-        # if "[/code]" in curr_line:
-        # split_by_line[i] = """<code>""".join(split_by_line[i].split("[code]"))
-        # split_by_line[i] = """</code>""".join(split_by_line[i].split("[/code]"))
-        # else:
-        # split_by_line[i] = """<pre>""".join(split_by_line[i].split("[code]"))
-        # elif "[/code]" in curr_line:
-        # split_by_line[i] = """</pre>""".join(split_by_line[i].split("[/code]"))
-        # if "[banned]" in curr_line:
-        # split_by_line[i] = """<span class="banned">""".join(split_by_line[i].split("[banned]"))
-        # split_by_line[i] = "</span>".join(split_by_line[i].split("[/banned]"))
+            if "[code]" in curr_line:
+                if "[/code]" in curr_line:
+                    split_by_line[i] = """<code>""".join(split_by_line[i].split("[code]"))
+                    split_by_line[i] = """</code>""".join(split_by_line[i].split("[/code]"))
+                else:
+                    split_by_line[i] = """<pre>""".join(split_by_line[i].split("[code]"))
+            split_by_line[i] = """</pre>""".join(split_by_line[i].split("[/code]"))
+            split_by_line[i] = """<span class="banned">""".join(split_by_line[i].split("[banned]"))
+            split_by_line[i] = "</span>".join(split_by_line[i].split("[/banned]"))
     return quotelink_list, "</br>".join(split_by_line)
-
 
 #
 # Generate a board index.
