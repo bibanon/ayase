@@ -143,7 +143,9 @@
                                         <a href="//boards.4chan.org/{{ board }}/thread/{{ post.no }}" class="btnr parent">Original</a>
                                         <a class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-function="selectPosts">Post Selector</a>
                                     {% endif %}
+                                    {% if options['reports'] %}
                                         <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a>
+																		{% endif %}
                                     {% if mod %}
                                         <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a>
                                     {% endif %}

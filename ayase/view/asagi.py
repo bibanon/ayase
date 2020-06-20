@@ -103,6 +103,8 @@ from model.asagi import (
     generate_gallery,
 )
 
+if(CONF['options']['reports']):
+    from view.reports import *
 
 class NotFoundException(Exception):
     def __init__(self, board_name=CONF["site_name"]):
@@ -404,7 +406,9 @@ async def post_html(
 
         if len(post) > 0:
             if post["resto"] == 0:
-                post["resto"] = -1
+                #set resto to a non zero value to prevent the template from rendering 
+                #OPs with the format of an OP post
+                post["resto"] = -1 
             content = template_post.render(
                 asagi=True,
                 post=post,

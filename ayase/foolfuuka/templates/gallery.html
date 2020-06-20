@@ -8,7 +8,7 @@
 <article id="{{ thread.no }}" class="thread doc_id_{{ thread.no }}">
     <header>
         <div class="post_data">
-            <h2 class="post_title">{{ thread.sub }}</h2>
+            <h2 class="post_title">{% if thread.sub is not None %}{{ thread.sub }}{% endif %}</h2>
             <span class="post_author">{{ thread.name }}</span>
             <span class="post_trip">{{ thread.trip }}</span>
             <span class="poster_hash"></span>
