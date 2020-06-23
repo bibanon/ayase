@@ -1,6 +1,7 @@
 ---
 
 site_name: MyArchive
+site_url: http://127.0.0.1:8000
 
 database:
   default: mysql
@@ -19,6 +20,16 @@ database:
     password: asagi
     charset: utf8
 
+reports_db:
+  default: mysql
+  mysql:
+    host: 127.0.0.1
+    port: 3306
+    db: ayase
+    user: ayase
+    password: ayase
+    charset: utf8mb4
+    
 schema:
   name: asagi
 
@@ -75,3 +86,18 @@ scraper:
     source: https://github.com/shiimizu/ena
 
 debug: false
+
+session_secret: top_secret
+
+oauth2:
+ provider: gitgud
+ login_url: https://gitgud.io/oauth/authorize
+ token_url: https://gitgud.io/oauth/token
+ userinfo_url: https://gitgud.io/oauth/userinfo
+ client_id: a8537e1a862a53d440977bcb790cc104d6ecd5215466141 #example
+ secret: 77bcb790cc104d6ecd521546614140b43e5bfc5b83 #example
+ cookie_expiration: 86400 #24 * 3600, 24 hours
+ groups: 
+    admins: gitgud-admins
+    moderators: gitgud-moderators
+    #janitors: gitgud-janitors

@@ -4,7 +4,7 @@
 import timeit
 import yaml
 import subprocess
-from fastapi import FastAPI, Request, Response, status
+from fastapi import FastAPI, Request, Response, Depends, status
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import HTMLResponse
 
@@ -104,7 +104,17 @@ from model.asagi import (
 )
 
 if(CONF['options']['reports']):
-    from view.reports import *
+    from model.reports import *
+    from view.moderation import *
+
+async def check_admin_cookies(request:Request):
+    if(CONF['options']['reports']):
+        return await verify_date(request)
+    return False
+    
+@app.exception_handler(InvalidCookieException)
+async def invalid_admin_cookie(request: Request, e: InvalidCookieException):
+    return request
 
 class NotFoundException(Exception):
     def __init__(self, board_name=CONF["site_name"]):
@@ -173,7 +183,7 @@ async def index_html(request: Request):
     return content
 
 
-@app.get("/{board_name}", response_class=HTMLResponse)
+@app.get("/{board_name}", response_class=HTMLResponse, dependencies=[Depends(check_admin_cookies)])
 async def board_html(request: Request, board_name: str):
     if board_name in archive_list or board_name in board_list:
         start = timeit.default_timer()
@@ -191,6 +201,7 @@ async def board_html(request: Request, board_name: str):
                 archives=archives,
                 board=board_name,
                 boards=boards,
+                mod=await check_admin_cookies(request),
                 image_uri=image_uri.format(board_name=board_name),
                 thumb_uri=thumb_uri.format(board_name=board_name),
                 options=CONF["options"],
@@ -216,7 +227,7 @@ async def gallery(board_name: str, response: Response):
     return {"error": 404}
 
 
-@app.get("/{board_name}/gallery", response_class=HTMLResponse)
+@app.get("/{board_name}/gallery", response_class=HTMLResponse, dependencies=[Depends(check_admin_cookies)])
 async def gallery_html(request: Request, board_name: str):
     if board_name in archive_list or board_name in board_list:
         start = timeit.default_timer()
@@ -232,6 +243,7 @@ async def gallery_html(request: Request, board_name: str):
             archives=archives,
             board=board_name,
             boards=boards,
+            mod=await check_admin_cookies(request),
             image_uri=image_uri.format(board_name=board_name),
             thumb_uri=thumb_uri.format(board_name=board_name),
             title=title,
@@ -248,7 +260,7 @@ async def gallery_html(request: Request, board_name: str):
     raise NotFoundException(board_name)
 
 
-@app.get("/{board_name}/gallery/{page_num}", response_class=HTMLResponse)
+@app.get("/{board_name}/gallery/{page_num}", response_class=HTMLResponse, dependencies=[Depends(check_admin_cookies)])
 async def gallery_index_html(request: Request, board_name: str, page_num: int):
     if board_name in archive_list or board_name in board_list:
         start = timeit.default_timer()
@@ -263,6 +275,7 @@ async def gallery_index_html(request: Request, board_name: str, page_num: int):
             archives=archives,
             board=board_name,
             boards=boards,
+            mod=await check_admin_cookies(request),
             image_uri=image_uri.format(board_name=board_name),
             thumb_uri=thumb_uri.format(board_name=board_name),
             title=title,
@@ -279,7 +292,7 @@ async def gallery_index_html(request: Request, board_name: str, page_num: int):
     raise NotFoundException(board_name)
 
 
-@app.get("/{board_name}/page/{page_num}", response_class=HTMLResponse)
+@app.get("/{board_name}/page/{page_num}", response_class=HTMLResponse, dependencies=[Depends(check_admin_cookies)])
 async def board_index_html(request: Request, board_name: str, page_num: int):
     if board_name in archive_list or board_name in board_list:
         index = await generate_index(board_name, page_num)
@@ -295,6 +308,7 @@ async def board_index_html(request: Request, board_name: str, page_num: int):
                 archives=archives,
                 board=board_name,
                 boards=boards,
+                mod=await check_admin_cookies(request),
                 image_uri=image_uri.format(board_name=board_name),
                 thumb_uri=thumb_uri.format(board_name=board_name),
                 options=CONF["options"],
@@ -319,7 +333,7 @@ async def thread(board_name: str, thread_id: int, response: Response):
     return {"error": 404}
 
 
-@app.get("/{board_name}/thread/{thread_id}", response_class=HTMLResponse)
+@app.get("/{board_name}/thread/{thread_id}", response_class=HTMLResponse, dependencies=[Depends(check_admin_cookies)])
 async def thread_html(request: Request, board_name: str, thread_id: int):
     if board_name in archive_list or board_name in board_list:
         start = timeit.default_timer()
@@ -349,6 +363,7 @@ async def thread_html(request: Request, board_name: str, thread_id: int):
             archives=archives,
             board=board_name,
             boards=boards,
+            mod=await check_admin_cookies(request),
             image_uri=image_uri.format(board_name=board_name),
             thumb_uri=thumb_uri.format(board_name=board_name),
             title=title,
@@ -367,7 +382,7 @@ async def thread_html(request: Request, board_name: str, thread_id: int):
 
 
 # What is this endpoint for?
-@app.get("/{board_name}/posts/{thread_id}", response_class=HTMLResponse)
+@app.get("/{board_name}/posts/{thread_id}", response_class=HTMLResponse, dependencies=[Depends(check_admin_cookies)])
 async def posts_html(request: Request, board_name: str, thread_id: int):
     if board_name in archive_list or board_name in board_list:
         start = timeit.default_timer()
@@ -396,7 +411,7 @@ async def posts_html(request: Request, board_name: str, thread_id: int):
     raise NotFoundException(board_name)
 
 
-@app.get("/{board_name}/post/{post_id}", response_class=HTMLResponse)
+@app.get("/{board_name}/post/{post_id}", response_class=HTMLResponse, dependencies=[Depends(check_admin_cookies)])
 async def post_html(
     request: Request, board_name: str, post_id: int, response: Response
 ):
