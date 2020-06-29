@@ -14,13 +14,13 @@ from starlette.middleware.sessions import SessionMiddleware
 from pydantic import BaseModel
 
 # TODO: standardize database and configuration loading across asagi.py and future implementation of ayase.py to one db loader file
-from view.asagi import app, debug, CONF#, DB_ENGINE 
+from view.asagi import app, debug, CONF
 
 #add session middleware to support cookies
 app.add_middleware(SessionMiddleware, secret_key=CONF['session_secret'], max_age=CONF['oauth2']['cookie_expiration'])
 
 #create api subgroup
-admin = FastAPI(openapi_prefix="/admin")
+admin = FastAPI()
 
 class InvalidCookieException(Exception):
     def __init__(self, message):
@@ -31,11 +31,14 @@ class InvalidCookieException(Exception):
 #
 async def verify_date(request:Request):
     print(request.session)
-    if request.session and datetime.now().timestamp() > request.session['expires']:
+    if request.session and datetime.now().timestamp() > request.session['exp']:
         raise InvalidCookieException("Cookie is expired")
     if not request.session:
         return False
     return True
+
+# import moderation tools after shared variables and functions are initialized
+import model.moderation
 
 @admin.exception_handler(InvalidCookieException)
 async def invalid_cookie_handler(request: Request, e:InvalidCookieException):
@@ -76,7 +79,8 @@ async def read_token(code:str, request:Request, state:str = None):
                     request.session.update({
                         "user": response['nickname'], 
                         "group": group,
-                        "expires": int(datetime.now().timestamp()) + CONF['oauth2']['cookie_expiration'] 
+                        "iat": int(datetime.now().timestamp()),
+                        "exp": int(datetime.now().timestamp()) + CONF['oauth2']['cookie_expiration'] 
                     })
                     return RedirectResponse(url='/')
                 
@@ -92,5 +96,5 @@ async def read_token(code:str, request:Request, state:str = None):
 @admin.get("/verify_session/", include_in_schema=False, dependencies=[Depends(verify_date)])
 async def verify_session(request:Request):
     return {"session": request.session}
-
+    
 app.mount("/admin", admin)
