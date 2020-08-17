@@ -1,4 +1,4 @@
-> **Note:** Currently Ayase is only a proof of concept that essentially just proxies the 4chan API for API testing and HTML Templating. Future versions will set up a connection to the both the Asagi and Ayase Schemas.
+> **Note:** Ayase currently a proof of concept. It now works perfectly with the Asagi schema. Future versions will set up a connection to the both the Asagi and Ayase Schemas.
 
 **Ayase** is a 4chan Archiver API middleware and HTML frontend based on Python, Falcon, Hug, and Jinja2.
 
