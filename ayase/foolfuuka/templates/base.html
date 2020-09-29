@@ -6,8 +6,8 @@
     <title>{{ title_window|safe }}</title>
     <link href="/" rel="index" title="{{ site_name }}">
 
-    <link rel="stylesheet" type="text/css" href="/static/bootstrap.legacy.css">
-    <link rel="stylesheet" type="text/css" href="/static/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!--[if lt IE 8]>
@@ -96,9 +96,9 @@
                     {% endif %}
                 </ul>
                 <ul class="nav pull-right">
-                    <!--<form class="navbar-search" method="GET" action="/{{ board }}/search/">
-                        <li><input name="text" value="" class="search-query" placeholder="Search through all the boards" type="text"></li>
-                    </form>-->
+                    <form class="navbar-search" method="GET" action="/{{ board }}/search/">
+                        <li>{% if options.search %}<input id="search_form_comment" name="text" value="" class="search-query" placeholder="Search through all the boards" type="text">{% endif %}</li>
+                    </form>
                 </ul>
             </div>
         </div>
@@ -128,7 +128,7 @@
     </div>
 </footer>
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script>
     window.jQuery || document.write('<script src="/static/jquery.js"><\/script>');
 
@@ -136,7 +136,7 @@
     var assets_directory = '/static';
 
 </script>
-<script src="/static/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <script src="/static/board.js"></script>
 <script src="/static/plugins.js"></script>
 
@@ -152,7 +152,7 @@
     </div>
     <div class="modal-body" style="text-align: center;">
         <div class="modal-error"></div>
-        <div class="modal-loading loading"><img src="https://desuarchive.org/foolfuuka/foolz/foolfuuka-theme-foolfuuka/assets-1.2.28/images/loader-18.gif" /></div>
+        <div class="modal-loading loading"><img src="/static/images/loader-18.gif" /></div>
         <div class="modal-information"></div>
     </div>
     <div class="modal-footer">
@@ -164,4 +164,5 @@
 </body>
 
 </html>
+
 

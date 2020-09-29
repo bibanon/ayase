@@ -112,7 +112,6 @@ if DB_ENGINE == "postgresql":
         for query in queries
     )
 
-global debug
 global database
 database = None
 DATABASE_URL = "{engine}://{user}:{password}@{host}:{port}/{database}"
@@ -120,21 +119,21 @@ DATABASE_URL = "{engine}://{user}:{password}@{host}:{port}/{database}"
 
 # app.mount("/static", StaticFiles(directory="foolfuuka/static"), name="static")
 
-
 @app.on_event("startup")
 async def startup():
-    global database
-    url = DATABASE_URL.format(
-        engine=DB_ENGINE,
-        host=CONF["database"][DB_ENGINE]["host"],
-        port=CONF["database"][DB_ENGINE]["port"],
-        user=CONF["database"][DB_ENGINE]["user"],
-        password=CONF["database"][DB_ENGINE]["password"],
-        database=CONF["database"][DB_ENGINE]["db"],
-    )
-    database = databases.Database(url)
-    await database.connect()
-
+   global database
+   if(database is None):
+        url = DATABASE_URL.format(
+            engine=DB_ENGINE,
+            host=CONF["database"][DB_ENGINE]["host"],
+            port=CONF["database"][DB_ENGINE]["port"],
+            user=CONF["database"][DB_ENGINE]["user"],
+            password=CONF["database"][DB_ENGINE]["password"],
+            database=CONF["database"][DB_ENGINE]["db"],
+        )
+        database = databases.Database(url)
+        await database.connect()
+        
 
 @app.on_event("shutdown")
 async def shutdown():
@@ -489,3 +488,4 @@ def convert(thread, details=None, images=None, isPost=False, isGallery=False):
     # print(quotelink_map, file=sys.stderr)
     result["posts"] = posts
     return result, quotelink_map
+

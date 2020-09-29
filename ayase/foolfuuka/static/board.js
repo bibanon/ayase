@@ -573,13 +573,32 @@ var bindFunctions = function()
 			var modal = $("#post_tools_modal");
 			modal.find(".title").html('Report &raquo; Post No.' + el.data("post-id"));
 			modal.find(".modal-error").html('');
+			var modal_content = `<h4>Rules broken:</h4>
+			<div class="form-group">
+			<label for="brokenRules">Select a rule</label>
+			<select class="form-control" id="brokenRules">
+			<option disabled selected value> Select an option </option>`;  
+			if(window.rules === null){
+				$.ajax({
+					url: `${backend_vars.api_url}rules.json`, 
+					async: false,
+					success: function(data){
+						window.rules = data;
+					}
+				});
+			}
 			modal.find(".modal-loading").hide();
-			modal.find(".modal-information").html('<a class="btn secondary" href="#" data-function="addBulkReport">Report Multiple</a>\
-			<input type="hidden" class="modal-post-id" value="' + el.data("post") + '" />\n\
-			<input type="hidden" class="modal-board" value="' + el.data("board") + '" />\n\
-			<span class="modal-field">Comment</span>\n\
-			<textarea class="modal-comment"></textarea>\n\
-			<span class="model-note">Note: Requests for content removal and take-downs must be sent via email.</span>');
+			window.rules.forEach(function(rule) {
+				modal_content += `<option value="${rule.rule_id}">${rule.rule_name}: ${rule.rule_desc}</option>`;
+			});
+			modal_content += `</select></div>
+			<a class="btn secondary" href="#" data-function="addBulkReport">Report Multiple</a>
+			<input type="hidden" class="modal-post-id" value="${el.data("post-id")}" />
+			<input type="hidden" class="modal-board" value="${el.data("board")}" />
+			<span class="modal-field">Comment</span>
+			<textarea class="modal-comment"></textarea>
+			<span class="model-note">Note: Requests for content removal and take-downs must be sent via email.</span>`;
+			modal.find(".modal-information").html(modal_content);
 			modal.find(".submitModal").data("action", 'report');
 		},
 
@@ -600,14 +619,32 @@ var bindFunctions = function()
 			var modal = $("#post_tools_modal");
 			modal.find(".title").html('Report Posts');
 			modal.find(".modal-error").html('');
-			modal.find(".modal-loading").hide();
-			modal.find(".modal-information").html('Selected posts: <br>');
+			var modal_content = 'Selected posts: <br>'
+			
 			$('.bulkreportselect:checked').each(function () {
-				modal.find(".modal-information").append('>>>/' + $(this).attr('data-board') + '/' + $(this).attr('data-num').substring(1) + '<br>');
+				modal_content += '>>>/' + $(this).attr('data-board') + '/' + $(this).attr('data-num').substring(1) + '<br>';
 			});
-			modal.find(".modal-information").append('<br><span class="modal-field">Comment</span>\n\
-			<textarea class="modal-comment"></textarea>\n\
-			<span class="model-note">Note: Requests for content removal and take-downs must be sent via email.</span>');
+			modal_content += '<br><h4>Rules broken:</h4>\n\
+			<div class="form-group">\n\
+			<label for="brokenRules">Select a rule</label>\n\
+			<select class="form-control" id="brokenRules">\n\
+			<option disabled selected value> Select an option </option>';
+			if(window.rules === null){
+				$.ajax({
+					url: `${backend_vars.api_url}rules.json`, 
+					async: false,
+					success: function(data){
+						window.rules = data;
+					}
+				});
+			}
+			modal.find(".modal-loading").hide();
+			window.rules.forEach(function(rule) {
+				modal_content += `<option value="${rule.rule_id}">${rule.rule_name}: ${rule.rule_desc}</option>`;
+			});
+			modal_content += '</select></div><span class="modal-field">Comment</span><textarea class="modal-comment"></textarea>\n\
+			<span class="model-note">Note: Requests for content removal and take-downs must be sent via email.</span>';
+			modal.find(".modal-information").html(modal_content);
 			modal.find(".submitModal").data("action", 'bulk-report');
 		},
 
@@ -826,21 +863,24 @@ var bindFunctions = function()
 			var _data = {};
 
 			if (action == 'report') {
+				_href = backend_vars.api_url + `${_board}/reports`;
 				_data = {
-					action: 'report',
-					board: _board,
-					doc_id: _doc_id,
+					no: _doc_id,
 					reason: modal.find(".modal-comment").val(),
-					csrf_fool: backend_vars.csrf_hash
+					rule_id: Number(modal.find("#brokenRules option:selected").attr("value"))
+					//csrf_fool: backend_vars.csrf_hash
 				};
 			}
 			else if (action == 'report_media') {
+				_href = backend_vars.api_url + `${_board}/reports`;
 				_data = {
-					action: 'report_media',
-					board: _board,
-					media_id: modal.find(".modal-media-id").val(),
+					//action: 'report_media',
+					//board: _board,
+					no: _doc_id,
+					md5: modal.find(".modal-media-id").val(),
 					reason: modal.find(".modal-comment").val(),
-					csrf_fool: backend_vars.csrf_hash
+					rule_id: 1
+					//csrf_fool: backend_vars.csrf_hash
 				};
 			}
 			else if (action == 'delete') {
@@ -940,17 +980,19 @@ var bindFunctions = function()
 				});
 			}
 			else if (action == 'bulk-report') {
+				_href = backend_vars.api_url + `reports/bulk`;
 				_data = {
-					action: 'bulk_report',
+					//action: 'bulk_report',
 					reason: modal.find(".modal-comment").val(),
-					csrf_fool: backend_vars.csrf_hash,
+					rule_id: Number(modal.find("#brokenRules option:selected").attr("value")),
+					//csrf_fool: backend_vars.csrf_hash,
 					posts: []
 				};
 				$('.bulkreportselect:checked').each(function () {
 					_data.posts.push({
-							radix: $(this).attr('data-board'),
-							doc_id: $(this).attr('data-doc-id'),
-							num: $(this).attr('data-num')
+							board: $(this).attr('data-board'),
+							//doc_id: $(this).attr('data-doc-id'),
+							no: Number($(this).attr('data-num').substring(1))
 						}
 					);
 				});
@@ -979,33 +1021,42 @@ var bindFunctions = function()
 
 			_data[backend_vars.csrf_token_key] = getCookie(backend_vars.csrf_token_key);
 
-			jQuery.post(_href, _data, function(result) {
-				loading.hide();
-				if (typeof result.error !== 'undefined') {
-					modal.find(".modal-error").html('<div class="alert alert-error" data-alert="alert"><a class="close" href="#">&times;</a><p>' + result.error + '</p></div>').show();
-					return false;
-				}
-				modal.modal('hide');
+			$.ajax({
+				type: 'POST',
+				url: _href,
+				data: JSON.stringify(_data),
+				contentType:"application/json; charset=utf-8",
+				datatype: "json",
+				success: function(result) {
+					loading.hide();
+					modal.modal('hide');
 
-				if (action == 'delete') {
-					$('.doc_id_' + _doc_id).hide();
+					if (action == 'delete') {
+						$('.doc_id_' + _doc_id).hide();
+					}
+					if (action == 'report') {
+						$('.doc_id_' + _doc_id).find('.text:eq(0)').after('<div class="report_reason">' + result.success + '</div>');
+					}
+					if (action == 'edit-post') {
+						$('.doc_id_' + _doc_id).find('.text:eq(0)').after('<div class="report_reason">' + result.success + '</div>');
+					}
+					if (action == 'bulk-edit') {
+						$('div.container').after('<div style="text-align:center;" class="alert alert-success">' + result.success + '</div>');
+					}
+					if (action == 'bulk-report') {
+						$('div.container').after('<div style="text-align:center;" class="alert alert-success">' + result.success + '</div>');
+					}
+					if (action == 'bulk-mod') {
+						$('div.container').after('<div style="text-align:center;" class="alert alert-success">' + result.success + '</div>');
+					}
+				},
+				error: function(result, status, xhr) {
+					if (typeof result.error !== 'undefined') {
+						modal.find(".modal-error").html('<div class="alert alert-error" data-alert="alert"><a class="close" href="#">&times;</a><p>' + result.error + '</p></div>').show();
+						return false;
+					}
 				}
-				if (action == 'report') {
-					$('.doc_id_' + _doc_id).find('.text:eq(0)').after('<div class="report_reason">' + result.success + '</div>');
-				}
-				if (action == 'edit-post') {
-					$('.doc_id_' + _doc_id).find('.text:eq(0)').after('<div class="report_reason">' + result.success + '</div>');
-				}
-				if (action == 'bulk-edit') {
-					$('div.container').after('<div style="text-align:center;" class="alert alert-success">' + result.success + '</div>');
-				}
-				if (action == 'bulk-report') {
-					$('div.container').after('<div style="text-align:center;" class="alert alert-success">' + result.success + '</div>');
-				}
-				if (action == 'bulk-mod') {
-					$('div.container').after('<div style="text-align:center;" class="alert alert-success">' + result.success + '</div>');
-				}
-			}, 'json');
+			});
 			return false;
 		},
 
@@ -1579,6 +1630,8 @@ var highlightSearchResults = function()
 
 $(document).ready(function() {
 
+	// global vars
+	window.rules = null;
 	// settings
 	jQuery.support.cors = true;
 	backend_vars.loaded_posts = [];
@@ -1673,3 +1726,4 @@ $.fn.extend({
 		obj.selectionEnd = insPos + text.length;
 	}
 });
+

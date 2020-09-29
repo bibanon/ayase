@@ -59,6 +59,7 @@ options:
   post_selector: true
   stats: false
   ghost: false
+  search: false
   
 image_location:
   image: /img/{board_name}/image
