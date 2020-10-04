@@ -41,18 +41,18 @@ SELECTOR = """SELECT
 # (CASE WHEN (SELECT `preview_reply` FROM {board}_images WHERE {board}.media_hash={board}_images.media_hash) IS NULL THEN CONCAT(SUBSTRING_INDEX((SELECT `media` FROM {board}_images WHERE {board}.media_hash={board}_images.media_hash), '.', 1), 's.jpg') ELSE (SELECT `preview_reply` FROM {board}_images WHERE {board}.media_hash={board}_images.media_hash) END) AS asagi_preview_filename,
 
 SELECT_POST = SELECTOR + "FROM `{board}` WHERE `num`={post_num}"
-SELECT_POST_IMAGES = "SELECT `media_hash`,`media`,`preview_reply` FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `num`={post_num})"
+SELECT_POST_IMAGES = "SELECT `media_hash`,`media`,`preview_reply`,`preview_op` FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `num`={post_num})"
 SELECT_THREAD = SELECTOR + "FROM `{board}` WHERE `thread_num`={thread_num} ORDER BY `num`"
-SELECT_THREAD_IMAGES = "SELECT `media_hash`,`media`,`preview_reply` FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `thread_num`={thread_num})"
+SELECT_THREAD_IMAGES = "SELECT `media_hash`,`media`,`preview_reply`,`preview_op` FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `thread_num`={thread_num})"
 SELECT_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{board}_threads` WHERE `thread_num`={thread_num}"
 SELECT_THREAD_OP = SELECTOR + "FROM `{board}` WHERE `thread_num`={thread_num} AND op=1"
-SELECT_THREAD_OP_IMAGES = "SELECT `media_hash`,`media`,`preview_reply` FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `thread_num`={thread_num} AND op=1)"
+SELECT_THREAD_OP_IMAGES = "SELECT `media_hash`,`media`,`preview_reply`,`preview_op` FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `thread_num`={thread_num} AND op=1)"
 SELECT_THREAD_PREVIEW = SELECTOR + "FROM `{board}` WHERE `thread_num`={thread_num} ORDER BY `num` DESC LIMIT 5"
-SELECT_THREAD_PREVIEW_IMAGES = "SELECT `media_hash`,`media`,`preview_reply` FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `thread_num`={thread_num} ORDER BY `num`)"  # ERROR 1235 (42000): This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery'
-SELECT_THREAD_LIST_BY_OFFSET = "SELECT `thread_num` FROM `{board}_threads` ORDER BY `time_last` DESC LIMIT 10 OFFSET {page_num}"
-SELECT_GALLERY_THREADS_BY_OFFSET = SELECTOR + "FROM `{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num` WHERE OP=1 ORDER BY `{board}_threads`.`time_last` DESC LIMIT 150 OFFSET {page_num};"
-SELECT_GALLERY_THREAD_IMAGES = "SELECT `{board}`.media_hash, `{board}_images`.`media`, `{board}_images`.`preview_reply` FROM ((`{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num`) INNER JOIN `{board}_images` ON `{board}_images`.`media_hash` = `{board}`.`media_hash`) WHERE OP=1 ORDER BY `{board}_threads`.`time_last` DESC LIMIT 150 OFFSET {page_num};"
-SELECT_GALLERY_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{board}_threads` ORDER BY `time_last` DESC LIMIT 150 OFFSET {page_num}"
+SELECT_THREAD_PREVIEW_IMAGES = "SELECT `media_hash`,`media`,`preview_reply`,`preview_op` FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `thread_num`={thread_num} ORDER BY `num`)"  # ERROR 1235 (42000): This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery'
+SELECT_THREAD_LIST_BY_OFFSET = "SELECT `thread_num` FROM `{board}_threads` ORDER BY `time_bump` DESC LIMIT 10 OFFSET {page_num}"
+SELECT_GALLERY_THREADS_BY_OFFSET = SELECTOR + "FROM `{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num` WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
+SELECT_GALLERY_THREAD_IMAGES = "SELECT `{board}`.media_hash, `{board}_images`.`media`, `{board}_images`.`preview_reply`, `{board}_images`.`preview_op` FROM ((`{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num`) INNER JOIN `{board}_images` ON `{board}_images`.`media_hash` = `{board}`.`media_hash`) WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
+SELECT_GALLERY_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{board}_threads` ORDER BY `time_bump` DESC LIMIT 150 OFFSET {page_num}"
 
 # This is temporary
 if DB_ENGINE == "postgresql":
@@ -448,12 +448,12 @@ def convert(thread, details=None, images=None, isPost=False, isGallery=False):
                     if image
                     else False,
                     images,
-                ):
-                    if media["preview_reply"] is None and media["media"]:
-                        posts[i]["asagi_preview_filename"] = (
-                            media["media"].split(".")[0] + "s.jpg"
-                        )
-                    posts[i]["asagi_preview_filename"] = media["preview_reply"]
+                ):                    
+                    #use preview_op for op images
+                    if(posts[i]["resto"] == 0):
+                        posts[i]["asagi_preview_filename"] = media["preview_op"]
+                    else:
+                        posts[i]["asagi_preview_filename"] = media["preview_reply"]
                     posts[i]["asagi_filename"] = media["media"]
             except Exception as e:
                 print(f"ERROR convert: {e}")
