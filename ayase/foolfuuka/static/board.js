@@ -1065,28 +1065,28 @@ var bindFunctions = function()
 		return clickCallbacks[el.data("function")](el, post, event);
 	});
 
-	$(document.body).on("mousedown touchstart", ".search_box, .search-query", function(event) {
-		event.stopPropagation();
-	});
+	// $(document.body).on("mousedown touchstart", ".search_box, .search-query", function(event) {
+	// 	event.stopPropagation();
+	// });
 
-	$(document.body).on("mousedown touchstart", function(event) {
-		var search_input = $('#search_form_comment');
-		$('.search-query').val(search_input.val());
-		$('.search_box').hide();
-	});
+	// $(document.body).on("mousedown touchstart", function(event) {
+	// 	var search_input = $('#search_form_comment');
+	// 	$('.search-query').val(search_input.val());
+	// 	$('.search_box').hide();
+	// });
 
-	$(document.body).on("mousedown touchstart", ".search-query", function() {
-		var el = $(this);
-		var offset = el.offset();
-		var width = el.outerWidth();
-		var search_box = $('.search_box');
-		var comment_wrap = search_box.find('.comment_wrap');
-		var comment_wrap_pos = comment_wrap.position();
-		search_box.css({top: (offset.top - 11) + 'px', right: ($(window).width() - (offset.left + width) - 16) + 'px'}).show();
-		el.parents('.open').removeClass('open');
-		search_box.find('input[name=text]').focus();
-		return false;
-	});
+	// $(document.body).on("mousedown touchstart", ".search-query", function() {
+	// 	var el = $(this);
+	// 	var offset = el.offset();
+	// 	var width = el.outerWidth();
+	// 	var search_box = $('.search_box');
+	// 	var comment_wrap = search_box.find('.comment_wrap');
+	// 	var comment_wrap_pos = comment_wrap.position();
+	// 	search_box.css({top: (offset.top - 11) + 'px', right: ($(window).width() - (offset.left + width) - 16) + 'px'}).show();
+	// 	el.parents('.open').removeClass('open');
+	// 	search_box.find('input[name=text]').focus();
+	// 	return false;
+	// });
 
 	// how could we make it work well on cellphones?
 	if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent))

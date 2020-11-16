@@ -95,11 +95,9 @@
                     {% endif %}
                     {% endif %}
                 </ul>
-                <ul class="nav pull-right">
-                    <form class="navbar-search" method="GET" action="/{{ board }}/search/">
-                        <li>{% if options.search %}<input id="search_form_comment" name="text" value="" class="search-query" placeholder="Search through all the boards" type="text">{% endif %}</li>
-                    </form>
-                </ul>
+                {% if options.search %}
+                    {% include 'search_new.html' %}
+                {% endif %}
             </div>
         </div>
     </div>
