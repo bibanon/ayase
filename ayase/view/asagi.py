@@ -7,6 +7,7 @@ import subprocess
 from fastapi import FastAPI, Request, Response, status
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 
 from jinja2 import (
     Environment,
@@ -17,7 +18,7 @@ from jinja2 import (
 
 global app
 app = FastAPI()
-
+app.mount("/static", StaticFiles(directory="foolfuuka/static"), name="static")
 
 def custom_openapi(openapi_prefix: str):
     if app.openapi_schema:
