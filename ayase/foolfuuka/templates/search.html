@@ -1,0 +1,158 @@
+<div class="search_box">
+		<div class="advanced_search clearfix">
+				<form method="POST" action="/{{ board }}/search/">
+						<div class="comment_wrap">
+								<input name="text" id="search_form_comment" value="" placeholder="Search through all the boards" type="text">
+						</div>
+
+						<div class="buttons clearfix">
+								<input class="btn btn-inverse" value="Search" name="submit_search" type="submit">
+								<input class="btn btn-inverse" value="Search on all boards" name="submit_search_global" type="submit">
+
+								<input class="btn btn-inverse pull-right" value="Clear" name="reset" data-function="clearSearch" type="reset">
+						</div>
+
+						<div class="column">
+								<div class="input-prepend">
+										<label class="add-on" for="search_form_tnum">Thread No.</label>
+										<input name="tnum" id="search_form_tnum" value="" placeholder="" type="text">
+								</div>
+								<div class="input-prepend">
+										<label class="add-on" for="search_form_subject">Subject</label>
+										<input name="subject" id="search_form_subject" value="" placeholder="" type="text">
+								</div>
+								<div class="input-prepend">
+										<label class="add-on" for="search_form_username">Username</label>
+										<input name="username" id="search_form_username" value="" placeholder="" type="text">
+								</div>
+								<div class="input-prepend">
+										<label class="add-on" for="search_form_tripcode">Tripcode</label>
+										<input name="tripcode" id="search_form_tripcode" value="" placeholder="" type="text">
+								</div>
+								<div class="input-prepend">
+										<label class="add-on" for="search_form_email">Email</label>
+										<input name="email" id="search_form_email" value="" placeholder="" type="text">
+								</div>
+								<div class="input-prepend">
+										<label class="add-on" for="search_form_uid">Unique ID</label>
+										<input name="uid" id="search_form_uid" value="" placeholder="" type="text">
+								</div>
+								<div class="input-prepend">
+										<label class="add-on" for="search_form_filename">Filename</label>
+										<input name="filename" id="search_form_filename" value="" placeholder="" type="text">
+								</div>
+								<div class="input-prepend">
+										<label class="add-on" for="search_form_image">Image Hash</label>
+										<input name="image" id="search_form_image" value="" placeholder="Drop your image here" type="text">
+								</div>
+								<div class="input-prepend">
+										<label class="add-on" for="search_form_width">Image Width</label>
+										<input name="width" id="search_form_width" value="" placeholder="" type="text">
+								</div>
+								<div class="input-prepend">
+										<label class="add-on" for="search_form_height">Image Height</label>
+										<input name="height" id="search_form_height" value="" placeholder="" type="text">
+								</div>
+								<div class="input-prepend">
+										<label class="add-on" for="search_form_tag">File Tag</label>
+										<input name="tag" id="search_form_tag" value="" placeholder="" type="text">
+								</div>
+								<div class="input-prepend">
+										<label class="add-on" for="search_form_since4pass">Since4pass</label>
+										<input name="since4pass" id="search_form_since4pass" value="" placeholder="" type="text">
+								</div>
+								<div class="input-prepend">
+										<label class="add-on" for="search_form_country">Country</label>
+										<input name="country" id="search_form_country" value="" placeholder="" type="text">
+								</div>
+								<div class="input-prepend">
+								<label class="add-on" for="search_form_troll_country">Troll Country</label>
+										<input name="troll_country" id="search_form_troll_country" value="" placeholder="" type="text">
+								</div>
+								<div class="input-prepend">
+								<label class="add-on" for="search_form_start">Date Start</label>
+										<input type="text" name="start" placeholder="YYYY-MM-DD" autocomplete="off" value="">
+								</div>
+								<div class="input-prepend">
+										<label class="add-on" for="search_form_end">Date End</label>
+										<input type="text" name="end" placeholder="YYYY-MM-DD" autocomplete="off" value="">
+								</div>
+								<label>
+										<input data-function="searchhilight" class="searchhilight" type="checkbox"> Highlight Results</label>
+
+								<div class="radixes">
+										<div>
+												<div><h5>On these archives</h5>
+														<button type="button" data-function="checkAll" class="btn btn-mini pull-right check" style="display:none">Check all</button>
+														<button type="button" data-function="uncheckAll" class="btn btn-mini pull-right uncheck" style="display:block">Uncheck all</button>
+												</div>
+												{% for archive in archives %}
+												<label><input type="checkbox" name="boards[]" value="{{ archive.shortname }}" checked="checked"> /{{ archive.shortname }}/</label>
+												{% endfor %}
+										</div>
+										<div style="clear:left; padding-top: 10px">
+												<div>
+														<h5>On these boards</h5>
+														<button type="button" data-function="checkAll" class="btn btn-mini pull-right check" style="display:none">Check all</button>
+														<button type="button" data-function="uncheckAll" class="btn btn-mini pull-right uncheck" style="display:block">Uncheck all</button>
+												</div>
+												{% for board in boards %}
+												<label><input type="checkbox" name="boards[]" value="{{ board.shortname }}" checked="checked"> /{{ board.shortname }}/</label>
+												{% endfor %}
+										</div>
+								</div>
+
+								<div class="latest_searches">
+										<div>
+												<h5>Your latest searches</h5>
+												<button type="button" data-function="clearLatestSearches" class="btn btn-mini pull-right">Clear</button>
+										</div>
+										<ul>
+										</ul>
+								</div>
+						</div>
+						<div class="column checkboxes"><table class="table"><tbody>
+						<tr><td>Capcode</td><td>
+								<label><input type="radio" name="capcode" value="" checked="checked">All</label>
+								<label><input type="radio" name="capcode" value="user">Only User Posts</label>
+								<label><input type="radio" name="capcode" value="ver">Only Verified Posts</label>
+								<label><input type="radio" name="capcode" value="mod">Only Moderator Posts</label>
+								<label><input type="radio" name="capcode" value="manager">Only Manager Posts</label>
+								<label><input type="radio" name="capcode" value="admin">Only Admin Posts</label>
+								<label><input type="radio" name="capcode" value="dev">Only Developer Posts</label>
+								<label><input type="radio" name="capcode" value="founder">Only Founder Posts</label>
+						</td></tr>
+						<tr><td>Show Posts</td><td>
+								<label><input type="radio" name="filter" value="" checked="checked">All</label>
+								<label><input type="radio" name="filter" value="text">Only With Images</label>
+								<label><input type="radio" name="filter" value="image">Only Without Images</label>
+								<label><input type="radio" name="filter" value="spoiler">Only Spoiler Images</label>
+								<label><input type="radio" name="filter" value="not-spoiler">Only Non-Spoiler Images</label>
+						</td></tr>
+						<tr><td>Deleted Posts</td><td>
+								<label><input type="radio" name="deleted" value="" checked="checked">All</label>
+								<label><input type="radio" name="deleted" value="deleted">Only Deleted Posts</label>
+								<label><input type="radio" name="deleted" value="not-deleted">Only Non-Deleted Posts</label>
+						</td></tr>
+						<tr><td>Ghost Posts</td><td>
+								<label><input type="radio" name="ghost" value="" checked="checked">All</label>
+								<label><input type="radio" name="ghost" value="only">Only Ghost Posts</label>
+								<label><input type="radio" name="ghost" value="none">Only Non-Ghost Posts</label>
+						</td></tr>
+						<tr><td>Post Type</td><td>
+								<label><input type="radio" name="type" value="" checked="checked">All</label>
+								<label><input type="radio" name="type" value="sticky">Only Sticky Threads</label>
+								<label><input type="radio" name="type" value="op">Only Opening Posts</label>
+								<label><input type="radio" name="type" value="posts">Only Reply Posts</label>
+						</td></tr>
+						<tr><td>Results</td><td>
+								<label><input type="radio" name="results" value="" checked="checked">All</label>
+								<label><input type="radio" name="results" value="thread">Grouped By Threads</label>
+						</td></tr>
+						<tr><td>Order</td><td>
+								<label><input type="radio" name="order" value="" checked="checked">Latest Posts First</label>
+								<label><input type="radio" name="order" value="asc">Oldest Posts First</label>
+						</td></tr></tbody></table></div>
+				</form>
+		</div>
+</div>
