@@ -51,7 +51,18 @@ async def admin_index(request:Request):
     return RedirectResponse(url='/admin/login')
 
 @admin.get("/login", response_class=HTMLResponse, include_in_schema=False)
-async def login():
+async def login(request:Request):
+    # handle none-type authentication
+    # TODO: in the future, different authentication backends should be
+    # completely separated and placed in separate files to be loaded by the authentication_type config option
+    if(CONF['authentication_type'] == 'none'):
+        request.session.update({
+            "user": 'none', 
+            "group": 'none',
+            "iat": int(datetime.now().timestamp()),
+            "exp": int(datetime.now().timestamp()) + 86400
+        })
+        return RedirectResponse(url='/')
     return f"""<a href="{CONF['oauth2']['login_url']}?client_id={CONF['oauth2']['client_id']}&redirect_uri={CONF['site_url']}/admin/token/&response_type=code&state=login&scope=openid">click here to login with gitgud</a>"""
 
 @admin.get("/logout", response_class=HTMLResponse)

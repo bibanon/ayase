@@ -75,3 +75,22 @@ scraper:
     source: https://github.com/shiimizu/ena
 
 debug: false
+
+# cookie session secret. make sure to change this!
+session_secret: somerandomstringhere
+
+# Authentication backend. Only oauth2 and none are supported.
+# none should only be used for testing and development! This option will make every user who visits /admin/login a moderator.
+authentication_type: oauth2
+
+oauth2:
+ provider: gitgud
+ login_url: https://gitgud.io/oauth/authorize
+ token_url: https://gitgud.io/oauth/token
+ userinfo_url: https://gitgud.io/oauth/userinfo
+ client_id: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+ secret: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+ cookie_expiration: 86400 #24 * 3600, 24 hours
+ groups: 
+    admins: gitgud-admin-group
+    moderators: gitgud-mod-group
