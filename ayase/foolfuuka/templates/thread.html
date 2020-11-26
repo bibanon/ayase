@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
     <div role="main" id="main">
-        {% if options.search %}
-					{% include 'search.html' %}
-				{% endif %}
         <div class="board">
             {% for post in posts %}
                     {% include 'post.html' %}

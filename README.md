@@ -34,7 +34,7 @@ To use this template, you will need to have an accessible MySQL DB with an Asagi
 This template expects a YAML config file located at `ayase/config.yml`. An example is located in `ayase/config.example.yml`. Here, you can specifiy the database location, enabled archives/boards, and the expected image URL (useful if you plan to grab full images from another archive).
 
 #### Configuring the NGINX Web Server
-This template does not serve static content (such as the js, css, and any image files) and they will need to be hosted using an extra webserver, such as Nginx.
+It is recommended that you setup an nginx front proxy to host static content in production (particularly for images which ayase does not host), however this is not required for testing.
 
 The following is an example Nginx config which will proxy_pass the hug api while also hosting images. 
 
