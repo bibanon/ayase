@@ -19,14 +19,6 @@ Documentation can be seen at
 * http://localhost:8000/docs
 * http://localhost:8000/redoc
 
-### Progrider 4chan Template
-This template currently only supports 4chan replication.
-
-```
-cd ayase
-uvicorn fourchan:app
-```
-
 ### Foolfuuka (w/ Asagi schema) Template 
 To use this template, you will need to have an accessible MySQL DB with an Asagi schema as well as a web server to host static content. We will be using NGINX here.
 
@@ -64,6 +56,14 @@ Once everything else is configured, you can start FastAPI with these commands.
 ```
 cd ayase
 uvicorn view.asagi:app
+```
+
+### (Unused) Progrider 4chan Mirror
+This is an untouched early proof-of-concept version of ayase separate from the rest of ayase which may be reimplemented as a proper template in the future.
+
+```
+cd ayase
+uvicorn fourchan:app
 ```
 
 ## HTML Templates
