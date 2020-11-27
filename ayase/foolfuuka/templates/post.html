@@ -1,204 +1,204 @@
-<article class="{% if post.resto == 0 %}clearfix thread post_is_op{% else %}post{% endif %} {% if post.md5 %}has_image{% endif %}" id="p{{ post.no }}" data-board="{{ board }}" data-thread-num="{% if post.resto == 0 %}{{ post.no }}{% else %}{{ post.resto }}{% endif %}">
-                        {% if post.resto != 0 %}
-                        <div id="{{ post.no }}" class="post_wrapper">
-                        {% endif %}
-                            {% if post.md5 %}
-                            {% if post.resto != 0 %}
-                            <div class="post_file">
-                    <span class="post_file_controls">
-                        <!--<a href="/{{ board }}/search/image/{{ post.md5 }}"
-                       class="btnr parent">View Same</a>-->
-                        <a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
-                           class="btnr parent">Google</a>
-                        <a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
-                           class="btnr parent">ImgOps</a>
-                        <a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
-                           class="btnr parent">iqdb</a>
-                        <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
-                           class="btnr parent">SauceNAO</a>
-                        <a href="{{ image_uri }}/{{ post.tim }}{{ post.ext }}" download="{{ post.filename }}{{ post.ext }}"
-                           class="btnr parent"><i class="icon-download-alt"></i></a>
-                    </span>
-                            {% if asagi %}
-                                    <a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" target="_blank" class="post_file_filename" rel="noreferrer">{{ post.filename }}{{ post.ext }}</a>,
-                            {% else %}
-                                    <a href="{{ image_uri }}/{{ post.tim }}{{ post.ext }}" target="_blank" class="post_file_filename" rel="noreferrer">{{ post.filename }}{{ post.ext }}</a>,
-                            {% endif %}
-                                <span class="post_file_metadata">{{ post.fsize }}, {{ post.w }}x{{ post.h }}, {{ post.tim }}</span>
-                            </div>
-                            {% endif %}
-                            <div class="thread_image_box">
-                            {% if asagi %}
-                            <a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" target="_blank" rel="noreferrer" class="thread_image_link">
-                                {% if post.asagi_preview_filename %}
-                                    <img src="{{ thumb_uri }}/{{ (post.asagi_preview_filename|string)[0:4] }}/{{ (post.asagi_preview_filename|string)[4:6] }}/{{ post.asagi_preview_filename}}" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
-                                {% else %}
-                                    <img src="{{ thumb_uri }}/{{ (post.tim|string)[0:4] }}/{{ (post.tim|string)[4:6] }}/{{ post.tim }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
-                                {% endif %}
-                                </a>
-                                {% if post.resto == 0 %}
-                                <div class="post_file" style="padding-left: 2px;{% if post.tn_w > 149 %} max-width: {{ post.tn_w }}px;{% endif %}">
-                                    {{ post.fsize }}, {{ post.w }}x{{ post.h }}, <a class="post_file_filename" href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" target="_blank">{{ post.filename }}{{ post.ext }}</a>
-                                </div>
+<article class="{% if post.resto == 0 %}clearfix thread post_is_op{% else %}post{% endif %}{% if post.md5 %} has_image{% endif %}" id="p{{ post.no }}" data-board="{{ board }}" data-thread-num="{% if post.resto == 0 %}{{ post.no }}{% else %}{{ post.resto }}{% endif %}">
+    {% if post.resto != 0 %}
+    <div id="{{ post.no }}" class="post_wrapper">
+    {% endif %}
+        {% if post.md5 %}
+        {% if post.resto != 0 %}
+        <div class="post_file">
+<span class="post_file_controls">
+    <!--<a href="/{{ board }}/search/image/{{ post.md5 }}"
+    class="btnr parent">View Same</a>-->
+    <a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+        class="btnr parent">Google</a>
+    <a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+        class="btnr parent">ImgOps</a>
+    <a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+        class="btnr parent">iqdb</a>
+    <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+        class="btnr parent">SauceNAO</a>
+    <a href="{{ image_uri }}/{{ post.tim }}{{ post.ext }}" download="{{ post.filename }}{{ post.ext }}"
+        class="btnr parent"><i class="icon-download-alt"></i></a>
+</span>
+        {% if asagi %}
+                <a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" target="_blank" class="post_file_filename" rel="noreferrer">{{ post.filename }}{{ post.ext }}</a>,
+        {% else %}
+                <a href="{{ image_uri }}/{{ post.tim }}{{ post.ext }}" target="_blank" class="post_file_filename" rel="noreferrer">{{ post.filename }}{{ post.ext }}</a>,
+        {% endif %}
+            <span class="post_file_metadata">{{ post.fsize }}, {{ post.w }}x{{ post.h }}, {{ post.tim }}</span>
+        </div>
+        {% endif %}
+        <div class="thread_image_box">
+        {% if asagi %}
+        <a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" target="_blank" rel="noreferrer" class="thread_image_link">
+            {% if post.asagi_preview_filename %}
+                <img src="{{ thumb_uri }}/{{ (post.asagi_preview_filename|string)[0:4] }}/{{ (post.asagi_preview_filename|string)[4:6] }}/{{ post.asagi_preview_filename}}" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
+            {% else %}
+                <img src="{{ thumb_uri }}/{{ (post.tim|string)[0:4] }}/{{ (post.tim|string)[4:6] }}/{{ post.tim }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
+            {% endif %}
+            </a>
+            {% if post.resto == 0 %}
+            <div class="post_file" style="padding-left: 2px;{% if post.tn_w > 149 %} max-width: {{ post.tn_w }}px;{% endif %}">
+                {{ post.fsize }}, {{ post.w }}x{{ post.h }}, <a class="post_file_filename" href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" target="_blank">{{ post.filename }}{{ post.ext }}</a>
+            </div>
 
-                                <div class="post_file_controls">
-                                    <!--<a href="/{{ board }}/search/image/{{ post.md5 }}"
-                                       class="btnr parent">View Same</a>-->
-                                    <a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.filename.split(".")[0] }}s.jpg" target="_blank"
-                                       class="btnr parent">Google</a>
-                                    <a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.filename.split(".")[0] }}s.jpg" target="_blank"
-                                       class="btnr parent">ImgOps</a>
-                                    <a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.filename.split(".")[0] }}s.jpg" target="_blank"
-                                       class="btnr parent">iqdb</a>
-                                    <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.filename.split(".")[0] }}s.jpg" target="_blank"
-                                       class="btnr parent">SauceNAO</a>
-                                    <a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" download="{{ post.filename }}{{ post.ext }}"
-                                       class="btnr parent"><i class="icon-download-alt"></i></a>
-                                </div>
-                                {% endif %}
-														</div>
-                            
-                            {% else %}
-                                <a href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" target="_blank" rel="noreferrer" class="thread_image_link">
-                                    <img src="/img/{{ board }}/{{ post.tim }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
-                                </a>
-                                {% if post.resto == 0 %}
-                                <div class="post_file" style="padding-left: 2px;{% if post.tn_w > 149 %} max-width: {{ post.tn_w }}px;{% endif %}">
-                                    {{ post.fsize }}, {{ post.w }}x{{ post.h }}, <a class="post_file_filename" href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" target="_blank">{{ post.filename }}{{ post.ext }}</a>
-                                </div>
-
-                                <div class="post_file_controls">
-                                    <!--<a href="/{{ board }}/search/image/{{ post.md5 }}"
-                                       class="btnr parent">View Same</a>-->
-                                    <a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
-                                       class="btnr parent">Google</a>
-                                    <a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
-                                       class="btnr parent">ImgOps</a>
-                                    <a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
-                                       class="btnr parent">iqdb</a>
-                                    <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
-                                       class="btnr parent">SauceNAO</a>
-                                    <a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" download="{{ post.filename }}{{ post.ext }}"
-                                       class="btnr parent"><i class="icon-download-alt"></i></a>
-                                </div>
-                                {% endif %}
-                            </div>
-                            {% endif %}
-
-                            {% endif %}
-                            <header>
-                                <div class="post_data">
-                                    <div class="post_mobile_controls_collapse dropdown">
-                                        <button data-toggle="dropdown" class="btnr parent"><i class="icon-th-list"></i></button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li class="nav-header">Post</li>
-                                            <!--<li><a href="#" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a></li>
-                                            <li><a href="#" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a></li>-->
-                                            {% if post.md5 %}
-                                            <li class="divider"></li>
-                                            <li class="nav-header">Media</li>
-                                            <li><a href="/{{ board }}/search/image/{{ post.md5 }}">View Same</a></li>
-                                            <li><a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">Google</a></li>
-                                            <li><a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">ImgOps</a></li>
-                                            <li><a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">iqdb</a></li>
-                                            <li><a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">SauceNAO</a></li>
-                                            <li><a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" download="{{ post.filename }}{{ post.ext }}">
-                                                <i class="icon-download-alt"></i> Download</a></li>
-                                            {% endif %}
-                                        </ul>
+            <div class="post_file_controls">
+                <!--<a href="/{{ board }}/search/image/{{ post.md5 }}"
+                    class="btnr parent">View Same</a>-->
+                <a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.filename.split(".")[0] }}s.jpg" target="_blank"
+                    class="btnr parent">Google</a>
+                <a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.filename.split(".")[0] }}s.jpg" target="_blank"
+                    class="btnr parent">ImgOps</a>
+                <a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.filename.split(".")[0] }}s.jpg" target="_blank"
+                    class="btnr parent">iqdb</a>
+                <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.filename.split(".")[0] }}s.jpg" target="_blank"
+                    class="btnr parent">SauceNAO</a>
+                <a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" download="{{ post.filename }}{{ post.ext }}"
+                    class="btnr parent"><i class="icon-download-alt"></i></a>
+            </div>
+            {% endif %}
                                     </div>
-                                    <!--<span class="post_show_board">/{{ board }}/</span>-->
+        
+        {% else %}
+            <a href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" target="_blank" rel="noreferrer" class="thread_image_link">
+                <img src="/img/{{ board }}/{{ post.tim }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
+            </a>
+            {% if post.resto == 0 %}
+            <div class="post_file" style="padding-left: 2px;{% if post.tn_w > 149 %} max-width: {{ post.tn_w }}px;{% endif %}">
+                {{ post.fsize }}, {{ post.w }}x{{ post.h }}, <a class="post_file_filename" href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" target="_blank">{{ post.filename }}{{ post.ext }}</a>
+            </div>
 
-                                    <h2 class="post_title">{{ post.sub|safe if post.resto == 0}}</h2>
-                                    <span class="post_poster_data">
-                        {% if post.email and post.email != 'noko' %}<a href="mailto:{{ post.email }}">{% endif %}<span class="post_author">{{ post.name }}</span><span class="post_tripcode">{% if post.trip %}{{ post.trip }}{% endif %}</span>{% if post.email and post.email != 'noko' %}</a>{% endif %}
+            <div class="post_file_controls">
+                <!--<a href="/{{ board }}/search/image/{{ post.md5 }}"
+                    class="btnr parent">View Same</a>-->
+                <a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+                    class="btnr parent">Google</a>
+                <a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+                    class="btnr parent">ImgOps</a>
+                <a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+                    class="btnr parent">iqdb</a>
+                <a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank"
+                    class="btnr parent">SauceNAO</a>
+                <a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" download="{{ post.filename }}{{ post.ext }}"
+                    class="btnr parent"><i class="icon-download-alt"></i></a>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
 
-                        {% if post.id %}<span class="poster_hash">ID:{{ post.id }}</span>{% endif %}
-                        {% if post.capcode == 'mod' %}<span class="post_level post_level_moderator">## Mod</span>{% endif %}
-                        {% if post.capcode == 'admin' %}<span class="post_level post_level_administrator">## Admin</span>{% endif %}
-                        {% if post.capcode == 'developer' %}<span class="post_level post_level_developer">## Developer</span>{% endif %}
-                        {% if post.capcode == 'verified' %}<span class="post_level post_level_verified">## Verified</span>{% endif %}
-                        {% if post.capcode == 'founder' %}<span class="post_level post_level_founder">## Founder</span>{% endif %}
-                        {% if post.capcode == 'manager' %}<span class="post_level post_level_manager">## Manager</span>{% endif %}
-                        </span>
-                                    <span class="time_wrap">
-                            <time datetime="{{ post.time }}" title="4chan Time: {{ post.now }}">{{ post.now }}</time>
-                        </span>
-                                    <a href="/{{ board }}/thread/{% if post.resto == 0 %}{{ post.no }}{% else %}{{ post.resto }}{% endif %}/#p{{ post.no }}" data-post="{{ post.no }}" data-function="highlight" title="Link to this post">No.</a><a href="/{{ board }}/thread/{% if post.resto == 0 %}{{ post.no }}{% else %}{{ post.resto }}{% endif %}/#p{{ post.no }}" data-post="{{ post.no }}" data-function="quote" title="Reply to this post" {% if post.resto == 0 %} class="isOp" {% endif %}>{{ post.no }}</a>
-
-                                    <span class="post_type">
-                        {% if post.since4pass %}<i class="icon-tag" title="Pass user since {{ post.since4pass }}."></i>{% endif %}
-                        {% if post.country %}<span title="{{ post.country_name }}" class="flag flag-{{ post.country|lower }}"></span>{% endif %}
-                        {% if post.troll_country %}<span title="{{ post.country_name }}" class="flag-pol2 flag-{{ post.troll_country|lower }}"></span>{% endif %}
-                        {% if post.spoiler %}<i class="icon-eye-close" title="The image in this post has been marked spoiler."></i>{% endif %}
-                        {% if post.deleted and not post.timestamp_expired %}<i class="icon-trash" title="This post was prematurely deleted."></i>{% endif %}
-                        {% if post.deleted and post.timestamp_expired %}<i class="icon-trash" title="This post was deleted on {{ post.timestamp_expired }}."></i>{% endif %}
-                        </span>
-                                    <span class="mobile_view"><a href="./{{ post.no }}" class="btnr parent">View</a></span>
-                                    <span class="mobile_bulk"></span>
-                                    {% if post.resto == 0 %}
-                                    <span class="post_controls">
-                                        <a href="/{{ board }}/thread/{{ post.no }}" class="btnr parent">View</a>
-                                        <!--<a href="/{{ board }}/thread/{{ post.no }}" class="btnr parent">Reply</a>-->
-                                        <a href="//boards.4chan.org/{{ board }}/thread/{{ post.no }}" class="btnr parent">Original</a>
-                                        <a class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-function="selectPosts">Post Selector</a>
-                                    {% endif %}
-                                        <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a>
-                                    {% if mod %}
-                                        <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a>
-                                    {% endif %}
-                                    
-
-                    </span>
-                                    <!--<span class="post_controls">
-                                        <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a>
-                                        <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a>
-                                    </span>-->
-                                </div>
-                            </header>
-                            {% if post.no|string in quotelinks or post.resto == 0 %}
-                            <div class="backlink_list {% if post.resto == 0 %}is_op{% endif %}" style="display: block;">
-																{% if not post.resto == 0 %}Quoted By:{% endif %}
-																{% for quotelink in quotelinks[post.no|string] %}
-																<span class="post_backlink" data-post="{{ quotelink }}">
-																		<a href="#p{{ quotelink }}" class="quotelink" data-function="highlight" data-backlink="true" data-board="{{ board }}" data-post="{{ quotelink }}">&gt;&gt;{{ quotelink }}</a>
-																</span>
-																{% endfor %}
-														</div>
-														{% endif %}
-                            <div class="text">
-                                {{ post.com|safe }}
-                            </div>
-                            {% if mod %}
-                            <div class="thread_tools_bottom">
-                                <div class="btn-group post_mod" style="">
-                                    <button class="btn btn-mini" data-function="activateModeration">Mod</button>
-                                </div>
-                                <div class="btn-group post_mod_controls" disabled>
-                                    <button class="btn btn-mini" data-post="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="editPost">Edit Post</button>
-                                    <button class="btn btn-mini" data-function="addBulkMod">Bulk Mod</button> 
-                                    {% if post.resto == 0 %}
-                                    <button class="btn btn-mini" data-function="mod" data-board="{{ board }}" data-id="{{ post.no }}" data-action="toggle_sticky">Toggle Sticky</button>
-                                    <button class="btn btn-mini" data-function="mod" data-board="{{ board }}" data-id="{{ post.no }}" data-action="toggle_locked">Toggle Locked</button>
-                                    <button class="btn btn-mini" data-function="mod" data-board="{{ board }}" data-board-url="/{{ board }}/" data-id="{{ post.no }}" data-action="delete_post">Delete thread</button>
-                                    {% else %} 
-                                    <button class="btn btn-mini" data-function="mod" data-board="{{ board }}" data-board-url="/{{ board }}/" data-id="{{ post.no }}" data-action="delete_post">Delete post</button>
-                                    {% endif %}
-                                    {% if post.md5 %}
-                                    <button class="btn btn-mini" data-function="mod" data-board="{{ board }}" data-id="3206775" data-doc-id="{{ post.no }}" data-action="delete_image">Delete Image</button>
-                                    <button class="btn btn-mini" data-function="mod" data-board="{{ board }}" data-id="3206775" data-doc-id="{{ post.no }}" data-action="ban_image">Ban Image</button>
-                                    <button class="btn btn-mini" data-function="mod" data-board="{{ board }}" data-id="3206775" data-doc-id="{{ post.no }}" data-global="true" data-action="ban_image">Ban Image Globally</button>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            {% endif %}
-                        {% if post.resto != 0 %}
-                        </div>
+        {% endif %}
+        <header>
+            <div class="post_data">
+                <div class="post_mobile_controls_collapse dropdown">
+                    <button data-toggle="dropdown" class="btnr parent"><i class="icon-th-list"></i></button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li class="nav-header">Post</li>
+                        <!--<li><a href="#" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a></li>
+                        <li><a href="#" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a></li>-->
+                        {% if post.md5 %}
+                        <li class="divider"></li>
+                        <li class="nav-header">Media</li>
+                        <li><a href="/{{ board }}/search/image/{{ post.md5 }}">View Same</a></li>
+                        <li><a href="http://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">Google</a></li>
+                        <li><a href="http://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">ImgOps</a></li>
+                        <li><a href="http://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">iqdb</a></li>
+                        <li><a href="http://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ post.tim }}s.jpg" target="_blank">SauceNAO</a></li>
+                        <li><a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" download="{{ post.filename }}{{ post.ext }}">
+                            <i class="icon-download-alt"></i> Download</a></li>
                         {% endif %}
-                        {% if board_index and post.resto == 0 %}
-                        {% elif post.resto == 0 %}
-                        <aside class="posts">
-                        {% else %}
-                    </article>
-                        {% endif %}
+                    </ul>
+                </div>
+                <!--<span class="post_show_board">/{{ board }}/</span>-->
+
+                <h2 class="post_title">{{ post.sub|safe if post.resto == 0}}</h2>
+                <span class="post_poster_data">
+    {% if post.email and post.email != 'noko' %}<a href="mailto:{{ post.email }}">{% endif %}<span class="post_author">{{ post.name }}</span><span class="post_tripcode">{% if post.trip %}{{ post.trip }}{% endif %}</span>{% if post.email and post.email != 'noko' %}</a>{% endif %}
+
+    {% if post.id %}<span class="poster_hash">ID:{{ post.id }}</span>{% endif %}
+    {% if post.capcode == 'mod' %}<span class="post_level post_level_moderator">## Mod</span>{% endif %}
+    {% if post.capcode == 'admin' %}<span class="post_level post_level_administrator">## Admin</span>{% endif %}
+    {% if post.capcode == 'developer' %}<span class="post_level post_level_developer">## Developer</span>{% endif %}
+    {% if post.capcode == 'verified' %}<span class="post_level post_level_verified">## Verified</span>{% endif %}
+    {% if post.capcode == 'founder' %}<span class="post_level post_level_founder">## Founder</span>{% endif %}
+    {% if post.capcode == 'manager' %}<span class="post_level post_level_manager">## Manager</span>{% endif %}
+    </span>
+                <span class="time_wrap">
+        <time datetime="{{ post.time }}" title="4chan Time: {{ post.now }}">{{ post.now }}</time>
+    </span>
+                <a href="/{{ board }}/thread/{% if post.resto == 0 %}{{ post.no }}{% else %}{{ post.resto }}{% endif %}/#p{{ post.no }}" data-post="{{ post.no }}" data-function="highlight" title="Link to this post">No.</a><a href="/{{ board }}/thread/{% if post.resto == 0 %}{{ post.no }}{% else %}{{ post.resto }}{% endif %}/#p{{ post.no }}" data-post="{{ post.no }}" data-function="quote" title="Reply to this post" {% if post.resto == 0 %} class="isOp" {% endif %}>{{ post.no }}</a>
+
+                <span class="post_type">
+    {% if post.since4pass %}<i class="icon-tag" title="Pass user since {{ post.since4pass }}."></i>{% endif %}
+    {% if post.country %}<span title="{{ post.country_name }}" class="flag flag-{{ post.country|lower }}"></span>{% endif %}
+    {% if post.troll_country %}<span title="{{ post.country_name }}" class="flag-pol2 flag-{{ post.troll_country|lower }}"></span>{% endif %}
+    {% if post.spoiler %}<i class="icon-eye-close" title="The image in this post has been marked spoiler."></i>{% endif %}
+    {% if post.deleted and not post.timestamp_expired %}<i class="icon-trash" title="This post was prematurely deleted."></i>{% endif %}
+    {% if post.deleted and post.timestamp_expired %}<i class="icon-trash" title="This post was deleted on {{ post.timestamp_expired }}."></i>{% endif %}
+    </span>
+                <span class="mobile_view"><a href="./{{ post.no }}" class="btnr parent">View</a></span>
+                <span class="mobile_bulk"></span>
+                {% if post.resto == 0 %}
+                <span class="post_controls">
+                    <a href="/{{ board }}/thread/{{ post.no }}" class="btnr parent">View</a>
+                    <!--<a href="/{{ board }}/thread/{{ post.no }}" class="btnr parent">Reply</a>-->
+                    <a href="//boards.4chan.org/{{ board }}/thread/{{ post.no }}" class="btnr parent">Original</a>
+                    <a class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-function="selectPosts">Post Selector</a>
+                {% endif %}
+                    <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a>
+                {% if mod %}
+                    <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a>
+                {% endif %}
+                
+
+</span>
+                <!--<span class="post_controls">
+                    <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="report">Report</a>
+                    <a href="#" class="btnr parent" data-post-id="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="delete">Delete</a>
+                </span>-->
+            </div>
+        </header>
+        {% if post.no|string in quotelinks or post.resto == 0 %}
+        <div class="backlink_list {% if post.resto == 0 %}is_op{% endif %}" style="display: block;">
+                                            {% if not post.resto == 0 %}Quoted By:{% endif %}
+                                            {% for quotelink in quotelinks[post.no|string] %}
+                                            <span class="post_backlink" data-post="{{ quotelink }}">
+                                                    <a href="#p{{ quotelink }}" class="quotelink" data-function="highlight" data-backlink="true" data-board="{{ board }}" data-post="{{ quotelink }}">&gt;&gt;{{ quotelink }}</a>
+                                            </span>
+                                            {% endfor %}
+                                    </div>
+                                    {% endif %}
+        <div class="text">
+            {{ post.com|safe }}
+        </div>
+        {% if mod %}
+        <div class="thread_tools_bottom">
+            <div class="btn-group post_mod" style="">
+                <button class="btn btn-mini" data-function="activateModeration">Mod</button>
+            </div>
+            <div class="btn-group post_mod_controls" disabled>
+                <button class="btn btn-mini" data-post="{{ post.no }}" data-board="{{ board }}" data-controls-modal="post_tools_modal" data-backdrop="true" data-keyboard="true" data-function="editPost">Edit Post</button>
+                <button class="btn btn-mini" data-function="addBulkMod">Bulk Mod</button> 
+                {% if post.resto == 0 %}
+                <button class="btn btn-mini" data-function="mod" data-board="{{ board }}" data-id="{{ post.no }}" data-action="toggle_sticky">Toggle Sticky</button>
+                <button class="btn btn-mini" data-function="mod" data-board="{{ board }}" data-id="{{ post.no }}" data-action="toggle_locked">Toggle Locked</button>
+                <button class="btn btn-mini" data-function="mod" data-board="{{ board }}" data-id="{{ post.no }}" data-action="delete_thread">Delete thread</button>
+                {% else %} 
+                <button class="btn btn-mini" data-function="mod" data-board="{{ board }}" data-id="{{ post.no }}" data-action="delete_post">Delete post</button>
+                {% endif %}
+                {% if post.md5 %}
+                <button class="btn btn-mini" data-function="mod" data-board="{{ board }}" data-id="{{ post.no }}" data-doc-id="{{ post.no }}" data-action="delete_image">Delete Image</button>
+                <button class="btn btn-mini" data-function="mod" data-board="{{ board }}" data-id="{{ post.no }}" data-doc-id="{{ post.no }}" data-action="ban_image">Ban Image</button>
+                <button class="btn btn-mini" data-function="mod" data-board="{{ board }}" data-id="{{ post.no }}" data-doc-id="{{ post.no }}" data-global="true" data-action="ban_image">Ban Image Globally</button>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    {% if post.resto != 0 %}
+    </div>
+    {% endif %}
+    {% if board_index and post.resto == 0 %}
+    {% elif post.resto == 0 %}
+    <aside class="posts">
+    {% else %}
+</article>
+    {% endif %}
 

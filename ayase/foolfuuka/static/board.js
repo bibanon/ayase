@@ -427,7 +427,33 @@ var bindFunctions = function()
 				global: el.data('global'),
 				theme: backend_vars.selected_theme
 			};
-			_data[backend_vars.csrf_token_key] = getCookie(backend_vars.csrf_token_key);
+			let url = '/admin/' + el.data('board') + '/';
+			//_data[backend_vars.csrf_token_key] = getCookie(backend_vars.csrf_token_key);
+			switch(el.data('action')) {
+				case 'delete_thread': 
+					url += `thread/${el.data('id')}`;
+					$.ajax({
+						url,
+						type: 'DELETE',
+						success: () => {
+							console.log(`Thread ${el.data('id')} deleted.`);
+							$(`#p${el.data('id')}`).hide('fast');
+						}
+					});
+					
+					break;
+				case 'delete_post': 
+					url += `post/${el.data('id')}`;
+					$.ajax({
+						url,
+						type: 'DELETE',
+						success: () => {
+							console.log(`Post ${el.data('id')} deleted.`);
+							$(`#p${el.data('id')}`).hide('fast');
+						}
+					});
+				break;
+			}
 			jQuery.ajax({
 				url: backend_vars.api_url + '_/api/chan/mod_actions/',
 				dataType: 'json',

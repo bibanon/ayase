@@ -29,7 +29,7 @@ class InvalidCookieException(Exception):
 #
 # Request dependency, verifies if a cookie is expired
 #
-async def verify_date(request:Request):
+async def check_token(request:Request):
     print(request.session)
     if request.session and datetime.now().timestamp() > request.session['exp']:
         raise InvalidCookieException("Cookie is expired")
@@ -69,7 +69,7 @@ async def login(request:Request):
 async def logout(request: Request):
     return None
 
-@admin.get("/token/", include_in_schema=False, dependencies=[Depends(verify_date)])
+@admin.get("/token/", include_in_schema=False, dependencies=[Depends(check_token)])
 async def read_token(code:str, request:Request, state:str = None):
     data = {"client_id": CONF['oauth2']['client_id'], "client_secret": CONF['oauth2']['secret'], "code": code, "grant_type": "authorization_code", "redirect_uri": CONF['site_url'] + "/admin/token/"}
     
@@ -104,7 +104,7 @@ async def read_token(code:str, request:Request, state:str = None):
                 status_code=403, detail="Failed authentication."
             )
 
-@admin.get("/verify_session/", include_in_schema=False, dependencies=[Depends(verify_date)])
+@admin.get("/verify_session/", include_in_schema=False, dependencies=[Depends(check_token)])
 async def verify_session(request:Request):
     return {"session": request.session}
     
