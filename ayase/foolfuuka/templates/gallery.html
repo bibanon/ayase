@@ -55,7 +55,7 @@
     <div class="thread_image_box" data-original-title="{{ thread.com }}">
         <a href="/{{ board }}/thread/{{ thread.no }}/" rel="noreferrer" target="_blank" class="thread_image_link" data-expand="true">
             <img src="{% if thread.asagi_preview_filename %}
-            {{ thumb_uri }}/{{ (thread.asagi_preview_filename|string)[0:4] }}/{{ (thread.asagi_preview_filename|string)[4:6] }}/{{ thread.asagi_preview_filename}}{% else %}{{ thumb_uri }}/{{ (thread.tim|string)[0:4] }}/{{ (thread.tim|string)[4:6] }}/{{ thread.tim }}s.jpg{% endif %}" data-width="1280" data-height="720" data-md5="{{ thread.md5 }}" class="thread_image" width="{{ thread.tn_w }}" height="{{ thread.tn_h }}" />
+            {{ thumb_uri }}/{{ (thread.asagi_preview_filename|string)[0:4] }}/{{ (thread.asagi_preview_filename|string)[4:6] }}/{{ thread.asagi_preview_filename}}{% else %}{{ thumb_uri }}/{{ (thread.tim|string)[0:4] }}/{{ (thread.tim|string)[4:6] }}/{{ thread.tim }}s.jpg{% endif %}" data-width="1280" data-height="720" data-md5="{{ thread.md5 }}" class="thread_image" width="{{ thread.tn_w }}" height="{{ thread.tn_h }}" loading="lazy"/>
         </a>
         <div class="post_file" style="padding-left: 2px;{% if thread.tn_w > 149 %} max-width: {{ thread.tn_w }}px;{% endif %}">
             {{ thread.fsize }}, {{ thread.w }}x{{ thread.h }}, <a class="post_file_filename" href="/img/{{ board }}/{{ thread.tim }}{{ thread.ext }}" target="_blank">{{ thread.filename }}{{ thread.ext }}</a>
