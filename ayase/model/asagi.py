@@ -5,6 +5,7 @@ import sys
 import html
 import databases
 import timeit
+import logging
 # from fastapi.staticfiles import StaticFiles
 
 from view.asagi import app, debug, CONF, DB_ENGINE
@@ -41,7 +42,7 @@ SELECTOR = """SELECT
 # (CASE WHEN (SELECT `preview_reply` FROM {board}_images WHERE {board}.media_hash={board}_images.media_hash) IS NULL THEN CONCAT(SUBSTRING_INDEX((SELECT `media` FROM {board}_images WHERE {board}.media_hash={board}_images.media_hash), '.', 1), 's.jpg') ELSE (SELECT `preview_reply` FROM {board}_images WHERE {board}.media_hash={board}_images.media_hash) END) AS asagi_preview_filename,
 
 MD5_IMAGE_SELECTOR = "`media_hash`,`media`,`preview_reply`,`preview_op`"
-SHA256_IMAGE_SELECTOR = "`media_hash`,`media_sha256`,`preview_reply_sha256`,`preview_op_sha256`"
+SHA256_IMAGE_SELECTOR = "`media_hash`,LOWER(HEX(`media_sha256`)) AS `media_sha256`,LOWER(HEX(`preview_reply_sha256`)) AS `preview_reply_sha256`,LOWER(HEX(`preview_op_sha256`)) AS `preview_op_sha256`"
 
 SELECT_POST = SELECTOR + "FROM `{board}` WHERE `num`={post_num}"
 SELECT_POST_IMAGES = "SELECT {image_selector} FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `num`={post_num})"
@@ -55,7 +56,7 @@ SELECT_OP_IMAGE_LIST_BY_MEDIA_HASH = "SELECT {image_selector} FROM `{board}_imag
 SELECT_OP_DETAILS_LIST_BY_THREAD_NUM = "SELECT `nreplies`, `nimages` FROM `{board}_threads` WHERE `thread_num` IN {thread_nums} ORDER BY FIELD(`thread_num`, {field_thread_nums})"
 SELECT_GALLERY_THREADS_BY_OFFSET = SELECTOR + "FROM `{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num` WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
 SELECT_GALLERY_THREAD_IMAGES_MD5 = "SELECT `{board}`.media_hash, `{board}_images`.`media`, `{board}_images`.`preview_reply`, `{board}_images`.`preview_op` FROM ((`{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num`) INNER JOIN `{board}_images` ON `{board}_images`.`media_hash` = `{board}`.`media_hash`) WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
-SELECT_GALLERY_THREAD_IMAGES_SHA256 = "SELECT `{board}`.media_hash, `{board}_images`.`media_sha256`, `{board}_images`.`preview_reply_sha256`, `{board}_images`.`preview_op_sha256` FROM ((`{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num`) INNER JOIN `{board}_images` ON `{board}_images`.`media_hash` = `{board}`.`media_hash`) WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
+SELECT_GALLERY_THREAD_IMAGES_SHA256 = "SELECT LOWER(HEX(`{board}`.media_hash)) AS `media_hash`, LOWER(HEX(`{board}_images`.`media_sha256`)) AS `media_sha256`, LOWER(HEX(`{board}_images`.`preview_reply_sha256`)) AS `preview_reply_sha256`, LOWER(HEX(`{board}_images`.`preview_op_sha256`)) AS `preview_op_sha256` FROM ((`{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num`) INNER JOIN `{board}_images` ON `{board}_images`.`media_hash` = `{board}`.`media_hash`) WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
 SELECT_GALLERY_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{board}_threads` ORDER BY `time_bump` DESC LIMIT 150 OFFSET {page_num}"
 
 # This is temporary
@@ -74,7 +75,6 @@ if DB_ENGINE == "postgresql":
         SELECT_THREAD_PREVIEW,
         SELECT_THREAD_PREVIEW_IMAGES,
         SELECT_GALLERY_THREADS_BY_OFFSET,
-        SELECT_GALLERY_THREAD_IMAGES,
         SELECT_GALLERY_THREAD_DETAILS,
     ]
     (
@@ -86,7 +86,6 @@ if DB_ENGINE == "postgresql":
         SELECT_THREAD_PREVIEW,
         SELECT_THREAD_PREVIEW_IMAGES,
         SELECT_GALLERY_THREADS_BY_OFFSET,
-        SELECT_GALLERY_THREAD_IMAGES,
         SELECT_GALLERY_THREAD_DETAILS,
     ) = (
         re.sub("op=1", "op=true", query, flags=re.IGNORECASE)
@@ -114,6 +113,11 @@ global database
 database = None
 DATABASE_URL = "{engine}://{user}:{password}@{host}:{port}/{database}"
 
+
+logging.basicConfig(
+    format='%(asctime)s %(message)s', 
+    datefmt='%Y-%m-%dT%H:%M:%S%z'
+)
 
 @app.on_event("startup")
 async def startup():
@@ -158,7 +162,7 @@ async def db_handler(sql: str, fetchall: bool):
                 print("Time waiting for query: ", end - start)
                 return result
     except Exception as e:
-        print(f"Query failed!: {e}")
+        logging.error(f"Query failed!: {e}")
         return ""
 
 
@@ -455,10 +459,19 @@ def convert(thread, details=None, images=None, isOPs=False, isPost=False, isGall
                 ):
                     if("hash_format" in CONF and CONF["hash_format"] == "sha256"):
                         if(posts[i]["resto"] == 0):
-                            posts[i]["asagi_preview_filename"] = media["preview_op_sha256"]
+                            if media["preview_op_sha256"] is not None:
+                                posts[i]["asagi_preview_filename"] = f'{media["preview_op_sha256"]}.jpg'
+                            else:
+                                logging.warning(f"{posts[i]['no']} OP thumbnail missing.")
                         else:
-                            posts[i]["asagi_preview_filename"] = media["preview_reply_sha256"]
-                        posts[i]["asagi_filename"] = media["media_sha256"]
+                            if media["preview_reply_sha256"] is not None:
+                                posts[i]["asagi_preview_filename"] = f'{media["preview_reply_sha256"]}.{posts[i]["ext"]}'
+                            else:
+                                logging.warning(f"{posts[i]['no']} post thumbnail missing.")
+                        if(media["media_sha256"] is not None):
+                            posts[i]["asagi_filename"] = f'{media["media_sha256"]}.{posts[i]["ext"]}'
+                        else:
+                            logging.warning(f"{posts[i]['no']} media filename missing.")
                     else:               
                         #use preview_op for op images
                         if(posts[i]["resto"] == 0):
@@ -467,7 +480,7 @@ def convert(thread, details=None, images=None, isOPs=False, isPost=False, isGall
                             posts[i]["asagi_preview_filename"] = media["preview_reply"]
                         posts[i]["asagi_filename"] = media["media"]
             except Exception as e:
-                print(f"ERROR convert: {e}")
+                logging.error(f"{e}")
 
         # leaving semantic_url empty for now
         if details and posts[i]["resto"] == 0:

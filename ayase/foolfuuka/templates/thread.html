@@ -2,10 +2,15 @@
 {% block body %}
     <div role="main" id="main">
         <div class="board">
-            {% for post in posts %}
+            {% if sha256_dirs %}
+                {% for post in posts %}
+                    {% include 'post_sha256.html' %}
+                {% endfor %}
+            {% else %}
+                {% for post in posts %}
                     {% include 'post.html' %}
-
-            {% endfor %}
+                {% endfor %}
+            {% endif %}
             </aside>
             </article>
             <article class="clearfix thread backlink_container">
