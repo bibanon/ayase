@@ -40,18 +40,22 @@ SELECTOR = """SELECT
 # (SELECT `media` FROM {board}_images WHERE {board}.media_hash={board}_images.media_hash) AS asagi_filename,
 # (CASE WHEN (SELECT `preview_reply` FROM {board}_images WHERE {board}.media_hash={board}_images.media_hash) IS NULL THEN CONCAT(SUBSTRING_INDEX((SELECT `media` FROM {board}_images WHERE {board}.media_hash={board}_images.media_hash), '.', 1), 's.jpg') ELSE (SELECT `preview_reply` FROM {board}_images WHERE {board}.media_hash={board}_images.media_hash) END) AS asagi_preview_filename,
 
+MD5_IMAGE_SELECTOR = "`media_hash`,`media`,`preview_reply`,`preview_op`"
+SHA256_IMAGE_SELECTOR = "`media_hash`,`media_sha256`,`preview_reply_sha256`,`preview_op_sha256`"
+
 SELECT_POST = SELECTOR + "FROM `{board}` WHERE `num`={post_num}"
-SELECT_POST_IMAGES = "SELECT `media_hash`,`media`,`preview_reply`,`preview_op` FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `num`={post_num})"
+SELECT_POST_IMAGES = "SELECT {image_selector} FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `num`={post_num})"
 SELECT_THREAD = SELECTOR + "FROM `{board}` WHERE `thread_num`={thread_num} ORDER BY `num`"
-SELECT_THREAD_IMAGES = "SELECT `media_hash`,`media`,`preview_reply`,`preview_op` FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `thread_num`={thread_num})"
+SELECT_THREAD_IMAGES = "SELECT {image_selector} FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `thread_num`={thread_num})"
 SELECT_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{board}_threads` WHERE `thread_num`={thread_num}"
 SELECT_THREAD_PREVIEW = SELECTOR + "FROM `{board}` WHERE `thread_num`={thread_num} ORDER BY `num` DESC LIMIT 5"
-SELECT_THREAD_PREVIEW_IMAGES = "SELECT `media_hash`,`media`,`preview_reply`,`preview_op` FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `thread_num`={thread_num} ORDER BY `num`)"  # ERROR 1235 (42000): This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery'
+SELECT_THREAD_PREVIEW_IMAGES = "SELECT {image_selector} FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `thread_num`={thread_num} ORDER BY `num`)"  # ERROR 1235 (42000): This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery'
 SELECT_OP_LIST_BY_OFFSET = SELECTOR + "FROM `{board}` WHERE `thread_num` IN (SELECT `thread_num` FROM `{board}_threads` ORDER BY `time_bump` DESC) AND op=1 LIMIT 10 OFFSET {page_num};"
-SELECT_OP_IMAGE_LIST_BY_MEDIA_HASH = "SELECT `media_hash`,`media`,`preview_reply`,`preview_op` FROM `{board}_images` WHERE `media_hash` IN {md5s}"
+SELECT_OP_IMAGE_LIST_BY_MEDIA_HASH = "SELECT {image_selector} FROM `{board}_images` WHERE `media_hash` IN {md5s}"
 SELECT_OP_DETAILS_LIST_BY_THREAD_NUM = "SELECT `nreplies`, `nimages` FROM `{board}_threads` WHERE `thread_num` IN {thread_nums} ORDER BY FIELD(`thread_num`, {field_thread_nums})"
 SELECT_GALLERY_THREADS_BY_OFFSET = SELECTOR + "FROM `{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num` WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
-SELECT_GALLERY_THREAD_IMAGES = "SELECT `{board}`.media_hash, `{board}_images`.`media`, `{board}_images`.`preview_reply`, `{board}_images`.`preview_op` FROM ((`{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num`) INNER JOIN `{board}_images` ON `{board}_images`.`media_hash` = `{board}`.`media_hash`) WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
+SELECT_GALLERY_THREAD_IMAGES_MD5 = "SELECT `{board}`.media_hash, `{board}_images`.`media`, `{board}_images`.`preview_reply`, `{board}_images`.`preview_op` FROM ((`{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num`) INNER JOIN `{board}_images` ON `{board}_images`.`media_hash` = `{board}`.`media_hash`) WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
+SELECT_GALLERY_THREAD_IMAGES_SHA256 = "SELECT `{board}`.media_hash, `{board}_images`.`media_sha256`, `{board}_images`.`preview_reply_sha256`, `{board}_images`.`preview_op_sha256` FROM ((`{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num`) INNER JOIN `{board}_images` ON `{board}_images`.`media_hash` = `{board}`.`media_hash`) WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
 SELECT_GALLERY_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{board}_threads` ORDER BY `time_bump` DESC LIMIT 150 OFFSET {page_num}"
 
 # This is temporary
@@ -106,7 +110,6 @@ if DB_ENGINE == "postgresql":
         for query in queries
     )
 
-global debug
 global database
 database = None
 DATABASE_URL = "{engine}://{user}:{password}@{host}:{port}/{database}"
@@ -165,7 +168,11 @@ async def get_post(board: str, post_num: int):
 
 
 async def get_post_images(board: str, post_num: int):
-    sql = SELECT_POST_IMAGES.format(board=board, post_num=post_num)
+    sql = SELECT_POST_IMAGES.format(
+        board=board, 
+        post_num=post_num, 
+        image_selector=SHA256_IMAGE_SELECTOR if "hash_format" in CONF and CONF["hash_format"] == "sha256" else MD5_IMAGE_SELECTOR
+    )
     return await db_handler(sql, fetchall=False)
 
 
@@ -175,7 +182,11 @@ async def get_thread(board: str, thread_num: int):
 
 
 async def get_thread_images(board: str, thread_num: int):
-    sql = SELECT_THREAD_IMAGES.format(board=board, thread_num=thread_num)
+    sql = SELECT_THREAD_IMAGES.format(
+        board=board, 
+        thread_num=thread_num,
+        image_selector=SHA256_IMAGE_SELECTOR if "hash_format" in CONF and CONF["hash_format"] == "sha256" else MD5_IMAGE_SELECTOR
+    )
     return await db_handler(sql, fetchall=True)
 
 
@@ -190,7 +201,11 @@ async def get_thread_preview(board: str, thread_num: int):
 
 
 async def get_thread_preview_images(board: str, thread_num: int):
-    sql = SELECT_THREAD_PREVIEW_IMAGES.format(board=board, thread_num=thread_num)
+    sql = SELECT_THREAD_PREVIEW_IMAGES.format(
+        board=board, 
+        thread_num=thread_num,
+        image_selector=SHA256_IMAGE_SELECTOR if "hash_format" in CONF and CONF["hash_format"] == "sha256" else MD5_IMAGE_SELECTOR    
+    )
     return await db_handler(sql, fetchall=True)
 
 
@@ -200,7 +215,11 @@ async def get_op_list(board: str, page_num: int):
 
 
 async def get_op_images(board: str, md5s: list):
-    sql = SELECT_OP_IMAGE_LIST_BY_MEDIA_HASH.format(board=board, md5s=md5s)
+    sql = SELECT_OP_IMAGE_LIST_BY_MEDIA_HASH.format(
+        board=board, 
+        md5s=md5s,
+        image_selector=SHA256_IMAGE_SELECTOR if "hash_format" in CONF and CONF["hash_format"] == "sha256" else MD5_IMAGE_SELECTOR
+    )
     return await db_handler(sql, fetchall=True)
 
 
@@ -217,7 +236,9 @@ async def get_gallery_threads(board: str, page_num: int):
 
 
 async def get_gallery_images(board: str, page_num: int):
-    sql = SELECT_GALLERY_THREAD_IMAGES.format(board=board, page_num=page_num)
+    sql = SELECT_GALLERY_THREAD_IMAGES_MD5.format(board=board, page_num=page_num)
+    if("hash_format" in CONF and CONF["hash_format"] == "SHA256"):
+        sql = SELECT_GALLERY_THREAD_IMAGES_SHA256.format(board=board, page_num=page_num)
     return await db_handler(sql, fetchall=True)
 
 
@@ -431,13 +452,20 @@ def convert(thread, details=None, images=None, isOPs=False, isPost=False, isGall
                     if image
                     else False,
                     images,
-                ):                    
-                    #use preview_op for op images
-                    if(posts[i]["resto"] == 0):
-                        posts[i]["asagi_preview_filename"] = media["preview_op"]
-                    else:
-                        posts[i]["asagi_preview_filename"] = media["preview_reply"]
-                    posts[i]["asagi_filename"] = media["media"]
+                ):
+                    if("hash_format" in CONF and CONF["hash_format"] == "sha256"):
+                        if(posts[i]["resto"] == 0):
+                            posts[i]["asagi_preview_filename"] = media["preview_op_sha256"]
+                        else:
+                            posts[i]["asagi_preview_filename"] = media["preview_reply_sha256"]
+                        posts[i]["asagi_filename"] = media["media_sha256"]
+                    else:               
+                        #use preview_op for op images
+                        if(posts[i]["resto"] == 0):
+                            posts[i]["asagi_preview_filename"] = media["preview_op"]
+                        else:
+                            posts[i]["asagi_preview_filename"] = media["preview_reply"]
+                        posts[i]["asagi_filename"] = media["media"]
             except Exception as e:
                 print(f"ERROR convert: {e}")
 
