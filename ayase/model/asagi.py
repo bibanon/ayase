@@ -106,7 +106,6 @@ if DB_ENGINE == "postgresql":
         for query in queries
     )
 
-global debug
 global database
 database = None
 DATABASE_URL = "{engine}://{user}:{password}@{host}:{port}/{database}"
@@ -135,7 +134,7 @@ async def shutdown():
 
 async def db_handler(sql: str, fetchall: bool):
     try:
-        if not debug:
+        if "debug" not in CONF or CONF["debug"] == False:
             return (
                 (await database.fetch_all(query=sql))
                 if fetchall
