@@ -22,6 +22,7 @@ database:
 schema:
   name: asagi
 
+# List of archive boards to show on the front index. 
 archives:
   - {shortname: a, name: Anime & Manga}
   - {shortname: aco, name: Adult Cartoons}
@@ -43,9 +44,13 @@ archives:
   - {shortname: vr, name: Retro Games}
   - {shortname: wsg, name: Worksafe GIF}
 
+# List of boards to list on the front index page.
+# This currently has no function, although it may be used for text 
+# boards in the future. 
 boards:
   - {shortname: p, name: Photography}
 
+# Template skins, only tested for use on Foolfuuka
 skins:
   - {slug: default, name: FoolFuuka - Default}
   - {slug: midnight, name: FoolFuuka - Midnight}
@@ -55,16 +60,20 @@ skins:
 
 default_skin: default
 
+# Template UI options
 options:
   post_selector: true
   stats: false
   ghost: false
   search: false
-  
+
+# URL location of images. These files are not currently hosted by ayase,
+# although this can be made possible with another StaticFiles mount. 
 image_location:
   image: /img/{board_name}/image
   thumb: /img/{board_name}/thumb
 
+# OpenAPI scraper info (currently unused).
 scraper:
   default: asagi
   asagi:
@@ -74,4 +83,9 @@ scraper:
     name: Ena
     source: https://github.com/shiimizu/ena
 
+# Image hash format.
+# md5 and sha256 are supported.
+hash_format: md5
+
+# Show database timings 
 debug: false
