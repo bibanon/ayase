@@ -377,11 +377,8 @@ async def convert_post(board_name: str, post_id: int):
 #
 async def convert_thread_ops(board_name: str, page_num: int):
     op_list = await get_op_list(board_name, page_num)
-    print([op.no for op in op_list])
     op_image_list = await get_op_images(board_name, tuple([op.md5 for op in op_list]))
-    print(op_image_list)
     op_detail_list = await get_op_details(board_name, tuple([op.no for op in op_list]))
-    print(op_detail_list)
     return convert(op_list, op_detail_list, op_image_list, isOPs=True)
 
 #

@@ -31,9 +31,9 @@
                             {% if asagi %}
                             <a href="{{ image_uri }}/{{ (post.asagi_filename|string)[0:4] }}/{{ (post.asagi_filename|string)[4:6] }}/{{ post.asagi_filename }}" target="_blank" rel="noreferrer" class="thread_image_link">
                                 {% if post.asagi_preview_filename %}
-                                    <img src="{{ thumb_uri }}/{{ (post.asagi_preview_filename|string)[0:4] }}/{{ (post.asagi_preview_filename|string)[4:6] }}/{{ post.asagi_preview_filename}}" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
+                                    <img src="{{ thumb_uri }}/{{ (post.asagi_preview_filename|string)[0:4] }}/{{ (post.asagi_preview_filename|string)[4:6] }}/{{ post.asagi_preview_filename}}" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" loading="lazy"/>
                                 {% else %}
-                                    <img src="{{ thumb_uri }}/{{ (post.tim|string)[0:4] }}/{{ (post.tim|string)[4:6] }}/{{ post.tim }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
+                                    <img src="{{ thumb_uri }}/{{ (post.tim|string)[0:4] }}/{{ (post.tim|string)[4:6] }}/{{ post.tim }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" loading="lazy"/>
                                 {% endif %}
                                 </a>
                                 {% if post.resto == 0 %}
@@ -60,7 +60,7 @@
                             
                             {% else %}
                                 <a href="/img/{{ board }}/{{ post.tim }}{{ post.ext }}" target="_blank" rel="noreferrer" class="thread_image_link">
-                                    <img src="/img/{{ board }}/{{ post.tim }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" />
+                                    <img src="/img/{{ board }}/{{ post.tim }}s.jpg" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" loading="lazy"/>
                                 </a>
                                 {% if post.resto == 0 %}
                                 <div class="post_file" style="padding-left: 2px;{% if post.tn_w > 149 %} max-width: {{ post.tn_w }}px;{% endif %}">
