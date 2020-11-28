@@ -1,3 +1,9 @@
-{% for post in posts %}
-	{% include 'post.html' %}
-{% endfor %}
+{% if sha256_dirs %}
+	{% for post in posts %}
+		{% include 'post_sha256.html' %}
+	{% endfor %}
+{% else %}
+	{% for post in posts %}
+		{% include 'post.html' %}
+	{% endfor %}
+{% endif %}
