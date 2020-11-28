@@ -110,13 +110,9 @@ if(CONF['options']['reports']):
 
 async def check_admin_cookies(request:Request):
     if(CONF['options']['reports']):
-        return await verify_date(request)
+        return await check_token(request)
     return False
     
-@app.exception_handler(InvalidCookieException)
-async def invalid_admin_cookie(request: Request, e: InvalidCookieException):
-    return request
-
 class NotFoundException(Exception):
     def __init__(self, board_name=CONF["site_name"]):
         self.title_window = board_name

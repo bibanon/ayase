@@ -2,6 +2,8 @@
 
 site_name: MyArchive
 
+# Asagi database option. MySQL is default, 
+# PostgreSQL is not fully supported.
 database:
   default: mysql
   mysql:
@@ -18,6 +20,17 @@ database:
     user: asagi
     password: asagi
     charset: utf8
+
+# Specify the reports db, if reports is enabled. 
+reports_db:
+  default: mysql
+  mysql:
+    host: 127.0.0.1
+    port: 3306
+    db: ayase
+    user: ayase
+    password: ayase
+    charset: utf8mb4
 
 schema:
   name: asagi
@@ -59,6 +72,7 @@ options:
   post_selector: true
   stats: false
   ghost: false
+  reports: false
   search: false
   
 image_location:
