@@ -78,8 +78,8 @@ image_location:
   thumb: /img/{board_name}/thumb
 # Torako sha256 folder structure
 #image_location:
-#  image: /img/
-#  thumb: /img/
+#  image: /img
+#  thumb: /img
 
 # OpenAPI scraper info (currently unused).
 scraper:
