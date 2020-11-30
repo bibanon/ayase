@@ -56,7 +56,7 @@ SELECT_OP_IMAGE_LIST_BY_MEDIA_HASH = "SELECT {image_selector} FROM `{board}_imag
 SELECT_OP_DETAILS_LIST_BY_THREAD_NUM = "SELECT `nreplies`, `nimages` FROM `{board}_threads` WHERE `thread_num` IN {thread_nums} ORDER BY FIELD(`thread_num`, {field_thread_nums})"
 SELECT_GALLERY_THREADS_BY_OFFSET = SELECTOR + "FROM `{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num` WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
 SELECT_GALLERY_THREAD_IMAGES_MD5 = "SELECT `{board}`.media_hash, `{board}_images`.`media`, `{board}_images`.`preview_reply`, `{board}_images`.`preview_op` FROM ((`{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num`) INNER JOIN `{board}_images` ON `{board}_images`.`media_hash` = `{board}`.`media_hash`) WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
-SELECT_GALLERY_THREAD_IMAGES_SHA256 = "SELECT LOWER(HEX(`{board}`.media_hash)) AS `media_hash`, LOWER(HEX(`{board}_images`.`media_sha256`)) AS `media_sha256`, LOWER(HEX(`{board}_images`.`preview_reply_sha256`)) AS `preview_reply_sha256`, LOWER(HEX(`{board}_images`.`preview_op_sha256`)) AS `preview_op_sha256` FROM ((`{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num`) INNER JOIN `{board}_images` ON `{board}_images`.`media_hash` = `{board}`.`media_hash`) WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
+SELECT_GALLERY_THREAD_IMAGES_SHA256 = "SELECT `{board}`.media_hash, LOWER(HEX(`{board}_images`.`media_sha256`)) AS `media_sha256`, LOWER(HEX(`{board}_images`.`preview_reply_sha256`)) AS `preview_reply_sha256`, LOWER(HEX(`{board}_images`.`preview_op_sha256`)) AS `preview_op_sha256` FROM ((`{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num`) INNER JOIN `{board}_images` ON `{board}_images`.`media_hash` = `{board}`.`media_hash`) WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
 SELECT_GALLERY_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{board}_threads` ORDER BY `time_bump` DESC LIMIT 150 OFFSET {page_num}"
 
 # This is temporary
@@ -234,9 +234,8 @@ async def get_gallery_threads(board: str, page_num: int):
 
 
 async def get_gallery_images(board: str, page_num: int):
-    sql = SELECT_GALLERY_THREAD_IMAGES_MD5.format(board=board, page_num=page_num)
-    if("hash_format" in CONF and CONF["hash_format"] == "SHA256"):
-        sql = SELECT_GALLERY_THREAD_IMAGES_SHA256.format(board=board, page_num=page_num)
+    selector = SELECT_GALLERY_THREAD_IMAGES_SHA256 if "hash_format" in CONF and CONF["hash_format"] == "sha256" else SELECT_GALLERY_THREAD_IMAGES_MD5
+    sql = selector.format(board=board, page_num=page_num)
     return await db_handler(sql, fetchall=True)
 
 
@@ -366,8 +365,9 @@ async def generate_gallery(board_name: str, page_num: int):
     page_num -= 1  # start page number at 1
     thread_list = await get_gallery_threads(board_name, page_num)
     details = await get_gallery_details(board_name, page_num)
+    images = await get_gallery_images(board_name, page_num)
 
-    gallery_list = convert(thread_list, details, isGallery=True)
+    gallery_list = convert(thread_list, details, images, isGallery=True)
 
     result = []
     page_threads = {"page": 0, "threads": []}
