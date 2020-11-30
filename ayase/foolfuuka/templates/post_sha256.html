@@ -25,7 +25,7 @@
                             {% endif %}
                             <div class="thread_image_box">
                             <a href="{{ image_uri }}/{{ (post.asagi_filename|string).split('.')[0][-1] }}/{{ (post.asagi_filename|string).split('.')[0][-3:-1] }}/{{ post.asagi_filename }}" target="_blank" rel="noreferrer" class="thread_image_link">
-                                    <img src="{{ image_uri }}/{{ (post.asagi_preview_filename|string).split('.')[0][-1] }}/{{ (post.asagi_preview_filename|string).split('.')[0][-3:-1] }}/{{ post.asagi_preview_filename }}" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" loading="lazy"/>
+                                    <img src="{{ thumb_uri  }}/{{ (post.asagi_preview_filename|string).split('.')[0][-1] }}/{{ (post.asagi_preview_filename|string).split('.')[0][-3:-1] }}/{{ post.asagi_preview_filename }}" width="{{ post.tn_w }}" height="{{ post.tn_h }}" class="post_image{% if post.spoiler %} is_spoiler_image{% endif %}" data-md5="{{ post.md5 }}" loading="lazy"/>
                                 </a>
                                 {% if post.resto == 0 %}
                                 <div class="post_file" style="padding-left: 2px;{% if post.tn_w > 149 %} max-width: {{ post.tn_w }}px;{% endif %}">
