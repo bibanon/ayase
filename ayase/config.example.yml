@@ -67,11 +67,19 @@ options:
   ghost: false
   search: false
 
+# Image hash format.
+# md5 and sha256 are supported.
+hash_format: md5
+
 # URL location of images. These files are not currently hosted by ayase,
 # although this can be made possible with another StaticFiles mount. 
 image_location:
   image: /img/{board_name}/image
   thumb: /img/{board_name}/thumb
+# Torako sha256 folder structure
+#image_location:
+#  image: /img/
+#  thumb: /img/
 
 # OpenAPI scraper info (currently unused).
 scraper:
@@ -82,10 +90,6 @@ scraper:
   ena:
     name: Ena
     source: https://github.com/shiimizu/ena
-
-# Image hash format.
-# md5 and sha256 are supported.
-hash_format: md5
 
 # Show database timings 
 debug: false
