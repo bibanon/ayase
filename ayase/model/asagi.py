@@ -113,12 +113,6 @@ global database
 database = None
 DATABASE_URL = "{engine}://{user}:{password}@{host}:{port}/{database}"
 
-
-logging.basicConfig(
-    format='%(asctime)s %(message)s', 
-    datefmt='%Y-%m-%dT%H:%M:%S%z'
-)
-
 @app.on_event("startup")
 async def startup():
     global database
