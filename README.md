@@ -1,6 +1,6 @@
 > **Note:** Ayase currently a proof of concept. It now works perfectly with the Asagi schema. Future versions will set up a connection to the both the Asagi and Ayase Schemas.
 
-**Ayase** is a 4chan Archiver API middleware and HTML frontend based on Python, Falcon, Hug, and Jinja2.
+**Ayase** is a 4chan Archiver API middleware and HTML frontend based on Python, FastAPI, and Jinja2.
 
 It was produced by the Bibliotheca Anonoma as a replacement for FoolFuuka, to be the API Middleware and HTML Templating Frontend to both Asagi and Ayase compatible scrapers, and the definition of the Ayase SQL Standard.
 
