@@ -51,7 +51,7 @@ SELECT_THREAD_IMAGES = "SELECT {image_selector} FROM `{board}_images` WHERE `med
 SELECT_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{board}_threads` WHERE `thread_num`={thread_num}"
 SELECT_THREAD_PREVIEW = SELECTOR + "FROM `{board}` WHERE `thread_num`={thread_num} ORDER BY `num` DESC LIMIT 5"
 SELECT_THREAD_PREVIEW_IMAGES = "SELECT {image_selector} FROM `{board}_images` WHERE `media_hash` IN (SELECT `media_hash` FROM `{board}` WHERE `thread_num`={thread_num} ORDER BY `num`)"  # ERROR 1235 (42000): This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery'
-SELECT_OP_LIST_BY_OFFSET = SELECTOR + "FROM `{board}` WHERE `thread_num` IN (SELECT `thread_num` FROM `{board}_threads` ORDER BY `time_bump` DESC) AND op=1 LIMIT 10 OFFSET {page_num};"
+SELECT_OP_LIST_BY_OFFSET = SELECTOR + "FROM {board} LEFT JOIN {board}_threads ON {board}_threads.thread_num = {board}.thread_num WHERE OP=1 ORDER BY `time_bump` DESC LIMIT 10 OFFSET {page_num};"
 SELECT_OP_IMAGE_LIST_BY_MEDIA_HASH = "SELECT {image_selector} FROM `{board}_images` WHERE `media_hash` IN {md5s}"
 SELECT_OP_DETAILS_LIST_BY_THREAD_NUM = "SELECT `nreplies`, `nimages` FROM `{board}_threads` WHERE `thread_num` IN {thread_nums} ORDER BY FIELD(`thread_num`, {field_thread_nums})"
 SELECT_GALLERY_THREADS_BY_OFFSET = SELECTOR + "FROM `{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num` WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
