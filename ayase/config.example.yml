@@ -66,6 +66,8 @@ hash_format: md5
 
 # URL location of images. These files are not currently hosted by ayase,
 # although this can be made possible with another StaticFiles mount. 
+# If you're using a full url, make sure to start with the protocol. 
+# e.g. http:// or https://
 image_location:
   image: /img/{board_name}/image
   thumb: /img/{board_name}/thumb
