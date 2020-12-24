@@ -11,13 +11,6 @@ database:
     user: asagi
     password: asagi
     charset: utf8mb4
-  postgresql:
-    host: 127.0.0.1
-    port: 5432
-    db: asagi
-    user: asagi
-    password: asagi
-    charset: utf8
 
 schema:
   name: asagi
