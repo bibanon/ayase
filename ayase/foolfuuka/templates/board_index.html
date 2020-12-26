@@ -6,7 +6,11 @@
             {% set thread = i['posts'] %}
             {% set post = thread[0] %}
             {% set board_index = True %}
-							{% include 'post.html' %}
+            {% if sha256_dirs %}
+                {% include 'post_sha256.html' %}
+            {% else %}
+                {% include 'post.html' %}
+            {% endif %}
             <div class="thread_tools_bottom">
             {% if post.omitted_posts %}
             <span class="omitted">
@@ -20,9 +24,15 @@
             {% endif %}
             </div>
             <aside class="posts">
-            {% for post in thread[1:] %}
-									{% include 'post.html' %}
-						{% endfor %}
+            {% if sha256_dirs %}
+                {% for post in thread[1:] %}
+                    {% include 'post_sha256.html' %}
+                {% endfor %}
+            {% else %}
+                {% for post in thread[1:] %}
+                    {% include 'post.html' %}
+                {% endfor %}
+            {% endif %}
             </aside>
             </article>
             {% endfor %}

@@ -71,6 +71,7 @@ boards = CONF["boards"]
 skins = CONF["skins"]
 site_name = CONF["site_name"]
 scraper = CONF["scraper"]
+sha256_dirs = False 
 board_list = []
 
 image_uri = CONF["image_location"]["image"]
@@ -85,14 +86,17 @@ if archives:
     for i in archives:
         archive_list.append(i["shortname"])
 
+if "hash_format" in CONF and CONF["hash_format"] == "sha256":
+    sha256_dirs = True
 
-# Caches templates
+# Cache templates
 template_index = env.get_template("index.html")
 template_board_index = env.get_template("board_index.html")
 template_404 = env.get_template("404.html")
 template_gallery = env.get_template("gallery.html")
 template_thread = env.get_template("thread.html")
 template_post = env.get_template("post.html")
+template_post_sha256 = env.get_template("post_sha256.html")
 template_posts = env.get_template("posts.html")
 
 
@@ -192,6 +196,7 @@ async def board_html(request: Request, board_name: str):
             # print(index['threads'][0]['quotelinks'])
             content = template_board_index.render(
                 asagi=True,
+                sha256_dirs=sha256_dirs ,
                 page_num=1,
                 threads=index["threads"],
                 quotelinks=[],
@@ -235,6 +240,7 @@ async def gallery_html(request: Request, board_name: str):
         title_window = title + " » Gallery"
         content = template_gallery.render(
             asagi=True,
+            sha256_dirs=sha256_dirs ,
             gallery=gallery,
             page_num=1,
             archives=archives,
@@ -267,6 +273,7 @@ async def gallery_index_html(request: Request, board_name: str, page_num: int):
         title_window = title + f" » Gallery Page {page_num}"
         content = template_gallery.render(
             asagi=True,
+            sha256_dirs=sha256_dirs ,
             gallery=gallery,
             page_num=page_num,
             archives=archives,
@@ -299,6 +306,7 @@ async def board_index_html(request: Request, board_name: str, page_num: int):
             title_window = title + f" » Page {page_num}"
             content = template_board_index.render(
                 asagi=True,
+                sha256_dirs=sha256_dirs ,
                 page_num=page_num,
                 threads=index["threads"],
                 quotelinks=[],
@@ -355,6 +363,7 @@ async def thread_html(request: Request, board_name: str, thread_id: int):
 
         content = template_thread.render(
             asagi=True,
+            sha256_dirs=sha256_dirs ,
             posts=thread_dict["posts"],
             quotelinks=quotelinks,
             archives=archives,
@@ -391,6 +400,7 @@ async def posts_html(request: Request, board_name: str, thread_id: int):
 
             content = template_posts.render(
                 asagi=True,
+                sha256_dirs=sha256_dirs ,
                 posts=thread_dict["posts"],
                 quotelinks=quotelinks,
                 board=board_name,
@@ -416,13 +426,20 @@ async def post_html(
 
         post = await convert_post(board_name, post_id)
 
+        # Switch to SHA256 template if hash option is set
+        template = template_post
+        if sha256_dirs:
+            template = template_post_sha256
+
         if len(post) > 0:
+            #set resto to a non zero value to prevent the template from rendering 
+            #OPs with the format of an OP post
             if post["resto"] == 0:
-                #set resto to a non zero value to prevent the template from rendering 
-                #OPs with the format of an OP post
                 post["resto"] = -1 
-            content = template_post.render(
+                
+            content = template.render(
                 asagi=True,
+                sha256_dirs=sha256_dirs ,
                 post=post,
                 board=board_name,
                 image_uri=image_uri.format(board_name=board_name),

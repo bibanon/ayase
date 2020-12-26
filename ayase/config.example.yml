@@ -13,13 +13,6 @@ database:
     user: asagi
     password: asagi
     charset: utf8mb4
-  postgresql:
-    host: 127.0.0.1
-    port: 5432
-    db: asagi
-    user: asagi
-    password: asagi
-    charset: utf8
 
 # Specify the reports db, if reports is enabled. 
 reports_db:
@@ -35,6 +28,7 @@ reports_db:
 schema:
   name: asagi
 
+# List of archive boards to show on the front index. 
 archives:
   - {shortname: a, name: Anime & Manga}
   - {shortname: aco, name: Adult Cartoons}
@@ -56,9 +50,13 @@ archives:
   - {shortname: vr, name: Retro Games}
   - {shortname: wsg, name: Worksafe GIF}
 
+# List of boards to list on the front index page.
+# This currently has no function, although it may be used for text 
+# boards in the future. 
 boards:
   - {shortname: p, name: Photography}
 
+# Template skins, only tested for use on Foolfuuka
 skins:
   - {slug: default, name: FoolFuuka - Default}
   - {slug: midnight, name: FoolFuuka - Midnight}
@@ -68,17 +66,31 @@ skins:
 
 default_skin: default
 
+# Template UI options
 options:
   post_selector: true
   stats: false
   ghost: false
   reports: false
   search: false
-  
+
+# Image hash format.
+# md5 and sha256 are supported.
+hash_format: md5
+
+# URL location of images. These files are not currently hosted by ayase,
+# although this can be made possible with another StaticFiles mount. 
+# If you're using a full url, make sure to start with the protocol. 
+# e.g. http:// or https://
 image_location:
   image: /img/{board_name}/image
   thumb: /img/{board_name}/thumb
+# Torako sha256 folder structure
+#image_location:
+#  image: /img
+#  thumb: /img
 
+# OpenAPI scraper info (currently unused).
 scraper:
   default: asagi
   asagi:
@@ -88,6 +100,7 @@ scraper:
     name: Ena
     source: https://github.com/shiimizu/ena
 
+# Show database timings 
 debug: false
 
 # cookie session secret. make sure to change this!

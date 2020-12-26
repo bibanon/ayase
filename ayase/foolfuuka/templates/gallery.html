@@ -54,19 +54,31 @@
     </header>
     <div class="thread_image_box" data-original-title="{{ thread.com }}">
         <a href="/{{ board }}/thread/{{ thread.no }}/" rel="noreferrer" target="_blank" class="thread_image_link" data-expand="true">
+            {% if sha256_dirs %}
+            <img src="{{ thumb_uri }}/{{ (thread.asagi_preview_filename|string).split('.')[0][-1] }}/{{ (thread.asagi_preview_filename|string).split('.')[0][-3:-1] }}/{{ thread.asagi_preview_filename }}" data-width="1280" data-height="720" data-md5="{{ thread.md5 }}" class="thread_image" width="{{ thread.tn_w }}" height="{{ thread.tn_h }}" loading="lazy"/>
+            {% else %}
             <img src="{% if thread.asagi_preview_filename %}
             {{ thumb_uri }}/{{ (thread.asagi_preview_filename|string)[0:4] }}/{{ (thread.asagi_preview_filename|string)[4:6] }}/{{ thread.asagi_preview_filename}}{% else %}{{ thumb_uri }}/{{ (thread.tim|string)[0:4] }}/{{ (thread.tim|string)[4:6] }}/{{ thread.tim }}s.jpg{% endif %}" data-width="1280" data-height="720" data-md5="{{ thread.md5 }}" class="thread_image" width="{{ thread.tn_w }}" height="{{ thread.tn_h }}" loading="lazy"/>
+            {% endif %}
         </a>
         <div class="post_file" style="padding-left: 2px;{% if thread.tn_w > 149 %} max-width: {{ thread.tn_w }}px;{% endif %}">
             {{ thread.fsize }}, {{ thread.w }}x{{ thread.h }}, <a class="post_file_filename" href="/img/{{ board }}/{{ thread.tim }}{{ thread.ext }}" target="_blank">{{ thread.filename }}{{ thread.ext }}</a>
         </div>
         <div class="post_file_controls">
-            <a href="{{ image_uri }}/{{ (thread.asagi_filename|string)[0:4] }}/{{ (thread.asagi_filename|string)[4:6] }}/{{ thread.asagi_filename }}" class="btnr" target="_blank">Full</a><!--<a href="/{{ board }}/search/image/jPhzonsoMUmnu8Kig9Ttqg/" class="btnr parent">View Same</a>-->
+            {% if sha256_dirs %}
+            <a href="{{ image_uri }}/{{ (thread.asagi_filename|string).split('.')[0][-1] }}/{{ (thread.asagi_filename|string).split('.')[0][-3:-1] }}/{{ thread.asagi_filename }}" class="btnr" target="_blank">Full</a>
+            {% else %}
+            <a href="{{ image_uri }}/{{ (thread.asagi_filename|string)[0:4] }}/{{ (thread.asagi_filename|string)[4:6] }}/{{ thread.asagi_filename }}" class="btnr" target="_blank">Full</a>
+            {% endif %}
             <a target="_blank" href="https://imgops.com/https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" class="btnr parent">ImgOps</a>
             <a target="_blank" href="https://iqdb.org/?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" class="btnr parent">iqdb</a>
             <a target="_blank" href="https://saucenao.com/search.php?url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" class="btnr parent">SauceNAO</a>
             <a target="_blank" href="https://www.google.com/searchbyimage?image_url=https%3A%2F%2Fi.4cdn.org%2F{{ board }}%2F{{ thread.tim }}s.jpg" class="btnr parent">Google</a>
+            {% if sha256_dirs %}
+            <a href="{{ image_uri }}/{{ (thread.asagi_filename|string).split('.')[0][-1] }}/{{ (thread.asagi_filename|string).split('.')[0][-3:-1] }}/{{ thread.asagi_filename }}" download="{{ thread.filename }}{{ thread.ext }}">
+            {% else %}
             <a href="{{ image_uri }}/{{ (thread.asagi_filename|string)[0:4] }}/{{ (thread.asagi_filename|string)[4:6] }}/{{ thread.asagi_filename }}" download="{{ thread.filename }}{{ thread.ext }}">
+            {% endif %}
                 <i class="icon-download-alt"></i>
             </a>
         </div>
