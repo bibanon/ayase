@@ -8,3 +8,5 @@ aiofiles
 aiomysql
 itsdangerous
 python-multipart
+httpx
+json
