@@ -2,6 +2,8 @@
 
 site_name: MyArchive
 
+# Asagi database option. MySQL is default, 
+# PostgreSQL is not fully supported.
 database:
   default: mysql
   mysql:
@@ -10,6 +12,17 @@ database:
     db: asagi
     user: asagi
     password: asagi
+    charset: utf8mb4
+
+# Specify the reports db, if reports is enabled. 
+reports_db:
+  default: mysql
+  mysql:
+    host: 127.0.0.1
+    port: 3306
+    db: ayase
+    user: ayase
+    password: ayase
     charset: utf8mb4
 
 schema:
@@ -58,6 +71,7 @@ options:
   post_selector: true
   stats: false
   ghost: false
+  reports: false
   search: false
 
 # Image hash format.
@@ -88,3 +102,22 @@ scraper:
 
 # Show database timings 
 debug: false
+
+# cookie session secret. make sure to change this!
+session_secret: somerandomstringhere
+
+# Authentication backend. Only oauth2 and none are supported.
+# none should only be used for testing and development! This option will make every user who visits /admin/login a moderator.
+authentication_type: oauth2
+
+oauth2:
+ provider: gitgud
+ login_url: https://gitgud.io/oauth/authorize
+ token_url: https://gitgud.io/oauth/token
+ userinfo_url: https://gitgud.io/oauth/userinfo
+ client_id: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+ secret: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+ cookie_expiration: 86400 #24 * 3600, 24 hours
+ groups: 
+    admins: gitgud-admin-group
+    moderators: gitgud-mod-group

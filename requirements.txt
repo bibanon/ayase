@@ -1,9 +1,10 @@
 pyyaml
 jinja2
-fastapi==0.57.0
+fastapi>=0.57.0
 uvicorn
 databases
-asyncpg==0.20.1
-pymysql==0.9.2
-aiomysql==0.0.20
+pymysql==0.9.3
 aiofiles
+aiomysql
+itsdangerous
+python-multipart
