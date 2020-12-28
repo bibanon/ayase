@@ -2,6 +2,9 @@
 {% block body %}
 
 <div role="main" id="main">
+		{% if options.search %}
+			{% include 'search.html' %}
+		{% endif %}
     <nav class="index_nav clearfix">
         <h1></h1>
         <ul class="pull-left clearfix">
