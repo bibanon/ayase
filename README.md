@@ -23,7 +23,7 @@ Documentation can be seen at
 To use this template, you will need to have an accessible MySQL DB with an Asagi schema as well as a web server to host static content. We will be using NGINX here.
 
 #### Configuring ayase
-This template expects a YAML config file located at `ayase/config.yml`. An example is located in `ayase/config.example.yml`. Here, you can specifiy the database location, enabled archives/boards, and the expected image URL (useful if you plan to grab full images from another archive).
+This template expects a TOML config file located at `ayase/config.toml`. An example is located in `ayase/config.example.toml`. Here, you can specifiy the database location, enabled archives/boards, and the expected image URL (useful if you plan to grab full images from another archive).
 
 #### Configuring the NGINX Web Server
 It is recommended that you setup an nginx front proxy to host static content in production (particularly for images which ayase does not host), however this is not required for testing.
