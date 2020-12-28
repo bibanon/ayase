@@ -170,9 +170,9 @@ def get_skin(request: Request):
 # return empty entry
 def get_board_entry(board_name: str):
     return next(
-        (item for item in archives if item["shortname"] == board_name),
+        (item for item in (archives or []) if item["shortname"] == board_name),
         next(
-            (item for item in boards if item["shortname"] == board_name),
+            (item for item in (boards or []) if item["shortname"] == board_name),
             {"shortname": "", "name": ""},
         ),
     )
