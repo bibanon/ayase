@@ -14,6 +14,14 @@ default_skin = "default"
 ## Show database timings.
 debug = false
 
+## Moderation cookie session secret. Be sure to change this!
+session_secret = "somerandomstringhere"
+
+## Specifies the authentication backend. Only oauth2 and none are currently supported.
+## none should only be used for testing and development! This option will make every user who visits /admin/login a moderator.
+## If you specify oauth2, you will need to setup and configure oauth2 below. 
+authentication_type = "oauth2"
+
 ## List of archived boards to display. 
 [[archives]]
 shortname = "a"
@@ -142,6 +150,9 @@ ghost = false
 ## Show the search bar. Search functionality will be available in a future version.
 search = false
 
+## Enable reports and moderation.
+reports = false
+
 ## Specify the url where images are hosted.
 ## The following is the default for ayase.  
 ## You may also specify a full URL.
@@ -156,7 +167,7 @@ thumb = "/img/{board_name}/thumb"
 # image = "/img"
 # thumb = "/img"
 
-# OpenAPI scraper info (currently unused).
+## OpenAPI scraper info (currently unused).
 [scraper]
 default = "asagi"
 
@@ -172,6 +183,21 @@ default = "asagi"
     name = "Torako"
     source = "https://github.com/miyachan/torako"
 
+## OAuth2 authentication config. Only supports Gitlab for now.
+[oauth2]
+provider = "gitgud"
+login_url = "https://gitgud.io/oauth/authorize"
+token_url = "https://gitgud.io/oauth/token"
+userinfo_url = "https://gitgud.io/oauth/userinfo"
+client_id = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+secret = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+cookie_expiration = 86400
+
+    ## Specify admin and moderation groups
+    [oauth2.groups]
+    admins = "gitgud-admin-group"
+    moderators = "gitgud-mod-group"
+
 ## Database options
 [database]
 default = "mysql"
@@ -184,10 +210,13 @@ default = "mysql"
     password = "asagi"
     charset = "utf8mb4"
 
-    [database.postgresql]
+[reports_db]
+default = "mysql"
+
+    [reports_db.mysql]
     host = "127.0.0.1"
-    port = 5432
-    db = "asagi"
-    user = "asagi"
-    password = "asagi"
-    charset = "utf8"
+    port = 3306
+    db = "ayase"
+    user = "ayase"
+    password = "ayase"
+    charset = "utf8mb4"
