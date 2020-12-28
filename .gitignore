@@ -145,5 +145,5 @@ cython_debug/
 
 # local enviroment
 config.yml
-config.json
+config.toml
 *.vscode*

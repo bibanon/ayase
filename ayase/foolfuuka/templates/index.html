@@ -7,6 +7,7 @@
 		{% endif %}
     <nav class="index_nav clearfix">
         <h1></h1>
+        {% if archives %}
         <ul class="pull-left clearfix">
             <li><h2>Archives</h2></li>
             <li>
@@ -21,6 +22,8 @@
                 </ul>
             </li>
         </ul>
+        {% endif %}
+        {% if boards %}
         <ul class="pull-left clearfix">
             <li><h2>Boards</h2></li>
             <li>
@@ -35,6 +38,7 @@
                 </ul>
             </li>
         </ul>
+        {%endif %}
         {% if articles %}
         <ul class="pull-left clearfix">
             <li><h2>Articles</h2></li>

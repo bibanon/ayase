@@ -1,0 +1,222 @@
+## The name to display on site titles and headers. 
+site_name = "Ayase"
+
+## Image hash format.
+## md5 and sha256 are supported.
+hash_format = "md5"
+
+## Default Template Skins. This is template specific, however templates should always implement
+## a default skin. 
+## Configure different slug options down below. 
+## Change this if you want to default to a different skin.
+default_skin = "default"
+
+## Show database timings.
+debug = false
+
+## Moderation cookie session secret. Be sure to change this!
+session_secret = "somerandomstringhere"
+
+## Specifies the authentication backend. Only oauth2 and none are currently supported.
+## none should only be used for testing and development! This option will make every user who visits /admin/login a moderator.
+## If you specify oauth2, you will need to setup and configure oauth2 below. 
+authentication_type = "oauth2"
+
+## List of archived boards to display. 
+[[archives]]
+shortname = "a"
+name = "Anime & Manga"
+
+[[archives]]
+shortname = "aco"
+name = "Adult Cartoons"
+
+[[archives]]
+shortname = "an"
+name = "Animals & Nature"
+
+[[archives]]
+shortname = "c"
+name = "Cute"
+
+[[archives]]
+shortname = "co"
+name = "Comics & Cartoons"
+
+[[archives]]
+shortname = "d"
+name = "Hentai/Alternative"
+
+[[archives]]
+shortname = "fit"
+name = "Fitness"
+
+[[archives]]
+shortname = "his"
+name = "History & Humanities"
+
+[[archives]]
+shortname = "int"
+name = "International"
+
+[[archives]]
+shortname = "k"
+name = "Weapons"
+
+[[archives]]
+shortname = "m"
+name = "Mecha"
+
+[[archives]]
+shortname = "mlp"
+name = "Pony"
+
+[[archives]]
+shortname = "q"
+name = "4chan Feedback"
+
+[[archives]]
+shortname = "qa"
+name = "Question & Answer"
+
+[[archives]]
+shortname = "r9k"
+name = "ROBOT9001"
+
+[[archives]]
+shortname = "tg"
+name = "Traditional Games"
+
+[[archives]]
+shortname = "trash"
+name = "Off-Topic"
+
+[[archives]]
+shortname = "vr"
+name = "Retro Games"
+
+[[archives]]
+shortname = "wsg"
+name = "Worksafe GIF"
+
+## List of non-archive boards to display.
+## Boards currently are no different from archives, although it may be used for text 
+## boards in the future. 
+[[boards]]
+shortname = "meta"
+name = "Meta"
+
+## Template skins. 
+## On the Foolfuuka template, this is achieved using cookies.
+[[skins]]
+slug = "default"
+name = "FoolFuuka - Default"
+
+[[skins]]
+slug = "midnight"
+name = "FoolFuuka - Midnight"
+
+[[skins]]
+slug = "kurimasu"
+name = "FoolFuuka - Christmas"
+
+[[skins]]
+slug = "barentain"
+name = "FoolFuuka - Valentine's Day"
+
+[[skins]]
+slug = "halloween"
+name = "FoolFuuka - Halloween"
+
+## Specify the schema. 
+## Only asagi is supported.
+[schema]
+name = "asagi"
+
+## Template options 
+## These options are passed to the template for rendering options, and have no 
+## functionality on ayase. 
+[options]
+
+## Enable a Post Selector button that allows you to select a number of posts for use in reporting.
+post_selector = true
+
+## Enable the stats tab. (No function)
+stats = false
+
+## Enable the ghost tab. (No function)
+ghost = false 
+
+## Show the search bar. Search functionality will be available in a future version.
+search = false
+
+## Enable reports and moderation.
+reports = false
+
+## Specify the url where images are hosted.
+## The following is the default for ayase.  
+## You may also specify a full URL.
+[image_location]
+image = "/img/{board_name}/image"
+thumb = "/img/{board_name}/thumb"
+
+## Torako sha256 folder structure.
+## If you are using sha256 with seaweedfs, with thumbs and images in the same folder, 
+## use this image_location format. 
+# [image_location]
+# image = "/img"
+# thumb = "/img"
+
+## OpenAPI scraper info (currently unused).
+[scraper]
+default = "asagi"
+
+    [scraper.asagi]
+    name = "Asagi"
+    source = "https://github.com/eksopl/asagi"
+
+    [scraper.ena]
+    name = "Ena"
+    source = "https://github.com/shiimizu/ena"
+
+    [scraper.torako]
+    name = "Torako"
+    source = "https://github.com/miyachan/torako"
+
+## OAuth2 authentication config. Only supports Gitlab for now.
+[oauth2]
+provider = "gitgud"
+login_url = "https://gitgud.io/oauth/authorize"
+token_url = "https://gitgud.io/oauth/token"
+userinfo_url = "https://gitgud.io/oauth/userinfo"
+client_id = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+secret = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+cookie_expiration = 86400
+
+    ## Specify admin and moderation groups
+    [oauth2.groups]
+    admins = "gitgud-admin-group"
+    moderators = "gitgud-mod-group"
+
+## Database options
+[database]
+default = "mysql"
+
+    [database.mysql]
+    host = "127.0.0.1"
+    port = 3306
+    db = "asagi"
+    user = "asagi"
+    password = "asagi"
+    charset = "utf8mb4"
+
+[reports_db]
+default = "mysql"
+
+    [reports_db.mysql]
+    host = "127.0.0.1"
+    port = 3306
+    db = "ayase"
+    user = "ayase"
+    password = "ayase"
+    charset = "utf8mb4"

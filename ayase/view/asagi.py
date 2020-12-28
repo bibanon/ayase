@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import timeit
-import yaml
+import toml
 import subprocess
 from fastapi import FastAPI, Request, Response, Depends, status
 from fastapi.openapi.utils import get_openapi
@@ -59,15 +59,27 @@ env = Environment(
 
 # load the boards list
 global CONF
-with open("config.yml", "r") as yaml_conf:
-    CONF = yaml.safe_load(yaml_conf)
+with open("config.toml", "r") as toml_conf:
+    CONF = toml.load(toml_conf)
 
-debug = CONF["debug"]
+# Initialize config options
+if "debug" in CONF:
+    debug = CONF["debug"]
+else:
+    debug = False
 
-archives = CONF["archives"]
+if "archives" in CONF:
+    archives = CONF["archives"]
+else:
+    archives = None
+
 archive_list = []
 
-boards = CONF["boards"]
+if "boards" in CONF:
+    boards = CONF["boards"]
+else: 
+    boards = None
+
 skins = CONF["skins"]
 site_name = CONF["site_name"]
 scraper = CONF["scraper"]
@@ -79,8 +91,8 @@ thumb_uri = CONF["image_location"]["thumb"]
 DB_ENGINE = CONF["database"]["default"]
 
 if boards:
-    for i in boards:
-        board_list.append(i["shortname"])
+    for board in boards:
+        board_list.append(board)
 
 if archives:
     for i in archives:
@@ -158,9 +170,9 @@ def get_skin(request: Request):
 # return empty entry
 def get_board_entry(board_name: str):
     return next(
-        (item for item in archives if item["shortname"] == board_name),
+        (item for item in (archives or []) if item["shortname"] == board_name),
         next(
-            (item for item in boards if item["shortname"] == board_name),
+            (item for item in (boards or []) if item["shortname"] == board_name),
             {"shortname": "", "name": ""},
         ),
     )
