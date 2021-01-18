@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import sys
 import html
 import databases
 import timeit
@@ -58,56 +57,6 @@ SELECT_GALLERY_THREADS_BY_OFFSET = SELECTOR + "FROM `{board}` INNER JOIN `{board
 SELECT_GALLERY_THREAD_IMAGES_MD5 = "SELECT `{board}`.media_hash, `{board}_images`.`media`, `{board}_images`.`preview_reply`, `{board}_images`.`preview_op` FROM ((`{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num`) INNER JOIN `{board}_images` ON `{board}_images`.`media_hash` = `{board}`.`media_hash`) WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
 SELECT_GALLERY_THREAD_IMAGES_SHA256 = "SELECT `{board}`.media_hash, LOWER(HEX(`{board}_images`.`media_sha256`)) AS `media_sha256`, LOWER(HEX(`{board}_images`.`preview_reply_sha256`)) AS `preview_reply_sha256`, LOWER(HEX(`{board}_images`.`preview_op_sha256`)) AS `preview_op_sha256` FROM ((`{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num`) INNER JOIN `{board}_images` ON `{board}_images`.`media_hash` = `{board}`.`media_hash`) WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
 SELECT_GALLERY_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{board}_threads` ORDER BY `time_bump` DESC LIMIT 150 OFFSET {page_num}"
-
-# This is temporary
-if DB_ENGINE == "postgresql":
-    import re
-
-    postfix = "_asagi" if CONF["scraper"]["default"] == "ena" else ""
-    # assign multiple variables
-    # tuple unpacking
-    queries = [
-        SELECT_POST,
-        SELECT_POST_IMAGES,
-        SELECT_THREAD,
-        SELECT_THREAD_IMAGES,
-        SELECT_THREAD_DETAILS,
-        SELECT_THREAD_PREVIEW,
-        SELECT_THREAD_PREVIEW_IMAGES,
-        SELECT_GALLERY_THREADS_BY_OFFSET,
-        SELECT_GALLERY_THREAD_DETAILS,
-    ]
-    (
-        SELECT_POST,
-        SELECT_POST_IMAGES,
-        SELECT_THREAD,
-        SELECT_THREAD_IMAGES,
-        SELECT_THREAD_DETAILS,
-        SELECT_THREAD_PREVIEW,
-        SELECT_THREAD_PREVIEW_IMAGES,
-        SELECT_GALLERY_THREADS_BY_OFFSET,
-        SELECT_GALLERY_THREAD_DETAILS,
-    ) = (
-        re.sub("op=1", "op=true", query, flags=re.IGNORECASE)
-        .replace(
-            """`{board}` """,
-            """`{board}{postfix}` """.format(board="{board}", postfix=postfix),
-        )
-        .replace(
-            "`{board}`.",
-            "`{board}{postfix}`.".format(board="{board}", postfix=postfix),
-        )
-        .replace("SUBSTRING_INDEX", "SPLIT_PART")
-        .replace(
-            """DATE_FORMAT(FROM_UNIXTIME(`timestamp`), "%m/%d/%y(%a)%H:%i:%S")""",
-            """to_char(to_timestamp("timestamp"), 'MM/DD/YY(Dy)HH24:MI:SS')""",
-        )
-        .replace("media_orig, '.', 1)", "media_orig, '.', 1)::bigint")
-        .replace("-1)", "2)")
-        .replace(" THEN CAST(0 AS UNSIGNED)", " THEN 0")
-        .replace("`", '"')
-        for query in queries
-    )
 
 global database
 database = None
