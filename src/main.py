@@ -44,6 +44,17 @@ app = FastAPI()
 app.include_router(template.router)
 app.include_router(api.router)
 
+if(config["options"]["moderation"]):
+    from .routers import admin
+    app.include_router(admin.router, prefix="/admin", tags=["admin"])
+
+    from starlette.middleware.sessions import SessionMiddleware
+    app.add_middleware(
+        SessionMiddleware,
+        secret_key=config['session_secret'],
+        max_age=config['oauth2']['cookie_expiration']
+    )
+
 # Mount staic files
 app.mount(
     "/static",
@@ -68,4 +79,4 @@ async def shutdown():
 # Template router not found exception
 @app.exception_handler(NotFoundException)
 async def not_found(request: Request, exc: NotFoundException):
-    return await not_found_exception_handler(exc)
+    return await not_found_exception_handler(request, exc)

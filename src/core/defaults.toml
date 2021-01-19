@@ -1,6 +1,9 @@
 ## The name to display on site titles and headers. 
 site_name = "Ayase"
 
+## Site url for oauth2 moderation routes
+site_url = "http://localhost:8000"
+
 ## Image hash format.
 ## md5 and sha256 are supported.
 hash_format = "md5"
@@ -31,8 +34,7 @@ authentication_type = "oauth2"
 name = "asagi"
 
 ## Template options 
-## These options are passed to the template for rendering options, and have no 
-## functionality on ayase. 
+## These options change the template and functionality of ayase.  
 [options]
 
 ## Enable a Post Selector button that allows you to select a number of posts for use in reporting.
@@ -47,8 +49,11 @@ ghost = false
 ## Show the search bar. Search functionality will be available in a future version.
 search = false
 
-## Enable reports and moderation.
+## Enable reports.
 reports = false
+
+## Enable moderation.
+moderation = false
 
 ## Specify the url where images are hosted.
 ## The following is the default for ayase.  

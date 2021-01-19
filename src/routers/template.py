@@ -46,6 +46,7 @@ template_post_sha256 = env.get_template("post_sha256.html")
 template_posts = env.get_template("posts.html")
 
 
+# TODO: Move these to dependencies.py
 class NotFoundException(Exception):
     def __init__(self, board_name=config["site_name"]):
         self.title_window = board_name
@@ -60,14 +61,14 @@ class NotFoundException(Exception):
 
 
 async def not_found_exception_handler(
-    # request: Request
+    request: Request,
     exc: NotFoundException
 ):
     content = template_404.render(
         **render_constants,
         title=exc.title_window,
         title_window=exc.title_window,
-        skin="default",
+        skin=get_skin(request),
         status_code=404
     )
     return HTMLResponse(content=content, status_code=404)
@@ -212,6 +213,7 @@ async def board_index_html(request: Request, board_name: str, page_num: int):
             title = f"/{board_name}/ - {board_description}"
             title_window = title + f" » Page {page_num}"
             content = template_board_index.render(
+                **render_constants,
                 page_num=page_num,
                 threads=index["threads"],
                 quotelinks=[],
@@ -330,7 +332,7 @@ async def post_html(
                 post["resto"] = -1
 
             content = template.render(
-                render_constants,
+                **render_constants,
                 post=post,
                 board=board_name,
                 image_uri=config["image_location"]["image"].format(

@@ -21,7 +21,7 @@ async def check_token(request: Request):
 
 
 async def check_admin_cookies(request: Request):
-    if(config['options']['reports']):
+    if(config['options']['moderation']):
         return await check_token(request)
     return False
 
