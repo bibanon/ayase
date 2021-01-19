@@ -1,7 +1,7 @@
 import logging
 import html
-from src.core.database import db_handler
-from src.core.config import config
+from src.core.database import DB
+from src.core.settings import config
 
 SELECTOR = """SELECT
     `num` AS `no`,
@@ -38,6 +38,10 @@ SELECTOR = """SELECT
 
 MD5_IMAGE_SELECTOR = "`media_hash`,`media`,`preview_reply`,`preview_op`"
 SHA256_IMAGE_SELECTOR = "`media_hash`,LOWER(HEX(`media_sha256`)) AS `media_sha256`,LOWER(HEX(`preview_reply_sha256`)) AS `preview_reply_sha256`,LOWER(HEX(`preview_op_sha256`)) AS `preview_op_sha256`"
+
+
+async def db_handler(sql: str, fetchall: bool):
+    return await DB.getInstance().db_handler(sql, fetchall)
 
 
 async def get_post(board: str, post_num: int):

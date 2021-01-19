@@ -10,7 +10,7 @@ from src.core.settings import (
     board_list,
     archive_list
 )
-from src.core.backend.asagi_converter import (
+from src.backend.asagi_converter import (
     convert_thread,
     generate_index,
     convert_post,
@@ -29,7 +29,9 @@ router = APIRouter()
 
 env = Environment(
     #    loader=PackageLoader('ayase', 'templates'),
-    loader=FileSystemLoader("foolfuuka/templates"),
+    loader=FileSystemLoader(
+        f"src/templates/{config['template_name']}/templates"
+    ),
     autoescape=select_autoescape(["html", "xml"]),
 )
 
@@ -57,15 +59,15 @@ class NotFoundException(Exception):
         self.title_window = title
 
 
-@router.exception_handler(NotFoundException)
 async def not_found_exception_handler(
-    request: Request, exc: NotFoundException
+    # request: Request
+    exc: NotFoundException
 ):
     content = template_404.render(
         **render_constants,
         title=exc.title_window,
         title_window=exc.title_window,
-        skin=get_skin(request),
+        skin="default",
         status_code=404
     )
     return HTMLResponse(content=content, status_code=404)
@@ -93,8 +95,7 @@ async def index_html(request: Request):
         **render_constants,
         title=config["site_name"],
         title_window=config["site_name"],
-        skin=get_skin(request),
-        site_name=config["site_name"]
+        skin=get_skin(request)
     )
     return content
 

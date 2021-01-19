@@ -1,9 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
 import subprocess
 from .routers import template, api
-from src.core.database import init_db, shutdown_db
+from .routers.template import NotFoundException, not_found_exception_handler
+from src.core.settings import config
+from src.core.database import DB
 
 
 def custom_openapi(openapi_prefix: str):
@@ -36,8 +38,6 @@ def custom_openapi(openapi_prefix: str):
     return app.openapi_schema
 
 
-template_name = "foolfuuka"
-
 app = FastAPI()
 
 # Routers
@@ -47,7 +47,7 @@ app.include_router(api.router)
 # Mount staic files
 app.mount(
     "/static",
-    StaticFiles(directory=f"templates/{template_name}/static"),
+    StaticFiles(directory=f"src/templates/{config['template_name']}/static"),
     name="static"
 )
 
@@ -57,9 +57,15 @@ app.openapi = custom_openapi
 # Prepare DB
 @app.on_event("startup")
 async def startup():
-    init_db()
+    await DB.getInstance().init_db()
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    shutdown_db()
+    await DB.getInstance().shutdown_db()
+
+
+# Template router not found exception
+@app.exception_handler(NotFoundException)
+async def not_found(request: Request, exc: NotFoundException):
+    return await not_found_exception_handler(exc)
