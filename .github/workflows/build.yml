@@ -44,7 +44,7 @@ jobs:
           push: true
           file: ./Dockerfile
           tags: ghcr.io/bibanon/ayase:latest
-          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/386,linux/arm/v7
+          platforms: linux/amd64
           labels: |
             ${{ steps.docker_meta.outputs.labels }}
             org.opencontainers.image.title=Ayase
