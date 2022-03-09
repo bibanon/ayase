@@ -45,8 +45,9 @@ app.include_router(template.router)
 app.include_router(api.router)
 
 if(config["options"]["moderation"]):
-    from .routers import admin
-    app.include_router(admin.router, prefix="/admin", tags=["admin"])
+    from .routers import admin_auth, moderation
+    app.include_router(admin_auth.router, prefix="/admin", tags=["admin"])
+    app.include_router(moderation.router, prefix="/admin", tags=["moderation"])
 
     from starlette.middleware.sessions import SessionMiddleware
     app.add_middleware(

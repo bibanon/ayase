@@ -1,9 +1,9 @@
 toml
 jinja2
-fastapi==0.63.0
+fastapi>=0.63.0
 uvicorn
 databases
-pymysql==0.9.2
+pymysql>=0.9.2
 aiofiles
 aiomysql
 itsdangerous

@@ -40,14 +40,14 @@ MD5_IMAGE_SELECTOR = "`media_hash`,`media`,`preview_reply`,`preview_op`"
 SHA256_IMAGE_SELECTOR = "`media_hash`,LOWER(HEX(`media_sha256`)) AS `media_sha256`,LOWER(HEX(`preview_reply_sha256`)) AS `preview_reply_sha256`,LOWER(HEX(`preview_op_sha256`)) AS `preview_op_sha256`"
 
 
-async def db_handler(sql: str, fetchall: bool):
-    return await DB.getInstance().db_handler(sql, fetchall)
+async def query_handler(sql: str, fetchall: bool):
+    return await DB.getInstance().query_handler(sql, fetchall)
 
 
 async def get_post(board: str, post_num: int):
     SELECT_POST = SELECTOR + "FROM `{board}` WHERE `num`={post_num}"
     sql = SELECT_POST.format(board=board, post_num=post_num)
-    return await db_handler(sql, fetchall=False)
+    return await query_handler(sql, fetchall=False)
 
 
 async def get_post_images(board: str, post_num: int):
@@ -57,13 +57,13 @@ async def get_post_images(board: str, post_num: int):
         post_num=post_num,
         image_selector=SHA256_IMAGE_SELECTOR if "hash_format" in config and config["hash_format"] == "sha256" else MD5_IMAGE_SELECTOR
     )
-    return await db_handler(sql, fetchall=False)
+    return await query_handler(sql, fetchall=False)
 
 
 async def get_thread(board: str, thread_num: int):
     SELECT_THREAD = SELECTOR + "FROM `{board}` WHERE `thread_num`={thread_num} ORDER BY `num`"
     sql = SELECT_THREAD.format(board=board, thread_num=thread_num)
-    return await db_handler(sql, fetchall=True)
+    return await query_handler(sql, fetchall=True)
 
 
 async def get_thread_images(board: str, thread_num: int):
@@ -73,19 +73,19 @@ async def get_thread_images(board: str, thread_num: int):
         thread_num=thread_num,
         image_selector=SHA256_IMAGE_SELECTOR if "hash_format" in config and config["hash_format"] == "sha256" else MD5_IMAGE_SELECTOR
     )
-    return await db_handler(sql, fetchall=True)
+    return await query_handler(sql, fetchall=True)
 
 
 async def get_thread_details(board: str, thread_num: int):
     SELECT_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{board}_threads` WHERE `thread_num`={thread_num}"
     sql = SELECT_THREAD_DETAILS.format(board=board, thread_num=thread_num)
-    return await db_handler(sql, fetchall=False)
+    return await query_handler(sql, fetchall=False)
 
 
 async def get_thread_preview(board: str, thread_num: int):
     SELECT_THREAD_PREVIEW = SELECTOR + "FROM `{board}` WHERE `thread_num`={thread_num} ORDER BY `num` DESC LIMIT 5" 
     sql = SELECT_THREAD_PREVIEW.format(board=board, thread_num=thread_num)
-    return await db_handler(sql, fetchall=True)
+    return await query_handler(sql, fetchall=True)
 
 
 async def get_thread_preview_images(board: str, thread_num: int):
@@ -95,13 +95,13 @@ async def get_thread_preview_images(board: str, thread_num: int):
         thread_num=thread_num,
         image_selector=SHA256_IMAGE_SELECTOR if "hash_format" in config and config["hash_format"] == "sha256" else MD5_IMAGE_SELECTOR    
     )
-    return await db_handler(sql, fetchall=True)
+    return await query_handler(sql, fetchall=True)
 
 
 async def get_op_list(board: str, page_num: int):
     SELECT_OP_LIST_BY_OFFSET = SELECTOR + "FROM {board} INNER JOIN {board}_threads ON {board}_threads.thread_num = {board}.thread_num WHERE OP=1 ORDER BY `time_bump` DESC LIMIT 10 OFFSET {page_num};"
     sql = SELECT_OP_LIST_BY_OFFSET.format(board=board, page_num=page_num * 10)
-    return await db_handler(sql, fetchall=True)
+    return await query_handler(sql, fetchall=True)
 
 
 async def get_op_images(board: str, md5s: list):
@@ -111,7 +111,7 @@ async def get_op_images(board: str, md5s: list):
         md5s=md5s,
         image_selector=SHA256_IMAGE_SELECTOR if "hash_format" in config and config["hash_format"] == "sha256" else MD5_IMAGE_SELECTOR
     )
-    return await db_handler(sql, fetchall=True)
+    return await query_handler(sql, fetchall=True)
 
 
 async def get_op_details(board: str, thread_nums: list):
@@ -122,13 +122,13 @@ async def get_op_details(board: str, thread_nums: list):
         thread_nums=thread_nums,
         field_thread_nums=field_thread_nums
     )
-    return await db_handler(sql, fetchall=True)
+    return await query_handler(sql, fetchall=True)
 
 
 async def get_gallery_threads(board: str, page_num: int):
     SELECT_GALLERY_THREADS_BY_OFFSET = SELECTOR + "FROM `{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num` WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};"
     sql = SELECT_GALLERY_THREADS_BY_OFFSET.format(board=board, page_num=page_num * 150)
-    return await db_handler(sql, fetchall=True)
+    return await query_handler(sql, fetchall=True)
 
 
 async def get_gallery_images(board: str, page_num: int):
@@ -136,13 +136,13 @@ async def get_gallery_images(board: str, page_num: int):
     SELECT_GALLERY_THREAD_IMAGES_SHA256 = "SELECT `{board}`.media_hash, LOWER(HEX(`{board}_images`.`media_sha256`)) AS `media_sha256`, LOWER(HEX(`{board}_images`.`preview_reply_sha256`)) AS `preview_reply_sha256`, LOWER(HEX(`{board}_images`.`preview_op_sha256`)) AS `preview_op_sha256` FROM ((`{board}` INNER JOIN `{board}_threads` ON `{board}`.`thread_num` = `{board}_threads`.`thread_num`) INNER JOIN `{board}_images` ON `{board}_images`.`media_hash` = `{board}`.`media_hash`) WHERE OP=1 ORDER BY `{board}_threads`.`time_bump` DESC LIMIT 150 OFFSET {page_num};" 
     selector = SELECT_GALLERY_THREAD_IMAGES_SHA256 if "hash_format" in config and config["hash_format"] == "sha256" else SELECT_GALLERY_THREAD_IMAGES_MD5
     sql = selector.format(board=board, page_num=page_num)
-    return await db_handler(sql, fetchall=True)
+    return await query_handler(sql, fetchall=True)
 
 
 async def get_gallery_details(board: str, page_num: int):
     SELECT_GALLERY_THREAD_DETAILS = "SELECT `nreplies`, `nimages` FROM `{board}_threads` ORDER BY `time_bump` DESC LIMIT 150 OFFSET {page_num}"
     sql = SELECT_GALLERY_THREAD_DETAILS.format(board=board, page_num=page_num)
-    return await db_handler(sql, fetchall=True)
+    return await query_handler(sql, fetchall=True)
 
 
 #

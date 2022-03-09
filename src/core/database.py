@@ -38,7 +38,7 @@ class DB:
             await self.database.disconnect()
 
 
-    async def db_handler(self, sql: str, fetchall: bool):
+    async def query_handler(self, sql: str, fetchall: bool):
         try:
             if "debug" not in config or config["debug"] is False:
                 return (
@@ -47,7 +47,6 @@ class DB:
                     else (await self.database.fetch_one(query=sql))
                 )
             else:
-                await self.database.fetch_one(query="select 1")
                 start = timeit.default_timer()
                 if fetchall:
                     result = await self.database.fetch_all(query=sql)
@@ -62,3 +61,31 @@ class DB:
         except Exception as e:
             logging.error(f"Query failed!: {e}")
             return ""
+
+    async def execute_handler(self, sql: str, values: list | dict, execute_many: bool):
+        transaction = await self.database.transaction()
+        result = {}
+        try:
+            if "debug" not in config or config["debug"] is False:
+                if execute_many: 
+                    result = await self.database.execute_many(query=sql, values=values)
+                else:
+                    result = await self.database.execute(query=sql, values=values)
+                
+            else:
+                start = timeit.default_timer()
+                if execute_many:
+                    result = await self.database.execute_many(query=sql, values=values)
+                    end = timeit.default_timer()
+                    print("Time waiting for execution: ", end - start)
+                else:
+                    result = await self.database.execute(query=sql, values=values)
+                    end = timeit.default_timer()
+                    print("Time waiting for query: ", end - start)
+        except Exception as e:
+            logging.error(f"Query failed!: {e}")
+            await transaction.rollback()
+            return ""
+        else: 
+            await transaction.commit()
+            return result
