@@ -50,10 +50,10 @@
                             {% for archive in archives %}
                             <li><a href="/{{ archive.shortname }}/">/{{ archive.shortname }}/ - {{ archive.name }}</a></li>
                             {% endfor %}
-                            <li class="divider"></li>
                           
                             {% endif %}
                             {% if boards %}
+                            <li class="divider"></li>
                             <li class="nav-header">Boards</li>
                             {% for internal_board in boards %}
                             <li><a href="/{{ internal_board.shortname }}/">/{{ internal_board.shortname }}/ - {{ internal_board.name }}</a></li>
