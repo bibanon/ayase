@@ -55,16 +55,16 @@ Once everything else is configured, you can start FastAPI with these commands.
 
 ```
 cd ayase
-uvicorn view.asagi:app
+uvicorn main:app
 ```
 
-### (Unused) Progrider 4chan Mirror
+<!-- ### (Unused) Progrider 4chan Mirror
 This is an untouched early proof-of-concept version of ayase separate from the rest of ayase which may be reimplemented as a proper template in the future.
 
 ```
 cd ayase
 uvicorn fourchan:app
-```
+``` -->
 
 ## HTML Templates
 
