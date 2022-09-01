@@ -40,13 +40,13 @@ def custom_openapi():
 app = FastAPI()
 
 # Routers
-app.include_router(api.router)
-app.include_router(template.router)
+app.include_router(api.router, tags=["Api"])
+app.include_router(template.router, tags=["Template HTML"])
 
 if(config["options"]["moderation"]):
     from .routers import admin_auth, moderation
-    app.include_router(admin_auth.router, prefix="/admin", tags=["admin"])
-    app.include_router(moderation.router, prefix="/admin", tags=["moderation"])
+    app.include_router(admin_auth.router, prefix="/admin", tags=["Admin"])
+    app.include_router(moderation.router, prefix="/admin", tags=["Moderation"])
 
     from starlette.middleware.sessions import SessionMiddleware
     app.add_middleware(
