@@ -43,9 +43,8 @@
                         <ul class="dropdown-menu">
 
                             <li><a href="/">Index</a></li>
-                            <li class="divider"></li>
                             {% if archives %}
-                          
+                            <li class="divider"></li>
                             <li class="nav-header">Archives</li>
                             {% for archive in archives %}
                             <li><a href="/{{ archive.shortname }}/">/{{ archive.shortname }}/ - {{ archive.name }}</a></li>
