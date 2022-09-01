@@ -8,7 +8,7 @@ from src.core.settings import config
 from src.core.database import DB
 
 
-def custom_openapi(openapi_prefix: str):
+def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
     revision = "0.1.0"
@@ -28,7 +28,6 @@ def custom_openapi(openapi_prefix: str):
         version=revision,
         description="The Ayase Imageboard Archival Standard",
         routes=app.routes,
-        openapi_prefix=openapi_prefix,
     )
     openapi_schema["info"]["x-logo"] = {
         "url": "https://c4.wallpaperflare.com/wallpaper/530/77/135/anime-yotsuba-fuuka-ayase-mr-koiwai-yotsuba-wallpaper-preview.jpg"
