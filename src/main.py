@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.utils import get_openapi
 import subprocess
-from .routers import template, api
+from .routers import api, template
 from .routers.template import NotFoundException, not_found_exception_handler
 from src.core.settings import config
 from src.core.database import DB
@@ -41,8 +41,8 @@ def custom_openapi(openapi_prefix: str):
 app = FastAPI()
 
 # Routers
-app.include_router(template.router)
 app.include_router(api.router)
+app.include_router(template.router)
 
 if(config["options"]["moderation"]):
     from .routers import admin_auth, moderation
