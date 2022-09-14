@@ -1,8 +1,8 @@
-> **Note:** Ayase currently a proof of concept. It now works perfectly with the Asagi schema. Future versions will set up a connection to the both the Asagi and Ayase Schemas.
+> **Note:** Ayase currently a proof of concept. It works perfectly with the Asagi schema. Future versions will set up a connection to both the Asagi and Ayase Schemas.
 
-**Ayase** is a 4chan Archiver API middleware and HTML frontend based on Python, FastAPI, and Jinja2.
+**Ayase** is a 4chan Archiver API and HTML frontend based on Python, FastAPI, and Jinja2.
 
-It was produced by the Bibliotheca Anonoma as a replacement for FoolFuuka, to be the API Middleware and HTML Templating Frontend to both Asagi and Ayase compatible scrapers, and the definition of the Ayase SQL Standard.
+It was produced by the Bibliotheca Anonoma as a replacement for FoolFuuka, to be an API and HTML templating frontend for both Asagi and Ayase compatible scrapers, and the definition of the Ayase SQL Standard.
 
 ## Installation
 
@@ -19,7 +19,7 @@ Documentation can be seen at
 * http://localhost:8000/docs
 * http://localhost:8000/redoc
 
-### Foolfuuka (w/ Asagi schema) Template 
+### FoolFuuka (w/ Asagi schema) Template 
 To use this template, you will need to have an accessible MySQL DB with an Asagi schema as well as a web server to host static content. We will be using NGINX here.
 
 #### Configuring ayase
@@ -28,7 +28,7 @@ This template expects a TOML config file located at `ayase/config.toml`. An exam
 #### Configuring the NGINX Web Server
 It is recommended that you setup an nginx front proxy to host static content in production (particularly for images which ayase does not host), however this is not required for testing.
 
-The following is an example Nginx config which will proxy_pass the hug api while also hosting images. 
+The following is an example nginx config which will proxy_pass the hug api while also hosting images.
 
 ```
 server {
@@ -72,11 +72,11 @@ Ayase provides only a few HTML Templates as default, and they are not part of th
 
 Our criteria for default HTML Templates is historical significance that match archived data with the period appropriate theming for the original boards they came from, and most of all an avoidance of anything but HTML5, basic CSS, and ECMAScript unless absolutely necessary.
 
-Only the progrider and foolfuuka template is currently built.
+Only the progrider and foolfuuka template are currently built.
 
-### Foolfuuka Template
+### FoolFuuka Template
 
-Pulled directly from Foolfuuka, this jinja2 template seeks to replicate all Foolfuuka funtionality with a lighter and more efficient code base. 
+Pulled directly from FoolFuuka, this jinja2 template seeks to replicate all FoolFuuka funtionality with a lighter and more efficient code base. 
 
 ![Index](foolfuuka-index.png)
 
@@ -92,7 +92,7 @@ Based on https://github.com/bibanon/world4ch , this jinja2 template is based on 
 
 ### Indiachan Template
 
-Out of all these, indiachan (which made a lynxchan template) looks the most modern, and is very nicely optimized for mobile (as mobile devices are the most commonly used computing devices). It even has a pleasing green theme which fits the FoolFuuka theming tradition. I would make this the default theme.
+Out of all these, indiachan (which made a lynxchan template) looks the most modern, and is very nicely optimized for mobile (as mobile devices are the most commonly used computing devices). It even has a pleasant green theme which fits the FoolFuuka theming tradition. I would make this the default theme.
 
 https://gitlab.com/rusty02/indiachan
 

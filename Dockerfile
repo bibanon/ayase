@@ -1,6 +1,9 @@
-FROM ubuntu:22.04
+FROM python:3.10.7-bullseye
 WORKDIR /opt/ayase
-COPY requirements.txt /requirements.txt
-RUN apt-get update && apt-get -y upgrade && apt-get -y --no-install-recommends install python3 python3-pip && pip3 install -r /requirements.txt && apt-get -y remove python3-pip && rm -rf /var/lib/apt/lists/*
-COPY . /opt/ayase
-CMD ["uvicorn","start_ayase:app", "--host", "0.0.0.0"]
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD ["uvicorn", "start_ayase:app", "--host", "0.0.0.0", "--port", "8000"]

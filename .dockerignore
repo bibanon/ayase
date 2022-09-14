@@ -1,0 +1,19 @@
+# Git
+.github
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Junk
+LICENSE
+README.md
+ayase-world4ch-catalog.png
+ayase-world4ch-thread.png
+config.example.toml
+config.toml
+foolfuuka-board-index.png
+foolfuuka-index.png
+
